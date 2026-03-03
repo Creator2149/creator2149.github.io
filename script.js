@@ -765,6 +765,19 @@ document.addEventListener('DOMContentLoaded', () => {
     initParticles();
     admin.init();
 
+    // Mobile Menu Toggle
+    const menuBtn = document.querySelector('.mobile-menu-btn');
+    const navLinks = document.querySelector('.nav-links');
+    menuBtn?.addEventListener('click', () => {
+        navLinks.classList.toggle('active');
+        menuBtn.classList.toggle('open');
+    });
+
+    // Double-click logo for Admin door (Mobile Friendly)
+    document.querySelector('.logo')?.addEventListener('dblclick', () => {
+        document.getElementById('admin-gate').style.display = 'block';
+    });
+
     // Cursor Glow
     const glow = document.getElementById('cursor-glow');
     document.addEventListener('mousemove', (e) => {
