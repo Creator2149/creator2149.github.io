@@ -705,7 +705,13 @@ const admin = {
         status.innerText = "Connecting to GitHub...";
 
         try {
-            // 1. Fetch current file to get SHA
+            // 1. Automatically increment version before pushing
+            const parts = portfolioData.version.split('.');
+            parts[parts.length - 1] = parseInt(parts[parts.length - 1]) + 1;
+            portfolioData.version = parts.join('.');
+            saveData(); // Save new version to local storage too
+
+            // 2. Fetch current file to get SHA
             const getUrl = `https://api.github.com/repos/${repo}/contents/${path}`;
             const getRes = await fetch(getUrl, {
                 headers: { Authorization: `token ${token}` }
@@ -714,16 +720,16 @@ const admin = {
             if (!getRes.ok) throw new Error("Could not fetch file from GitHub. Check token and repo name.");
             const fileData = await getRes.json();
             const currentSha = fileData.sha;
-            const currentContent = atob(fileData.content);
+            const currentContent = decodeURIComponent(escape(atob(fileData.content)));
 
-            // 2. Build the new file content
+            // 3. Build the new file content
             const newDataStr = `const INITIAL_DATA = ${JSON.stringify(portfolioData, null, 4)};`;
             const newContent = currentContent.replace(
                 /\/\* --- DATA_START --- \*\/([\s\S]*?)\/\* --- DATA_END --- \*\//,
                 `/* --- DATA_START --- */\n${newDataStr}\n/* --- DATA_END --- */`
             );
 
-            // 3. Update the file
+            // 4. Update the file
             const putRes = await fetch(getUrl, {
                 method: "PUT",
                 headers: {
@@ -731,7 +737,7 @@ const admin = {
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
-                    message: message,
+                    message: message + " (v" + portfolioData.version + ")",
                     content: btoa(unescape(encodeURIComponent(newContent))),
                     sha: currentSha
                 })
@@ -739,7 +745,7 @@ const admin = {
 
             if (!putRes.ok) throw new Error("Failed to update file. Check repository permissions.");
 
-            status.innerText = "Success! Site is rebuilding (take ~1 min).";
+            status.innerText = `Success! v${portfolioData.version} is being deployed (take ~1 min).`;
             status.style.color = "#00ff80";
             
         } catch (err) {
