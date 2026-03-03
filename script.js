@@ -5,7 +5,7 @@
 
 /* --- DATA_START --- */
 const INITIAL_DATA = {
-    "version": "1.5",
+    "version": "1.6",
     "projects": [
         {
             "id": "p1",
