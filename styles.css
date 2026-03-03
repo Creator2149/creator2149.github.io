@@ -140,6 +140,32 @@ h3,
     word-break: break-word;
 }
 
+@media (max-width: 600px) {
+    .glitch {
+        font-size: 2.2rem;
+        line-height: 1.05;
+        text-align: center;
+        word-break: break-word;
+        hyphens: auto;
+    }
+    .glitch .first-name,
+    .glitch .last-name {
+        display: block;
+        width: 100%;
+        font-size: 2.2rem;
+        margin: 0;
+        padding: 0;
+        word-break: normal;
+        overflow-wrap: normal;
+        white-space: nowrap;
+    }
+    .glitch .last-name {
+        margin-top: 0.1em;
+        font-size: 2.2rem;
+        min-width: 0;
+    }
+}
+
 .glitch::before,
 .glitch::after {
     content: attr(data-text);
