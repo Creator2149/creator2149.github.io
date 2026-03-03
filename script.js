@@ -1,3 +1,19 @@
+// --- CERTIFICATE MODAL ---
+window.openCertModal = (certId) => {
+    const c = portfolioData.credentials.find((cert) => cert.id === certId);
+    const modal = document.getElementById('cert-modal');
+    const body = document.getElementById('cert-modal-body');
+    if (!c) return;
+    body.innerHTML = `
+        <h2 style=\"color: var(--accent-color); margin-bottom: 10px;\">${c.title}</h2>
+        <span class=\"tech-tag\">${c.discipline}</span>
+        <p style=\"margin: 10px 0 5px 0;\"><strong>Year:</strong> ${c.year}</p>
+        <div style=\"display: flex; justify-content: center; align-items: center; margin: 20px 0;\">
+            <img src=\"${c.img}\" alt=\"${c.title}\" style=\"width: 100%; height: auto; max-width: 100%; border-radius: 10px; box-shadow: 0 0 20px #00fff7a0; object-fit: contain; background: #222; display: block;\" onerror=\"this.style.display='none';this.parentNode.innerHTML='<span style=\\'color: var(--accent-color);font-size:2rem\\'>[Certificate Image Not Found]</span>';\" />
+        </div>
+    `;
+    modal.style.display = 'block';
+};
 /**
  * Rishit Choudhary Portfolio Engine
  * Neo-Futuristic Glassmorphism - Vanilla JS
@@ -15,7 +31,7 @@ const INITIAL_DATA = {
             fullDesc:
                 "MealFlow is a website designed for Indian households where homemakers struggle to decide meal plans that suit every member's needs, preferences, and health goals. The platform takes in family member details and available ingredients to create a meal plan via AI. Developed using HTML, Tailwind CSS, JS, FastAPI, Appwrite, and Groq AI.",
             tech: ['FastAPI', 'Appwrite', 'Tailwind', 'Groq AI'],
-            link: 'https://github.com/RishitChoudhary/MealFlow',
+            link: 'https://github.com/Creator2149/MealFlow',
             academicYear: 'AY 2025-26',
         },
         {
@@ -48,7 +64,7 @@ const INITIAL_DATA = {
             fullDesc:
                 'Self-defense platform where people learn from home through webcam motion tracking and AI-powered feedback. Contributor role. Built with React and Python.',
             tech: ['React', 'Python', 'Supabase', 'AI'],
-            link: 'https://github.com/RishitChoudhary/Raksha',
+            link: '#',
             academicYear: 'AY 2025-26',
         },
         {
@@ -114,7 +130,7 @@ const INITIAL_DATA = {
             fullDesc:
                 'A mathematical model of disease transmission visualized through a Pygame simulation. Available on GitHub.',
             tech: ['Python', 'Pygame', 'Simulation'],
-            link: 'https://github.com/RishitChoudhary/simulations',
+            link: 'https://github.com/Creator2149/DiseaseSpreadSimulation',
             academicYear: 'AY 2024-25',
         },
         {
@@ -124,7 +140,7 @@ const INITIAL_DATA = {
             shortDesc: 'Pygame-based maze generation/solving.',
             fullDesc: 'A simulation exploring maze generation and solving algorithms in Python.',
             tech: ['Python', 'Pygame', 'Algorithms'],
-            link: 'https://github.com/RishitChoudhary/simulations',
+            link: 'https://github.com/Creator2149/Maze',
             academicYear: 'AY 2023-24',
         },
     ],
@@ -176,14 +192,14 @@ const INITIAL_DATA = {
             title: 'AMC 10 Participation',
             year: 'AY 2025-26',
             discipline: 'Maths',
-            img: 'amc.png',
+            img: 'AMC 10 2025 Participation Certificate.png',
         },
         {
             id: 'c8',
             title: 'ISRO Summer Online Course',
             year: 'Summer AY 21-22',
             discipline: 'Science',
-            img: 'isro.png',
+            img: 'ISRO Summer Course Certificate.png',
         },
         {
             id: 'wsc-r1',
@@ -197,28 +213,28 @@ const INITIAL_DATA = {
             title: "World Scholar's Cup - Regional Round",
             year: 'AY 2023-24',
             discipline: 'Academic',
-            img: 'wsc.png',
+            img: 'WSC Regional Certificate 2.png',
         },
         {
             id: 'wsc-r3',
             title: "World Scholar's Cup - Regional Round",
             year: 'AY 2024-25',
             discipline: 'Academic',
-            img: 'wsc.png',
+            img: 'WSC Regional Certificate 3.png',
         },
         {
             id: 'c10',
             title: 'LogiQids Round 1 Complete (Reg. Round 2)',
             year: 'AY 2025-26',
             discipline: 'Logic',
-            img: 'logiqids.png',
+            img: 'LogiQids Round 1 Certificate.png',
         },
         {
             id: 'c11',
             title: 'National Road Safety Mission Course',
             year: 'AY 2025-26',
             discipline: 'Community',
-            img: 'roadsafety.png',
+            img: 'National Road Safety Mission Certificate.png',
         },
         {
             id: 'roh-22-23',
@@ -281,7 +297,7 @@ const INITIAL_DATA = {
             title: 'DPS International Techathlon - Code Battle',
             year: 'AY 2025-26',
             discipline: 'Tech',
-            img: 'techathlon.png',
+            img: 'Techathlon Participation Certificate.png',
         },
     ],
 };
@@ -380,16 +396,42 @@ function renderCredentials(sort = 'desc') {
     sorted.forEach((c) => {
         const card = document.createElement('div');
         card.className = 'glass-card cert-card';
-        card.innerHTML = `
-            <div class="card-content">
-                <span class="tech-tag">${c.discipline}</span>
-                <h3>${c.title}</h3>
-                <p>${c.year}</p>
-                <div class="img-placeholder" style="height: 150px; background: rgba(0,0,0,0.3); margin-top: 15px; border-radius: 5px; display: flex; align-items: center; justify-content: center;">
-                    <span style="color: var(--accent-color)">[Certificate Image]</span>
-                </div>
-            </div>
+        const cardContent = document.createElement('div');
+        cardContent.className = 'card-content';
+        cardContent.innerHTML = `
+            <span class="tech-tag">${c.discipline}</span>
+            <h3>${c.title}</h3>
+            <p>${c.year}</p>
         `;
+        const imgContainer = document.createElement('div');
+        imgContainer.style.height = '150px';
+        imgContainer.style.background = 'rgba(0,0,0,0.3)';
+        imgContainer.style.marginTop = '15px';
+        imgContainer.style.borderRadius = '5px';
+        imgContainer.style.display = 'flex';
+        imgContainer.style.alignItems = 'center';
+        imgContainer.style.justifyContent = 'center';
+
+        if (c.img && c.img !== 'placeholder.png') {
+            const img = document.createElement('img');
+            img.src = c.img;
+            img.alt = c.title;
+            img.style.maxHeight = '100%';
+            img.style.maxWidth = '100%';
+            img.style.borderRadius = '5px';
+            img.style.objectFit = 'contain';
+            img.onerror = function () {
+                imgContainer.innerHTML = `<span style='color: var(--accent-color)'>[Certificate Image]</span>`;
+            };
+            imgContainer.appendChild(img);
+        } else {
+            imgContainer.innerHTML = `<span style='color: var(--accent-color)'>[Certificate Image]</span>`;
+        }
+
+        cardContent.appendChild(imgContainer);
+        card.appendChild(cardContent);
+        card.style.cursor = 'pointer';
+        card.onclick = () => window.openCertModal(c.id);
         grid.appendChild(card);
     });
 }
@@ -731,6 +773,16 @@ document.addEventListener('DOMContentLoaded', () => {
     renderCredentials();
     initParticles();
     admin.init();
+
+    // Certificate Modal Close Logic
+    document.getElementById('close-cert-modal').onclick = () => {
+        document.getElementById('cert-modal').style.display = 'none';
+    };
+    window.onclick = (e) => {
+        if (e.target.classList.contains('modal')) {
+            e.target.style.display = 'none';
+        }
+    };
 
     // Mobile Menu Toggle
     const menuBtn = document.querySelector('.mobile-menu-btn');
