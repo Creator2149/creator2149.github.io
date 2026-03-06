@@ -94,6 +94,7 @@ h3,
     align-items: center;
     position: relative;
     padding: 0 20px;
+    justify-content: center;
 }
 
 /* Center nav links absolutely in navbar for desktop */
@@ -632,6 +633,9 @@ h3,
 @media (max-width: 768px) {
     .glitch {
         font-size: 3rem;
+    }
+    .nav-container {
+        justify-content: space-between;
     }
     .mobile-menu-btn {
         display: flex;
