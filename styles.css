@@ -94,7 +94,7 @@ h3,
     align-items: center;
     position: relative;
     padding: 0 20px;
-    justify-content: center;
+    justify-content: space-between;
 }
 
 /* Center nav links absolutely in navbar for desktop */
