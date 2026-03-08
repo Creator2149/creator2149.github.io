@@ -21,7 +21,7 @@ window.openCertModal = (certId) => {
 
 /* --- DATA_START --- */
 const INITIAL_DATA = {
-    "version": "1.10",
+    "version": "1.11",
     "projects": [
         {
             "id": "p1",
@@ -111,17 +111,17 @@ const INITIAL_DATA = {
         },
         {
             "id": "p7",
-            "title": "Socratic AI Business",
-            "status": "Planned",
+            "title": "Socra",
             "shortDesc": "Guiding critical thinking through Socratic AI.",
+            "status": "Planned",
             "fullDesc": "A business solution and research paper exploring how Socratic questioning prevents critical thinking decline caused by direct AI answers. Includes a proof-of-concept pre-prompt and qualitative study.",
+            "academicYear": "AY 2025-26",
             "tech": [
                 "Business Strategy",
                 "NLP",
                 "Prompt Engineering"
             ],
-            "link": "#",
-            "academicYear": "AY 2025-26"
+            "link": "#"
         },
         {
             "id": "p8",
@@ -135,6 +135,23 @@ const INITIAL_DATA = {
             ],
             "link": "#",
             "academicYear": "AY 2025-26"
+        },
+        {
+            "id": "p1772951995126",
+            "title": "NeuroElegans",
+            "shortDesc": "Simulating worm neurons",
+            "status": "Planned",
+            "fullDesc": "NeuroElegans is a computer simulation of the connectome of the C. Elegans roundworm, also showing a 2D softbody simulation of the simulated worm moving using its motor neurons (and perhaps reaction to environment obstacles).",
+            "academicYear": "AY 2025-26",
+            "tech": [
+                "Python",
+                "Pandas",
+                "NetworkX",
+                "NumPy",
+                "Matplotlib",
+                "Seaborn"
+            ],
+            "link": "https://github.com/rishitc17/neuroelegans"
         },
         {
             "id": "p9",
