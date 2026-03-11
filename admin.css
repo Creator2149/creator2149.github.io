@@ -169,3 +169,13 @@
         grid-column: span 1;
     }
 }
+
+@media (max-width: 768px) {
+    .pat-container > div {
+        flex-direction: column !important;
+        gap: 10px !important;
+    }
+    .pat-container button {
+        width: 100%;
+    }
+}
