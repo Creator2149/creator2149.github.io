@@ -52,7 +52,7 @@ const adminUI = {
     renderProjects() {
         const list = document.getElementById('projects-admin-list');
         list.innerHTML = '';
-        portfolioData.projects.forEach(p => {
+        portfolioData.projects.forEach((p) => {
             const card = this.createAdminCard(p, 'project');
             list.appendChild(card);
         });
@@ -61,7 +61,7 @@ const adminUI = {
     renderCerts() {
         const list = document.getElementById('certs-admin-list');
         list.innerHTML = '';
-        portfolioData.credentials.forEach(c => {
+        portfolioData.credentials.forEach((c) => {
             const card = this.createAdminCard(c, 'cert');
             list.appendChild(card);
         });
@@ -71,7 +71,7 @@ const adminUI = {
         const card = document.createElement('div');
         card.className = 'admin-card';
         card.id = `${type}-${item.id}`;
-        
+
         card.innerHTML = `
             <div class="admin-card-header">
                 <div class="admin-card-title">${item.title}</div>
@@ -88,15 +88,14 @@ const adminUI = {
     editItem(id, type) {
         const container = document.getElementById(`form-container-${id}`);
         const isHidden = container.classList.contains('hidden');
-        
+
         if (isHidden) {
-            const item = type === 'project' 
-                ? portfolioData.projects.find(p => p.id === id)
-                : portfolioData.credentials.find(c => c.id === id);
-            
-            container.innerHTML = type === 'project' 
-                ? this.getProjectFormHtml(item)
-                : this.getCertFormHtml(item);
+            const item =
+                type === 'project'
+                    ? portfolioData.projects.find((p) => p.id === id)
+                    : portfolioData.credentials.find((c) => c.id === id);
+
+            container.innerHTML = type === 'project' ? this.getProjectFormHtml(item) : this.getCertFormHtml(item);
             container.classList.remove('hidden');
         } else {
             container.classList.add('hidden');
@@ -162,38 +161,54 @@ const adminUI = {
                     <input type="text" id="edit-cert-year-${c.id}" value="${c.year}">
                 </div>
                 <div class="full-width">
-                    <label>Image URL / Filename</label>
-                    <input type="text" id="edit-cert-img-${c.id}" value="${c.img}">
+                    <label>Certificate Image (Upload to GitHub)</label>
+                    <div style="display: flex; align-items: center; gap: 10px; margin-top: 5px;">
+                        <input type="file" id="edit-cert-file-${c.id}" accept="image/*" style="flex-grow: 1">
+                        <span style="font-size: 0.8rem; color: var(--text-secondary)">Current: ${c.img || 'None'}</span>
+                    </div>
                 </div>
                 <div class="form-btns">
                     <button class="btn secondary" onclick="adminUI.cancelEdit('${c.id}')">Cancel</button>
-                    <button class="btn primary" onclick="adminUI.saveCert('${c.id}')">Save Locally</button>
+                    <button class="btn primary" onclick="adminUI.saveCert('${c.id}')">Upload & Save Locally</button>
                 </div>
             </div>
         `;
     },
 
     cancelEdit(id) {
-        document.getElementById(`form-container-${id}`).classList.add('hidden');
+        const container = document.getElementById(`form-container-${id}`);
+        if (container) {
+            container.classList.add('hidden');
+        } else {
+            // It's a new item form
+            if (id.startsWith('p')) {
+                document.getElementById('new-project-container').innerHTML = '';
+            } else if (id.startsWith('c')) {
+                document.getElementById('new-cert-container').innerHTML = '';
+            }
+        }
     },
 
     saveProject(id) {
-        const isNew = !portfolioData.projects.find(p => p.id === id);
+        const isNew = !portfolioData.projects.find((p) => p.id === id);
         const updated = {
             id: id,
             title: document.getElementById(`edit-title-${id}`).value,
-            tech: document.getElementById(`edit-tech-${id}`).value.split(',').map(t => t.trim()),
+            tech: document
+                .getElementById(`edit-tech-${id}`)
+                .value.split(',')
+                .map((t) => t.trim()),
             academicYear: document.getElementById(`edit-year-${id}`).value,
             shortDesc: document.getElementById(`edit-short-${id}`).value,
             fullDesc: document.getElementById(`edit-full-${id}`).value,
             link: document.getElementById(`edit-link-${id}`).value,
-            status: document.getElementById(`edit-status-${id}`).value
+            status: document.getElementById(`edit-status-${id}`).value,
         };
 
         if (isNew) {
             portfolioData.projects.unshift(updated);
         } else {
-            const index = portfolioData.projects.findIndex(p => p.id === id);
+            const index = portfolioData.projects.findIndex((p) => p.id === id);
             portfolioData.projects[index] = updated;
         }
 
@@ -202,20 +217,49 @@ const adminUI = {
         this.notifyLocalSave();
     },
 
-    saveCert(id) {
-        const isNew = !portfolioData.credentials.find(c => c.id === id);
+    async saveCert(id) {
+        const isNew = !portfolioData.credentials.find((c) => c.id === id);
+        const fileInput = document.getElementById(`edit-cert-file-${id}`);
+        const file = fileInput.files[0];
+        let imgName = "";
+
+        if (file) {
+            const token = this.patInput.value.trim();
+            if (!token) {
+                alert("Please enter your GitHub PAT first to upload the image.");
+                return;
+            }
+            
+            try {
+                this.notifyStatus("Uploading image to GitHub...", "var(--accent-color)");
+                await this.uploadFileToGitHub(file, token);
+                imgName = file.name;
+                this.notifyStatus("Image uploaded successfully!", "#00ff80");
+            } catch (err) {
+                this.notifyStatus("Error uploading image: " + err.message, "#ff4d4d");
+                return;
+            }
+        } else {
+            if (!isNew) {
+                const oldCert = portfolioData.credentials.find((c) => c.id === id);
+                imgName = oldCert.img;
+            } else {
+                imgName = "placeholder.png";
+            }
+        }
+
         const updated = {
             id: id,
             title: document.getElementById(`edit-cert-title-${id}`).value,
             discipline: document.getElementById(`edit-cert-discipline-${id}`).value,
             year: document.getElementById(`edit-cert-year-${id}`).value,
-            img: document.getElementById(`edit-cert-img-${id}`).value
+            img: imgName,
         };
 
         if (isNew) {
             portfolioData.credentials.unshift(updated);
         } else {
-            const index = portfolioData.credentials.findIndex(c => c.id === id);
+            const index = portfolioData.credentials.findIndex((c) => c.id === id);
             portfolioData.credentials[index] = updated;
         }
 
@@ -224,14 +268,68 @@ const adminUI = {
         this.notifyLocalSave();
     },
 
+    async uploadFileToGitHub(file, token) {
+        const repo = 'rishitc17/rishitc17.github.io';
+        const path = file.name;
+        const url = `https://api.github.com/repos/${repo}/contents/${path}`;
+
+        let sha = null;
+        try {
+            const res = await fetch(url, {
+                headers: { Authorization: `token ${token}` }
+            });
+            if (res.ok) {
+                const data = await res.json();
+                sha = data.sha;
+            }
+        } catch (e) {}
+
+        const content = await this.readFileAsBase64(file);
+
+        const res = await fetch(url, {
+            method: 'PUT',
+            headers: {
+                Authorization: `token ${token}`,
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                message: `Admin: Upload image ${file.name}`,
+                content: content,
+                sha: sha
+            }),
+        });
+
+        if (!res.ok) {
+            const errorData = await res.json();
+            throw new Error(errorData.message || "Failed to upload file to GitHub");
+        }
+    },
+
+    readFileAsBase64(file) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => {
+                const base64 = reader.result.split(',')[1];
+                resolve(base64);
+            };
+            reader.onerror = reject;
+            reader.readAsDataURL(file);
+        });
+    },
+
     deleteItem(id, type) {
-        if (!confirm(`Are you sure you want to delete this ${type}? It will be removed from your current view, but you still need to "Push Changes" to make it permanent.`)) return;
+        if (
+            !confirm(
+                `Are you sure you want to delete this ${type}? It will be removed from your current view, but you still need to "Push Changes" to make it permanent.`,
+            )
+        )
+            return;
 
         if (type === 'project') {
-            portfolioData.projects = portfolioData.projects.filter(p => p.id !== id);
+            portfolioData.projects = portfolioData.projects.filter((p) => p.id !== id);
             this.renderProjects();
         } else {
-            portfolioData.credentials = portfolioData.credentials.filter(c => c.id !== id);
+            portfolioData.credentials = portfolioData.credentials.filter((c) => c.id !== id);
             this.renderCerts();
         }
         this.notifyLocalSave();
@@ -247,7 +345,14 @@ const adminUI = {
         const id = 'p' + Date.now();
         const container = document.getElementById('new-project-container');
         container.innerHTML = this.getProjectFormHtml({
-            id, title: '', tech: [], academicYear: '', shortDesc: '', fullDesc: '', link: '#', status: 'Planned'
+            id,
+            title: '',
+            tech: [],
+            academicYear: '',
+            shortDesc: '',
+            fullDesc: '',
+            link: '#',
+            status: 'Planned',
         });
     },
 
@@ -255,7 +360,11 @@ const adminUI = {
         const id = 'c' + Date.now();
         const container = document.getElementById('new-cert-container');
         container.innerHTML = this.getCertFormHtml({
-            id, title: '', discipline: '', year: '', img: ''
+            id,
+            title: '',
+            discipline: '',
+            year: '',
+            img: '',
         });
     },
 
@@ -322,7 +431,7 @@ const adminUI = {
             this.pushBtn.disabled = false;
             this.pushBtn.innerText = 'Push Changes';
         }
-    }
+    },
 };
 
 document.addEventListener('DOMContentLoaded', () => adminUI.init());

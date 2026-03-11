@@ -1,74 +1,96 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Panel | Rishit Choudhary</title>
-    <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="admin.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-        href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Syncopate:wght@400;700&display=swap"
-        rel="stylesheet"
-    />
-    <link rel="icon" type="image/png" href="/favicon/favicon-96x96.png" sizes="96x96" />
-</head>
-<body>
-    <div id="admin-auth-overlay">
-        <div class="glass-card auth-card">
-            <h3>Authorization Required</h3>
-            <input type="password" id="admin-passphrase" class="admin-prompt-input" placeholder="Enter Secret Passphrase" style="width: 100%; margin: 20px 0; padding: 12px; border-radius: 6px; background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); color: white; text-align: center;" />
-            <button id="admin-login-btn" class="btn primary">Unlock</button>
-            <p id="admin-error" class="error-msg"></p>
-        </div>
-    </div>
-
-    <nav id="navbar">
-        <div class="nav-container">
-            <a href="index.html" class="logo">Rishit C<span>.</span></a>
-        </div>
-    </nav>
-
-    <main class="admin-container hidden" id="admin-main">
-        <div class="pat-container">
-            <h3>GitHub Personal Access Token</h3>
-            <p style="font-size: 0.8rem; color: var(--text-secondary);">Your PAT is required to save changes. It is never stored and lives only in this session.</p>
-            <div style="display: flex; gap: 15px; margin-top: 10px;">
-                <input type="password" id="github-pat" placeholder="Paste your GitHub PAT here" style="flex-grow: 1;" />
-                <button class="btn primary" id="push-changes-btn">Push Changes</button>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Admin Panel | Rishit Choudhary</title>
+        <link rel="stylesheet" href="styles.css" />
+        <link rel="stylesheet" href="admin.css" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap"
+            rel="stylesheet"
+        />
+        <link rel="icon" type="image/png" href="/favicon/favicon-96x96.png" sizes="96x96" />
+    </head>
+    <body>
+        <div id="admin-auth-overlay">
+            <div class="glass-card auth-card">
+                <h3>Authorization Required</h3>
+                <input
+                    type="password"
+                    id="admin-passphrase"
+                    class="admin-prompt-input"
+                    placeholder="Enter Secret Passphrase"
+                    style="
+                        width: 100%;
+                        margin: 20px 0;
+                        padding: 12px;
+                        border-radius: 6px;
+                        background: rgba(255, 255, 255, 0.05);
+                        border: 1px solid var(--glass-border);
+                        color: white;
+                        text-align: center;
+                    "
+                />
+                <button id="admin-login-btn" class="btn primary">Unlock</button>
+                <p id="admin-error" class="error-msg"></p>
             </div>
-            <p id="pat-status" class="error-msg"></p>
         </div>
 
-        <section class="admin-section">
-            <h2>
-                Projects
-                <button class="btn primary" onclick="adminUI.addNewProject()">+ Add New</button>
-            </h2>
-            <div id="new-project-container"></div>
-            <div id="projects-admin-list" class="admin-list">
-                <!-- Projects injected here -->
+        <nav id="navbar">
+            <div class="nav-container">
+                <a href="index.html" class="logo">Rishit C<span>.</span></a>
             </div>
-        </section>
+        </nav>
 
-        <section class="admin-section">
-            <h2>
-                Certificates
-                <button class="btn primary" onclick="adminUI.addNewCert()">+ Add New</button>
-            </h2>
-            <div id="new-cert-container"></div>
-            <div id="certs-admin-list" class="admin-list">
-                <!-- Certificates injected here -->
+        <main class="admin-container hidden" id="admin-main">
+            <div class="pat-container">
+                <h3>GitHub Personal Access Token</h3>
+                <p style="font-size: 0.8rem; color: var(--text-secondary)">
+                    Your PAT is required to save changes. It is never stored and lives only in this session.
+                </p>
+                <div style="display: flex; gap: 15px; margin-top: 10px">
+                    <input
+                        type="password"
+                        id="github-pat"
+                        placeholder="Paste your GitHub PAT here"
+                        style="flex-grow: 1"
+                    />
+                    <button class="btn primary" id="push-changes-btn">Push Changes</button>
+                </div>
+                <p id="pat-status" class="error-msg"></p>
             </div>
-        </section>
-    </main>
 
-    <footer class="footer">
-        <p>&copy; 2026 Rishit Choudhary. Admin Interface.</p>
-    </footer>
+            <section class="admin-section">
+                <h2>
+                    Projects
+                    <button class="btn primary" onclick="adminUI.addNewProject()">+ Add New</button>
+                </h2>
+                <div id="new-project-container"></div>
+                <div id="projects-admin-list" class="admin-list">
+                    <!-- Projects injected here -->
+                </div>
+            </section>
 
-    <script src="data.js"></script>
-    <script src="admin.js"></script>
-</body>
+            <section class="admin-section">
+                <h2>
+                    Certificates
+                    <button class="btn primary" onclick="adminUI.addNewCert()">+ Add New</button>
+                </h2>
+                <div id="new-cert-container"></div>
+                <div id="certs-admin-list" class="admin-list">
+                    <!-- Certificates injected here -->
+                </div>
+            </section>
+        </main>
+
+        <footer class="footer">
+            <p>&copy; 2026 Rishit Choudhary. Admin Interface.</p>
+        </footer>
+
+        <script src="data.js"></script>
+        <script src="admin.js"></script>
+    </body>
 </html>
