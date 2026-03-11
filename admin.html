@@ -34,7 +34,10 @@
         <div class="pat-container">
             <h3>GitHub Personal Access Token</h3>
             <p style="font-size: 0.8rem; color: var(--text-secondary);">Your PAT is required to save changes. It is never stored and lives only in this session.</p>
-            <input type="password" id="github-pat" placeholder="Paste your GitHub PAT here" />
+            <div style="display: flex; gap: 15px; margin-top: 10px;">
+                <input type="password" id="github-pat" placeholder="Paste your GitHub PAT here" style="flex-grow: 1;" />
+                <button class="btn primary" id="push-changes-btn">Push Changes</button>
+            </div>
             <p id="pat-status" class="error-msg"></p>
         </div>
 

@@ -20,11 +20,14 @@ const adminUI = {
         this.overlay = document.getElementById('admin-auth-overlay');
         this.mainContent = document.getElementById('admin-main');
         this.patInput = document.getElementById('github-pat');
+        this.pushBtn = document.getElementById('push-changes-btn');
 
         this.loginBtn.addEventListener('click', () => this.handleLogin());
         this.passphraseInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') this.handleLogin();
         });
+
+        this.pushBtn.addEventListener('click', () => this.syncToGitHub('All changes synced successfully!'));
 
         // Initialize lists
         this.renderLists();
@@ -86,8 +89,6 @@ const adminUI = {
         const container = document.getElementById(`form-container-${id}`);
         const isHidden = container.classList.contains('hidden');
         
-        // Close all other open forms in this list first for better UX? No, let user open multiple if they want.
-        
         if (isHidden) {
             const item = type === 'project' 
                 ? portfolioData.projects.find(p => p.id === id)
@@ -139,7 +140,7 @@ const adminUI = {
                 </div>
                 <div class="form-btns">
                     <button class="btn secondary" onclick="adminUI.cancelEdit('${p.id}')">Cancel</button>
-                    <button class="btn primary" onclick="adminUI.saveProject('${p.id}')">Save Changes</button>
+                    <button class="btn primary" onclick="adminUI.saveProject('${p.id}')">Save Locally</button>
                 </div>
             </div>
         `;
@@ -166,7 +167,7 @@ const adminUI = {
                 </div>
                 <div class="form-btns">
                     <button class="btn secondary" onclick="adminUI.cancelEdit('${c.id}')">Cancel</button>
-                    <button class="btn primary" onclick="adminUI.saveCert('${c.id}')">Save Changes</button>
+                    <button class="btn primary" onclick="adminUI.saveCert('${c.id}')">Save Locally</button>
                 </div>
             </div>
         `;
@@ -176,7 +177,7 @@ const adminUI = {
         document.getElementById(`form-container-${id}`).classList.add('hidden');
     },
 
-    async saveProject(id) {
+    saveProject(id) {
         const isNew = !portfolioData.projects.find(p => p.id === id);
         const updated = {
             id: id,
@@ -196,12 +197,12 @@ const adminUI = {
             portfolioData.projects[index] = updated;
         }
 
-        await this.syncToGitHub('Project saved successfully!');
         this.renderProjects();
         if (isNew) document.getElementById('new-project-container').innerHTML = '';
+        this.notifyLocalSave();
     },
 
-    async saveCert(id) {
+    saveCert(id) {
         const isNew = !portfolioData.credentials.find(c => c.id === id);
         const updated = {
             id: id,
@@ -218,22 +219,28 @@ const adminUI = {
             portfolioData.credentials[index] = updated;
         }
 
-        await this.syncToGitHub('Certificate saved successfully!');
         this.renderCerts();
         if (isNew) document.getElementById('new-cert-container').innerHTML = '';
+        this.notifyLocalSave();
     },
 
-    async deleteItem(id, type) {
-        if (!confirm(`Are you sure you want to delete this ${type}?`)) return;
+    deleteItem(id, type) {
+        if (!confirm(`Are you sure you want to delete this ${type}? It will be removed from your current view, but you still need to "Push Changes" to make it permanent.`)) return;
 
         if (type === 'project') {
             portfolioData.projects = portfolioData.projects.filter(p => p.id !== id);
+            this.renderProjects();
         } else {
             portfolioData.credentials = portfolioData.credentials.filter(c => c.id !== id);
+            this.renderCerts();
         }
+        this.notifyLocalSave();
+    },
 
-        await this.syncToGitHub(`${type.charAt(0).toUpperCase() + type.slice(1)} deleted successfully!`);
-        type === 'project' ? this.renderProjects() : this.renderCerts();
+    notifyLocalSave() {
+        const statusEl = document.getElementById('pat-status');
+        statusEl.innerText = 'Changes saved locally. Click "Push Changes" to update production.';
+        statusEl.style.color = 'var(--accent-color)';
     },
 
     addNewProject() {
@@ -259,9 +266,11 @@ const adminUI = {
         if (!token) {
             statusEl.innerText = 'Error: Please enter your GitHub PAT first.';
             statusEl.style.color = '#ff4d4d';
-            throw new Error('No PAT');
+            return;
         }
 
+        this.pushBtn.disabled = true;
+        this.pushBtn.innerText = 'Syncing...';
         statusEl.innerText = 'Syncing with GitHub...';
         statusEl.style.color = 'var(--accent-color)';
 
@@ -309,6 +318,9 @@ const adminUI = {
             statusEl.innerText = 'Error: ' + err.message;
             statusEl.style.color = '#ff4d4d';
             console.error(err);
+        } finally {
+            this.pushBtn.disabled = false;
+            this.pushBtn.innerText = 'Push Changes';
         }
     }
 };
