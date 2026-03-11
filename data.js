@@ -1,5 +1,5 @@
 const portfolioData = {
-    "version": "1.13",
+    "version": "1.14",
     "projects": [
         {
             "id": "p1",
@@ -160,6 +160,13 @@ const portfolioData = {
         }
     ],
     "credentials": [
+        {
+            "id": "c1773237695752",
+            "title": "test",
+            "discipline": "test",
+            "year": "test",
+            "img": "lagrida_latex_editor.png"
+        },
         {
             "id": "c1",
             "title": "National Inter DPS IT Festival - 2nd Place",
