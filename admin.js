@@ -49,6 +49,7 @@ const adminUI = {
     renderLists() {
         this.renderProjects();
         this.renderCerts();
+        this.renderBlender();
     },
 
     renderProjects() {
@@ -67,6 +68,18 @@ const adminUI = {
             const card = this.createAdminCard(c, 'cert');
             list.appendChild(card);
         });
+    },
+
+    renderBlender() {
+        const list = document.getElementById('blender-admin-list');
+        if (!list) return;
+        list.innerHTML = '';
+        if (portfolioData.blenderProjects) {
+            portfolioData.blenderProjects.forEach((p) => {
+                const card = this.createAdminCard(p, 'blender');
+                list.appendChild(card);
+            });
+        }
     },
 
     createAdminCard(item, type) {
@@ -92,12 +105,18 @@ const adminUI = {
         const isHidden = container.classList.contains('hidden');
 
         if (isHidden) {
-            const item =
-                type === 'project'
-                    ? portfolioData.projects.find((p) => p.id === id)
-                    : portfolioData.credentials.find((c) => c.id === id);
+            let item;
+            if (type === 'project') {
+                item = portfolioData.projects.find((p) => p.id === id);
+                container.innerHTML = this.getProjectFormHtml(item);
+            } else if (type === 'cert') {
+                item = portfolioData.credentials.find((c) => c.id === id);
+                container.innerHTML = this.getCertFormHtml(item);
+            } else if (type === 'blender') {
+                item = portfolioData.blenderProjects.find((p) => p.id === id);
+                container.innerHTML = this.getBlenderFormHtml(item);
+            }
 
-            container.innerHTML = type === 'project' ? this.getProjectFormHtml(item) : this.getCertFormHtml(item);
             container.classList.remove('hidden');
         } else {
             container.classList.add('hidden');
@@ -177,6 +196,33 @@ const adminUI = {
         `;
     },
 
+    getBlenderFormHtml(p) {
+        return `
+            <div class="inline-form">
+                <div class="full-width">
+                    <label>Title</label>
+                    <input type="text" id="edit-blender-title-${p.id}" value="${p.title}">
+                </div>
+                <div class="full-width">
+                    <label>Render Image URL (GitHub URL)</label>
+                    <input type="text" id="edit-blender-image-${p.id}" value="${p.image}">
+                </div>
+                <div>
+                    <label>Date of Completion</label>
+                    <input type="text" id="edit-blender-date-${p.id}" value="${p.date}">
+                </div>
+                <div>
+                    <label>GitHub Repo URL</label>
+                    <input type="text" id="edit-blender-repo-${p.id}" value="${p.repo}">
+                </div>
+                <div class="form-btns">
+                    <button class="btn secondary" onclick="adminUI.cancelEdit('${p.id}')">Cancel</button>
+                    <button class="btn primary" onclick="adminUI.saveBlender('${p.id}')">Save Locally</button>
+                </div>
+            </div>
+        `;
+    },
+
     cancelEdit(id) {
         const container = document.getElementById(`form-container-${id}`);
         if (container) {
@@ -187,6 +233,8 @@ const adminUI = {
                 document.getElementById('new-project-container').innerHTML = '';
             } else if (id.startsWith('c')) {
                 document.getElementById('new-cert-container').innerHTML = '';
+            } else if (id.startsWith('b')) {
+                document.getElementById('new-blender-container').innerHTML = '';
             }
         }
     },
@@ -258,6 +306,28 @@ const adminUI = {
         this.notifyLocalSave();
     },
 
+    saveBlender(id) {
+        const isNew = !portfolioData.blenderProjects.find((p) => p.id === id);
+        const updated = {
+            id: id,
+            title: document.getElementById(`edit-blender-title-${id}`).value,
+            image: document.getElementById(`edit-blender-image-${id}`).value,
+            date: document.getElementById(`edit-blender-date-${id}`).value,
+            repo: document.getElementById(`edit-blender-repo-${id}`).value,
+        };
+
+        if (isNew) {
+            portfolioData.blenderProjects.unshift(updated);
+        } else {
+            const index = portfolioData.blenderProjects.findIndex((p) => p.id === id);
+            portfolioData.blenderProjects[index] = updated;
+        }
+
+        this.renderBlender();
+        if (isNew) document.getElementById('new-blender-container').innerHTML = '';
+        this.notifyLocalSave();
+    },
+
     async uploadFileToGitHub(file, token) {
         const repo = 'rishitc17/rishitc17.github.io';
         const path = file.name;
@@ -318,9 +388,12 @@ const adminUI = {
         if (type === 'project') {
             portfolioData.projects = portfolioData.projects.filter((p) => p.id !== id);
             this.renderProjects();
-        } else {
+        } else if (type === 'cert') {
             portfolioData.credentials = portfolioData.credentials.filter((c) => c.id !== id);
             this.renderCerts();
+        } else if (type === 'blender') {
+            portfolioData.blenderProjects = portfolioData.blenderProjects.filter((p) => p.id !== id);
+            this.renderBlender();
         }
         this.notifyLocalSave();
     },
@@ -359,6 +432,19 @@ const adminUI = {
             discipline: '',
             year: '',
             img: '',
+        });
+    },
+
+    addNewBlender() {
+        const id = 'b' + Date.now();
+        const container = document.getElementById('new-blender-container');
+        if (!container) return;
+        container.innerHTML = this.getBlenderFormHtml({
+            id,
+            title: '',
+            image: '',
+            date: '',
+            repo: '#',
         });
     },
 

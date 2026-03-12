@@ -99,6 +99,44 @@ function renderCredentials(sort = 'desc') {
     });
 }
 
+function renderBlenderProjects() {
+    const grid = document.getElementById('blender-grid');
+    if (!grid || !portfolioData.blenderProjects) return;
+    grid.innerHTML = '';
+
+    portfolioData.blenderProjects.sort((a, b) => getYearScore(b.date) - getYearScore(a.date));
+
+    portfolioData.blenderProjects.forEach((p) => {
+        const card = document.createElement('div');
+        card.className = 'glass-card cert-card'; // Reuse cert-card style for similar layout
+        card.innerHTML = `
+            <div class="card-content">
+                <h3>${p.title}</h3>
+                <p>${p.date}</p>
+                <div class="img-container" style="height: 200px; background: rgba(0,0,0,0.3); margin-top: 15px; border-radius: 5px; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+                    <img src="${p.image}" alt="${p.title}" style="max-height: 100%; max-width: 100%; object-fit: contain;">
+                </div>
+                ${p.repo !== '#' ? `<a href="${p.repo}" target="_blank" class="btn secondary" style="margin-top: 20px; width: 100%; text-align: center;" onclick="event.stopPropagation()">View Repository</a>` : ''}
+            </div>
+        `;
+        card.style.cursor = 'pointer';
+        card.onclick = () => {
+            const modal = document.getElementById('cert-modal');
+            const body = document.getElementById('cert-modal-body');
+            body.innerHTML = `
+                <h2 style="color: var(--accent-color); margin-bottom: 10px;">${p.title}</h2>
+                <p style="margin: 10px 0 5px 0;"><strong>Completed:</strong> ${p.date}</p>
+                <div id="modal-img-container" style="display: flex; justify-content: center; align-items: center; margin: 20px 0; min-height: 200px; background: rgba(0,0,0,0.2); border-radius: 10px; overflow: hidden;">
+                    <img src="${p.image}" alt="${p.title}" style="width: 100%; height: auto; border-radius: 10px; box-shadow: 0 0 20px #00fff7a0; object-fit: contain; background: #222;">
+                </div>
+                ${p.repo !== '#' ? `<a href="${p.repo}" target="_blank" class="btn primary" style="width: 100%; text-align: center;">View Repository</a>` : ''}
+            `;
+            modal.style.display = 'block';
+        };
+        grid.appendChild(card);
+    });
+}
+
 // --- MODALS ---
 window.openProjectModal = (id) => {
     const p = portfolioData.projects.find((proj) => proj.id === id);
@@ -209,6 +247,7 @@ function initParticles() {
 document.addEventListener('DOMContentLoaded', () => {
     renderProjects();
     renderCredentials();
+    renderBlenderProjects();
     initParticles();
 
     // Admin Trigger: Copyright click 3 times

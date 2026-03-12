@@ -328,5 +328,6 @@ const portfolioData = {
             "discipline": "Literature",
             "img": "placeholder.png"
         }
-    ]
+    ],
+    "blenderProjects": []
 };
