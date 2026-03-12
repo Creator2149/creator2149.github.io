@@ -1,5 +1,5 @@
 const portfolioData = {
-    "version": "1.15",
+    "version": "1.16",
     "projects": [
         {
             "id": "p1",
@@ -160,6 +160,13 @@ const portfolioData = {
         }
     ],
     "credentials": [
+        {
+            "id": "c1773314700442",
+            "title": "Lodha Genius Programme & UC Santa Cruz Shadow the Scientists Programme Completion",
+            "discipline": "Astronomy",
+            "year": "AY 2025-26",
+            "img": "LGP Shadow the Scientists.png"
+        },
         {
             "id": "c1",
             "title": "National Inter DPS IT Festival - 2nd Place",
