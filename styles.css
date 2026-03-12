@@ -67,7 +67,7 @@ h3,
 }
 
 .section-padding {
-    padding: 100px 0;
+    padding: 25px 0;
 }
 
 /* Glassmorphism utility */
@@ -130,7 +130,7 @@ h3,
     z-index: 2;
 }
 
-@media (max-width: 860px) {
+@media (max-width: 934px) {
     .nav-links {
         position: static;
         justify-content: flex-start;
@@ -240,6 +240,10 @@ h3,
     margin-left: auto;
     margin-right: auto;
     text-align: center;
+}
+
+.section-title {
+    margin-bottom: 15px;
 }
 
 .hero-cta {
@@ -656,7 +660,7 @@ h3,
 }
 
 /* Responsive */
-@media (max-width: 860px) {
+@media (max-width: 934px) {
     .glitch {
         font-size: 3rem;
     }
