@@ -1,5 +1,5 @@
 const portfolioData = {
-    "version": "1.16",
+    "version": "1.18",
     "projects": [
         {
             "id": "p1",
@@ -329,5 +329,27 @@ const portfolioData = {
             "img": "placeholder.png"
         }
     ],
-    "blenderProjects": []
+    "blenderProjects": [
+        {
+            "id": "b1773338646500",
+            "title": "Industrial Corner",
+            "image": "https://raw.githubusercontent.com/rishitc17/Blender-Industrial-Corner/refs/heads/main/Render.png",
+            "date": "26th February, 2026",
+            "repo": "https://github.com/rishitc17/Blender-Industrial-Corner"
+        },
+        {
+            "id": "b1773338598842",
+            "title": "Donut",
+            "image": "https://raw.githubusercontent.com/rishitc17/Blender-Donut/refs/heads/main/Render.png",
+            "date": "13th February, 2026",
+            "repo": "https://github.com/rishitc17/Blender-Donut"
+        },
+        {
+            "id": "b1773338423572",
+            "title": "Desk Scene",
+            "image": "https://raw.githubusercontent.com/rishitc17/Blender-Desk-Scene/refs/heads/main/Render.png",
+            "date": "20th February, 2026",
+            "repo": "https://github.com/rishitc17/Blender-Desk-Scene"
+        }
+    ]
 };
