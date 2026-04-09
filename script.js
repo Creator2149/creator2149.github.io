@@ -171,7 +171,7 @@ window.openProjectModal = (id) => {
         <div class="tech-stack" style="margin-bottom: 20px;">
             ${p.tech.map((t) => `<span class="tech-tag">${t}</span>`).join('')}
         </div>
-        ${p.link !== '#' ? `<a href="${p.link}" target="_blank" class="btn primary">View Full Project</a>` : ''}
+        ${p.link !== '#' ? `<a href="${p.link}" target="_blank" class="btn primary">View Project/Website</a>` : ''}
     `;
     modal.style.display = 'block';
 };
