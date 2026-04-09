@@ -1,6 +1,35 @@
 const portfolioData = {
-    "version": "1.19",
+    "version": "1.20",
     "projects": [
+        {
+            "id": "p1775733351004",
+            "title": "Water Ambassadors",
+            "tech": [
+                "HTML",
+                "CSS",
+                "JavaScript"
+            ],
+            "academicYear": "AY 2025-26",
+            "shortDesc": "A showcase website for the school water ambassadors",
+            "fullDesc": "While I was not part of the Water Ambassadors program, I did develop the showcase website which includes a showcase for various cleanliness drives conducted, as well as posters made and collaborations with other schools and organizations.",
+            "link": "#",
+            "status": "Complete"
+        },
+        {
+            "id": "p1775733251338",
+            "title": "School Menu Voting System",
+            "tech": [
+                "HTML",
+                "CSS",
+                "JavaScript",
+                "Supabase"
+            ],
+            "academicYear": "AY 2025-26",
+            "shortDesc": "A voting system to let students choose the order of items on the school food menu.",
+            "fullDesc": "The school menu voting website allows the nutritionist to enter the menu items for the upcoming week, and students can then vote for which items they want on which days, with app-level constraints to ensure nutritional balance and no duplicate selections.",
+            "link": "#",
+            "status": "Complete"
+        },
         {
             "id": "p1",
             "title": "MealFlow",
@@ -62,16 +91,16 @@ const portfolioData = {
         {
             "id": "p5",
             "title": "Cybersecurity for Elderly",
-            "status": "Planned",
-            "shortDesc": "Awareness program for online safety.",
-            "fullDesc": "Educational program to help elderly people avoid common online scams using real-world analogies. Will be hosted via online meetings.",
             "tech": [
                 "Education",
                 "Public Speaking",
                 "Community"
             ],
+            "academicYear": "AY 2025-26",
+            "shortDesc": "Awareness program for online safety.",
+            "fullDesc": "Educational program to help elderly people avoid common online scams using real-world analogies. Will be hosted via online meetings.",
             "link": "#",
-            "academicYear": "AY 2025-26"
+            "status": "In Progress"
         },
         {
             "id": "p6",
