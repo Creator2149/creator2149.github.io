@@ -1,5 +1,5 @@
 const portfolioData = {
-    "version": "1.21",
+    "version": "1.22",
     "projects": [
         {
             "id": "p1775733351004",
@@ -189,6 +189,13 @@ const portfolioData = {
         }
     ],
     "credentials": [
+        {
+            "id": "c1776491526201",
+            "title": "Wharton Data Science Competition Participation",
+            "discipline": "Data Science",
+            "year": "AY 2025-26",
+            "img": "Wharton Data Science Competition 2026.png"
+        },
         {
             "id": "c1773314700442",
             "title": "Lodha Genius Programme & UC Santa Cruz Shadow the Scientists Programme Completion",
