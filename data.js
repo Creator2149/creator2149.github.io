@@ -1,5 +1,5 @@
 const portfolioData = {
-    "version": "1.23",
+    "version": "1.24",
     "projects": [
         {
             "id": "p1775733351004",
@@ -145,7 +145,7 @@ const portfolioData = {
         },
         {
             "id": "p1772951995126",
-            "title": "SpikeDigits",
+            "title": "NOMAD — Neural Observation and Model Analysis of Digits",
             "tech": [
                 "Python",
                 "Nengo",
@@ -155,7 +155,7 @@ const portfolioData = {
             ],
             "academicYear": "AY 2025-26",
             "shortDesc": "A neuromorphic MNIST classification project using Nengo, benchmarking spiking neural networks against traditional machine learning models.",
-            "fullDesc": "SpikeDigits is a research-oriented project that explores digit classification on the MNIST dataset using neuromorphic computing techniques. The project implements spiking neural networks in Nengo and compares their performance against conventional machine learning and deep learning models.\n\nThe goal is to evaluate key trade-offs such as accuracy, computational efficiency, and model behavior between biologically inspired spiking systems and traditional architectures. By standardizing experiments and metrics, the project provides a structured benchmark for understanding the practical viability of neuromorphic approaches in real-world classification tasks.",
+            "fullDesc": "NOMAD is a research-oriented project that explores digit classification on the MNIST dataset using neuromorphic computing techniques. The project implements spiking neural networks in Nengo and compares their performance against conventional machine learning and deep learning models.\n\nThe goal is to evaluate key trade-offs such as accuracy, computational efficiency, and model behavior between biologically inspired spiking systems and traditional architectures. By standardizing experiments and metrics, the project provides a structured benchmark for understanding the practical viability of neuromorphic approaches in real-world classification tasks.",
             "link": "",
             "status": "Planned"
         },
