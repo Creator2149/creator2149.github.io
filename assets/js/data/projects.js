@@ -31,10 +31,10 @@ const PROJECTS = [
       "JavaScript",
       "Supabase"
     ],
-    "image": "",
+    "image": "assets/images/projects/School_Menu_Voting_System.png",
     "shortDescription": "A voting platform allowing students to decide the weekly school menu order.",
     "longDescription": "This platform enables the school nutritionist to upload menu options for the upcoming week while students vote on which meals should appear on specific days. The system includes constraints to maintain nutritional balance and prevent duplicate selections.",
-    "link": ""
+    "link": "https://dpsimenu.in"
   },
   {
     "id": "mealflow",
@@ -48,7 +48,7 @@ const PROJECTS = [
       "Tailwind CSS",
       "Groq AI"
     ],
-    "image": "",
+    "image": "assets/images/projects/MealFlow.png",
     "shortDescription": "AI-powered meal planning for Indian households.",
     "longDescription": "MealFlow helps Indian families generate personalized meal plans based on family member preferences, dietary goals, and available ingredients. The platform integrates AI-generated planning with a modern web stack using FastAPI, Appwrite, Tailwind CSS, and Groq AI.",
     "link": "https://github.com/rishitc17/MealFlow"
@@ -64,7 +64,7 @@ const PROJECTS = [
       "Research",
       "LaTeX"
     ],
-    "image": "",
+    "image": "assets/images/projects/Nullary.png",
     "shortDescription": "An axiomatic framework exploring division by zero.",
     "longDescription": "Nullary is a mathematical research project proposing an axiomatic framework to simplify expressions involving division by zero. The paper is currently under active development and seeking expert feedback.",
     "link": ""
@@ -89,7 +89,7 @@ const PROJECTS = [
     "id": "raksha",
     "featured": true,
     "title": "Raksha",
-    "status": "Completed",
+    "status": "In Progress",
     "year": "2026",
     "tech": [
       "React",
@@ -97,7 +97,7 @@ const PROJECTS = [
       "Supabase",
       "AI"
     ],
-    "image": "",
+    "image": "assets/images/projects/Raksha.png",
     "shortDescription": "AI-powered self-defense learning platform.",
     "longDescription": "Raksha is a self-defense training platform that uses webcam motion tracking and AI-powered feedback to help users learn techniques from home. I contributed to the project using React and Python.",
     "link": "https://rakshaapp.github.io"
@@ -144,7 +144,7 @@ const PROJECTS = [
       "Leadership",
       "STEM Education"
     ],
-    "image": "",
+    "image": "assets/images/projects/Celestis_Conclave.png",
     "shortDescription": "A regional student-led STEM learning community.",
     "longDescription": "The Celestis Conclave is a student-led regional STEM organization focused on advanced learning and collaboration. I serve as the Mathematics Department Head and a member of the core council.",
     "link": "https://celestisconclave.github.io"
@@ -177,7 +177,7 @@ const PROJECTS = [
       "Creative Writing",
       "World Building"
     ],
-    "image": "",
+    "image": "assets/images/projects/Echoes_of_Etheryn.png",
     "shortDescription": "A fantasy and science-fiction novel series.",
     "longDescription": "Echoes of Etheryn is a long-form creative writing project blending high fantasy with science fiction themes, featuring interconnected storylines, cosmic lore, and morally complex characters.",
     "link": ""
