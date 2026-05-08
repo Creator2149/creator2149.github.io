@@ -114,8 +114,8 @@ function buildProjectModalHTML(project) {
     }
 
     let linkHTML = '';
-    if (project.link) {
-        linkHTML = `<a class="modal__link" href="${project.link}" target="_blank" rel="noopener noreferrer">view project &rarr;</a>`;
+    if (project.link && project.link.trim()) {
+        linkHTML = `<a class="modal__link" href="${project.link}" target="_blank" rel="noopener noreferrer">View Project &rarr;</a>`;
     }
 
     return `

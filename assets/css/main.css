@@ -639,18 +639,36 @@ body::after {
     border-radius: var(--radius-sm);
 }
 
-.card__link {
+.card__link,
+.modal__link {
     display: inline-flex;
     align-items: center;
+    justify-content: center;
     gap: var(--space-xs);
-    font-size: var(--text-sm);
+    padding: calc(var(--space-xs) + 2px) var(--space-sm);
+    border-radius: var(--radius-full);
+    border: 1px solid var(--glass-border);
+    background: var(--glass-bg);
     color: var(--accent);
-    margin-top: auto;
+    font-size: var(--text-sm);
+    font-weight: 600;
+    text-transform: capitalize;
     font-family: var(--font-mono);
     transition:
+        background var(--transition-fast),
+        border-color var(--transition-fast),
         color var(--transition-fast),
-        gap var(--transition-fast);
+        transform var(--transition-fast);
+    text-decoration: none;
 }
+.card__link:hover,
+.modal__link:hover {
+    background: var(--glass-bg-hover);
+    border-color: var(--glass-border-hover);
+    color: var(--accent-hover);
+    transform: translateY(-1px);
+}
+
 .card:hover .card__link {
     gap: var(--space-sm);
 }

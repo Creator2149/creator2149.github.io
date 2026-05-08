@@ -272,10 +272,16 @@ function createProjectCard(project, onClick) {
     }
 
     /* Link indicator */
-    if (project.link) {
-        const link = document.createElement('span');
+    if (project.link && project.link.trim()) {
+        const link = document.createElement('a');
         link.className = 'card__link';
-        link.textContent = 'view \u2192';
+        link.href = project.link;
+        link.target = '_blank';
+        link.rel = 'noopener noreferrer';
+        link.textContent = 'View';
+        link.addEventListener('click', (e) => {
+            e.stopPropagation();
+        });
         body.appendChild(link);
     }
 
