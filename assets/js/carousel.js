@@ -31,11 +31,12 @@ function initCarousel(containerSelector, items, cardFactory) {
         slide.className = 'carousel__slide';
         const card = cardFactory(item);
 
-        // Force images inside clones to load eagerly to prevent empty carousel spaces
+        // FIX: Force images inside clones to load eagerly to prevent blank carousel spaces
         const images = card.querySelectorAll('img');
         images.forEach((img) => {
-            img.removeAttribute('loading');
-            img.style.opacity = '1';
+            img.removeAttribute('loading'); // Remove lazy load
+            img.loading = 'eager'; // Force immediate network fetch
+            img.style.opacity = '1'; // Ensure they don't get stuck invisible
         });
 
         slide.appendChild(card);

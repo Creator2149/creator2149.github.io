@@ -332,13 +332,15 @@ body::after {
     margin-right: var(--space-xs);
     color: var(--accent-muted);
 }
+
+/* FIX: Massive, prominent hero name */
 .hero__name {
-    font-size: clamp(var(--text-3xl), 4vw, var(--text-5xl));
+    font-size: clamp(2.5rem, 6vw, 4.5rem);
     font-weight: 700;
     color: var(--text-heading);
-    letter-spacing: -0.025em;
+    letter-spacing: -0.03em;
     margin-bottom: var(--space-lg);
-    line-height: var(--line-height-tight);
+    line-height: 1.1;
     background: linear-gradient(135deg, var(--text-heading), var(--accent));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -354,6 +356,7 @@ body::after {
     margin-top: var(--space-md);
     box-shadow: var(--shadow-glow);
 }
+
 .hero__philosophy {
     font-size: var(--text-lg);
     color: var(--text-secondary);
@@ -419,8 +422,6 @@ body::after {
     box-shadow: 0 0 10px var(--accent-glow);
 }
 
-/* ── Outlined Buttons (View All, Card Links, Modal Links) ──── */
-
 .section__link,
 .card__link,
 .modal__link {
@@ -472,9 +473,6 @@ body::after {
     --section-tag-bg: rgba(59, 130, 246, 0.06);
     --section-tag-border: rgba(59, 130, 246, 0.15);
     --section-tag-color: #60a5fa;
-    background-color: var(--section-bg);
-    background-image: radial-gradient(rgba(59, 130, 246, 0.03) 1px, transparent 1px);
-    background-size: 24px 24px;
 }
 #featured-certificates,
 .page-certificates {
@@ -492,14 +490,6 @@ body::after {
     --section-tag-bg: rgba(212, 175, 55, 0.08);
     --section-tag-border: rgba(212, 175, 55, 0.2);
     --section-tag-color: #d4af37;
-    background-color: var(--section-bg);
-    background-image: repeating-linear-gradient(
-        45deg,
-        rgba(212, 175, 55, 0.015) 0px,
-        rgba(212, 175, 55, 0.015) 1px,
-        transparent 1px,
-        transparent 20px
-    );
 }
 #featured-blender,
 .page-blender {
@@ -517,33 +507,57 @@ body::after {
     --section-tag-bg: rgba(249, 115, 22, 0.06);
     --section-tag-border: rgba(249, 115, 22, 0.15);
     --section-tag-color: #fb923c;
-    background: linear-gradient(160deg, #140d24 0%, #0f0a1a 50%, #150e22 100%);
 }
 
-/* ── Homepage Section Layout (Full Width Breakout) ──────────── */
+/* ── Full Width Section Backgrounds (No Scrollbar Gap) ─────── */
 
 #featured-projects,
 #featured-certificates,
 #featured-blender {
+    position: relative;
     border-radius: var(--radius-3xl) var(--radius-3xl) 0 0;
     margin-top: calc(-1 * var(--radius-3xl));
     padding-top: calc(var(--space-3xl) + var(--radius-3xl));
     padding-bottom: var(--space-3xl);
-    position: relative;
     z-index: 2;
-
-    /* Break out of .container to span full width for background */
-    margin-left: calc(-50vw + 50%);
-    margin-right: calc(-50vw + 50%);
-    /* Re-apply container padding so content doesn't touch edges */
-    padding-left: calc(50vw - 50%);
-    padding-right: calc(50vw - 50%);
+    overflow: hidden; /* Contain the pseudo-element */
+    isolation: isolate; /* Stacking context */
 }
-#featured-blender {
-    z-index: 3;
-    overflow: hidden;
+
+/* The pseudo-element spans 200vw, guaranteeing full width regardless of scrollbar */
+#featured-projects::before,
+#featured-certificates::before,
+#featured-blender::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: -100vw;
+    right: -100vw;
+    z-index: -1;
+    pointer-events: none;
+}
+
+#featured-projects::before {
+    background-color: var(--section-bg);
+    background-image: radial-gradient(rgba(59, 130, 246, 0.03) 1px, transparent 1px);
+    background-size: 24px 24px;
+}
+#featured-certificates::before {
+    background-color: var(--section-bg);
+    background-image: repeating-linear-gradient(
+        45deg,
+        rgba(212, 175, 55, 0.015) 0px,
+        rgba(212, 175, 55, 0.015) 1px,
+        transparent 1px,
+        transparent 20px
+    );
 }
 #featured-blender::before {
+    background: linear-gradient(160deg, #140d24 0%, #0f0a1a 50%, #150e22 100%);
+}
+
+#featured-blender::after {
     content: '';
     position: absolute;
     top: 30%;
@@ -553,6 +567,7 @@ body::after {
     background: radial-gradient(circle, rgba(249, 115, 22, 0.05), transparent 70%);
     transform: translate(-50%, -50%);
     pointer-events: none;
+    z-index: -1;
 }
 
 /* ── Section Theme Applications ─────────────────────────────── */
@@ -654,18 +669,19 @@ body::after {
     color: var(--section-text);
 }
 
-/* ── Carousel ───────────────────────────────────────────────── */
+/* ── Carousel (Arrow Spacing Fixed) ─────────────────────────── */
 
 .carousel {
     position: relative;
-}
+    padding: 0 50px;
+} /* Ensures arrows never overlap cards */
 .carousel__track {
     display: flex;
     will-change: transform;
 }
 .carousel__slide {
     box-sizing: border-box;
-} /* Sizing handled by JS for accuracy */
+}
 
 .carousel__controls {
     position: absolute;
@@ -775,9 +791,6 @@ body::after {
     opacity: 0.25;
     position: absolute;
 }
-.card__image-placeholder--blender {
-    background: var(--bg-tertiary);
-}
 
 .card__body {
     padding: var(--space-lg);
@@ -797,7 +810,6 @@ body::after {
 .card:hover .card__title {
     color: var(--accent);
 }
-
 .card__meta {
     display: flex;
     align-items: center;
@@ -927,7 +939,6 @@ body::after {
     opacity: 1;
     visibility: visible;
 }
-
 .modal {
     background: var(--bg-primary);
     border: 1px solid var(--glass-border-hover);
@@ -944,7 +955,6 @@ body::after {
 .modal-overlay--visible .modal {
     transform: translate3d(0, 0, 0) scale(1);
 }
-
 .modal__close {
     position: absolute;
     top: var(--space-md);
@@ -967,7 +977,6 @@ body::after {
     border-color: var(--glass-border-hover);
     transform: rotate(90deg);
 }
-
 .modal__image {
     width: 100%;
     height: auto;
@@ -991,15 +1000,6 @@ body::after {
     position: relative;
     background: var(--bg-tertiary);
 }
-.modal__image-placeholder::before {
-    content: '\f03e';
-    font-family: 'Font Awesome 6 Free';
-    font-weight: 400;
-    font-size: var(--text-2xl);
-    opacity: 0.25;
-    position: absolute;
-}
-
 .modal__body {
     padding: var(--space-xl);
 }
@@ -1277,6 +1277,9 @@ body::after {
     .navbar__toggle {
         display: flex;
     }
+    .carousel {
+        padding: 0 36px;
+    } /* Slight adjustment for smaller arrows */
 
     .hero {
         flex-direction: column;
@@ -1301,7 +1304,7 @@ body::after {
         grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
     }
 
-    /* Mobile Modal Fix: Slides up from bottom, takes full width */
+    /* Mobile Modal Fix: Slides up from bottom */
     .modal-overlay {
         align-items: flex-end;
         padding: 0;
