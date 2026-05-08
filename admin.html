@@ -1,107 +1,111 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Admin Panel | Rishit Choudhary</title>
-        <link rel="stylesheet" href="styles.css" />
-        <link rel="stylesheet" href="admin.css" />
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-        <link
-            href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap"
-            rel="stylesheet"
-        />
-        <link rel="icon" type="image/png" href="/favicon/favicon-96x96.png" sizes="96x96" />
-    </head>
-    <body>
-        <div id="admin-auth-overlay">
-            <div class="glass-card auth-card">
-                <h3>Authorization Required</h3>
-                <input
-                    type="password"
-                    id="admin-passphrase"
-                    class="admin-prompt-input"
-                    placeholder="Enter Secret Passphrase"
-                    style="
-                        width: 100%;
-                        margin: 20px 0;
-                        padding: 12px;
-                        border-radius: 6px;
-                        background: rgba(255, 255, 255, 0.05);
-                        border: 1px solid var(--glass-border);
-                        color: white;
-                        text-align: center;
-                    "
-                />
-                <button id="admin-login-btn" class="btn primary">Unlock</button>
-                <p id="admin-error" class="error-msg"></p>
-            </div>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin — Portfolio Management</title>
+  <meta name="description" content="Admin panel for managing portfolio content." />
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="icon" href="/assets/favicon/favicon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/assets/css/main.css" />
+  <link rel="stylesheet" href="/assets/css/admin.css" />
+</head>
+<body>
+
+  <!-- Navbar -->
+  <header class="navbar">
+    <div class="navbar__inner"></div>
+  </header>
+
+  <!-- Admin Layout -->
+  <main class="admin-layout">
+    <div class="container">
+
+      <!-- Header -->
+      <div class="admin-header">
+        <h1 class="admin-header__title">Admin Panel</h1>
+        <p class="admin-header__subtitle">Manage projects, certificates, and Blender work. Changes sync to GitHub on push.</p>
+      </div>
+
+      <!-- PAT Banner -->
+      <div id="pat-banner"></div>
+
+      <!-- Projects Section -->
+      <section class="admin-section">
+        <div class="admin-section__header">
+          <h2 class="admin-section__title">
+            Projects
+            <span class="admin-section__count" id="projects-count"></span>
+          </h2>
+          <button class="btn btn--primary" onclick="Admin.openAddForm('projects')">Add Project</button>
         </div>
+        <div id="projects-list"></div>
+      </section>
 
-        <nav id="navbar">
-            <div class="nav-container">
-                <a href="index.html" class="logo">Rishit C<span>.</span></a>
-            </div>
-        </nav>
+      <!-- Certificates Section -->
+      <section class="admin-section">
+        <div class="admin-section__header">
+          <h2 class="admin-section__title">
+            Certificates
+            <span class="admin-section__count" id="certificates-count"></span>
+          </h2>
+          <button class="btn btn--primary" onclick="Admin.openAddForm('certificates')">Add Certificate</button>
+        </div>
+        <div id="certificates-list"></div>
+      </section>
 
-        <main class="admin-container hidden" id="admin-main">
-            <div class="pat-container">
-                <h3>GitHub Personal Access Token</h3>
-                <p style="font-size: 0.8rem; color: var(--text-secondary)">
-                    Your PAT is required to save changes. It is never stored and lives only in this session.
-                </p>
-                <div style="display: flex; gap: 15px; margin-top: 10px">
-                    <input
-                        type="password"
-                        id="github-pat"
-                        placeholder="Paste your GitHub PAT here"
-                        style="flex-grow: 1"
-                    />
-                    <button class="btn primary" id="push-changes-btn">Push Changes</button>
-                </div>
-                <p id="pat-status" class="error-msg"></p>
-            </div>
+      <!-- Blender Section -->
+      <section class="admin-section">
+        <div class="admin-section__header">
+          <h2 class="admin-section__title">
+            Blender
+            <span class="admin-section__count" id="blender-count"></span>
+          </h2>
+          <button class="btn btn--primary" onclick="Admin.openAddForm('blender')">Add Blender Project</button>
+        </div>
+        <div id="blender-list"></div>
+      </section>
 
-            <section class="admin-section">
-                <h2>
-                    Projects
-                    <button class="btn primary" onclick="adminUI.addNewProject()">+ Add New</button>
-                </h2>
-                <div id="new-project-container"></div>
-                <div id="projects-admin-list" class="admin-list">
-                    <!-- Projects injected here -->
-                </div>
-            </section>
+      <!-- Form Container -->
+      <div id="form-container"></div>
 
-            <section class="admin-section">
-                <h2>
-                    Certificates
-                    <button class="btn primary" onclick="adminUI.addNewCert()">+ Add New</button>
-                </h2>
-                <div id="new-cert-container"></div>
-                <div id="certs-admin-list" class="admin-list">
-                    <!-- Certificates injected here -->
-                </div>
-            </section>
+      <!-- Sync Bar -->
+      <div id="sync-bar"></div>
 
-            <section class="admin-section">
-                <h2>
-                    Blender Projects
-                    <button class="btn primary" onclick="adminUI.addNewBlender()">+ Add New</button>
-                </h2>
-                <div id="new-blender-container"></div>
-                <div id="blender-admin-list" class="admin-list">
-                    <!-- Blender projects injected here -->
-                </div>
-            </section>
-        </main>
+    </div>
+  </main>
 
-        <footer class="footer">
-            <p>&copy; 2026 Rishit Choudhary. Admin Interface.</p>
-        </footer>
+  <!-- No footer on admin — but include scripts for navbar + admin -->
+  <script src="/assets/js/data/site.js"></script>
+  <script src="/assets/js/data/projects.js"></script>
+  <script src="/assets/js/data/certificates.js"></script>
+  <script src="/assets/js/data/blender.js"></script>
+  <script src="/assets/js/github.js"></script>
+  <script src="/assets/js/main.js"></script>
+  <script src="/assets/js/admin.js"></script>
 
-        <script src="data.js"></script>
-        <script src="admin.js"></script>
-    </body>
+  <!-- Admin count updates -->
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      function updateCounts() {
+        const pc = document.getElementById("projects-count");
+        const cc = document.getElementById("certificates-count");
+        const bc = document.getElementById("blender-count");
+        if (pc) pc.textContent = `(${PROJECTS.length})`;
+        if (cc) cc.textContent = `(${CERTIFICATES.length})`;
+        if (bc) bc.textContent = `(${BLENDER_PROJECTS.length})`;
+      }
+      updateCounts();
+
+      /* Re-run counts after any admin render (observe DOM changes) */
+      const observer = new MutationObserver(updateCounts);
+      const lists = document.querySelectorAll("#projects-list, #certificates-list, #blender-list");
+      lists.forEach((el) => observer.observe(el, { childList: true, subtree: true }));
+    });
+  </script>
+
+</body>
 </html>

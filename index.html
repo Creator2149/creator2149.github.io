@@ -3,153 +3,147 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Rishit Choudhary | Portfolio</title>
-        <link rel="stylesheet" href="styles.css" />
+        <title>Rishit Choudhary — Portfolio</title>
+        <meta name="description" content="Personal portfolio and project archive for Rishit Choudhary." />
+        <link rel="icon" href="/assets/favicon/favicon.svg" type="image/svg+xml" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
         <link
-            href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap"
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
             rel="stylesheet"
         />
-        <link
-            href="https://fonts.googleapis.com/css2?family=Exo+2:wght@300;400;500;600;700&display=swap"
-            rel="stylesheet"
-        />
-        <link rel="icon" type="image/png" href="/favicon/favicon-96x96.png" sizes="96x96" />
-        <link rel="icon" type="image/svg+xml" href="/favicon/favicon.svg" />
-        <link rel="shortcut icon" href="/favicon/favicon.ico" />
-        <link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png" />
-        <link rel="manifest" href="/favicon/site.webmanifest" />
+        <link rel="stylesheet" href="/assets/css/main.css" />
     </head>
     <body>
-        <div id="cursor-glow"></div>
-        <canvas id="particles-canvas"></canvas>
+        <!-- Navbar -->
+        <header class="navbar">
+            <div class="navbar__inner"></div>
+        </header>
 
-        <nav id="navbar">
-            <div class="nav-container">
-                <a href="#hero" class="logo">Rishit C<span>.</span></a>
-                <div class="nav-links">
-                    <a href="#about">About</a>
-                    <a href="#projects">Projects</a>
-                    <a href="#credentials">Certificates & Participations</a>
-                    <a href="#blender-projects">Blender Projects</a>
-                    <a href="#contact">Contact</a>
-                </div>
-                <div class="mobile-menu-btn">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </div>
+        <!-- Main Content -->
+        <main class="page-content">
+            <div class="container">
+                <!-- Hero -->
+                <section class="hero" id="hero"></section>
+
+                <!-- About -->
+                <section class="about" id="about"></section>
+
+                <!-- Featured Projects Carousel -->
+                <section class="section" id="featured-projects">
+                    <div class="section__header">
+                        <h2 class="section__title">Featured Projects</h2>
+                        <a href="/projects.html" class="section__link">View all &rarr;</a>
+                    </div>
+                    <div class="carousel" id="projects-carousel"></div>
+                </section>
+
+                <!-- Featured Certificates Carousel -->
+                <section class="section" id="featured-certificates">
+                    <div class="section__header">
+                        <h2 class="section__title">Featured Certificates</h2>
+                        <a href="/certificates.html" class="section__link">View all &rarr;</a>
+                    </div>
+                    <div class="carousel" id="certificates-carousel"></div>
+                </section>
+
+                <!-- Featured Blender Carousel -->
+                <section class="section" id="featured-blender">
+                    <div class="section__header">
+                        <h2 class="section__title">Featured Blender Work</h2>
+                        <a href="/blender.html" class="section__link">View all &rarr;</a>
+                    </div>
+                    <div class="carousel" id="blender-carousel"></div>
+                </section>
+
+                <!-- Contact -->
+                <section class="contact" id="contact"></section>
             </div>
-        </nav>
-
-        <main>
-            <section id="hero">
-                <div class="hero-content">
-                    <h1 class="glitch" data-text="RISHIT CHOUDHARY">
-                        <span class="first-name">Rishit</span><br /><span class="last-name">Choudhary</span>
-                    </h1>
-                    <p class="subtitle"><em>Statuo. Persevero. Perficio.</em></p>
-                    <div class="hero-cta">
-                        <a href="#projects" class="btn primary">View Projects</a>
-                        <a href="#credentials" class="btn secondary">Certificates & Participations</a>
-                    </div>
-                </div>
-            </section>
-
-            <section id="about" class="section-padding">
-                <div class="container">
-                    <h2 class="section-title">About Me</h2>
-                    <div class="glass-card about-card">
-                        <p>
-                            I am a 9th-grade student currently in the Academic Year 2025-26. My passion lies at the
-                            intersection of Computer Science, Mathematics, and Physics. I am constantly exploring new
-                            technologies and building projects that solve real-world problems. From developing AI
-                            frameworks to writing research papers, I strive to push the boundaries of my knowledge and
-                            contribute to the STEM community.
-                        </p>
-                    </div>
-                </div>
-            </section>
-
-            <section id="projects" class="section-padding">
-                <div class="container">
-                    <div class="section-header">
-                        <h2 class="section-title">Projects</h2>
-                        <div class="filters">
-                            <button class="filter-btn active" data-filter="all">All</button>
-                            <button class="filter-btn" data-filter="Complete">Complete</button>
-                            <button class="filter-btn" data-filter="In Progress">In Progress</button>
-                            <button class="filter-btn" data-filter="Planned">Planned</button>
-                        </div>
-                    </div>
-                    <div id="projects-grid" class="grid-container">
-                        <!-- Projects injected via JS -->
-                    </div>
-                </div>
-            </section>
-
-            <section id="credentials" class="section-padding">
-                <div class="container">
-                    <div class="section-header">
-                        <h2 class="section-title">Certificates & Participations</h2>
-                    </div>
-                    <div id="credentials-grid" class="grid-container">
-                        <!-- Certificates injected via JS -->
-                    </div>
-                </div>
-            </section>
-
-            <section id="blender-projects" class="section-padding">
-                <div class="container">
-                    <div class="section-header">
-                        <h2 class="section-title">Blender Projects</h2>
-                    </div>
-                    <div id="blender-grid" class="grid-container">
-                        <!-- Blender projects injected via JS -->
-                    </div>
-                </div>
-            </section>
-
-            <section id="contact" class="section-padding">
-                <div class="container">
-                    <h2 class="section-title">Connect</h2>
-                    <div class="glass-card contact-grid">
-                        <div class="contact-info">
-                            <h3>Let's build something together</h3>
-                            <p>Feel free to reach out for collaborations or just a friendly chat about tech.</p>
-                            <div class="social-links">
-                                Github: <a href="https://www.github.com/rishitc17" class="social-link">rishitc17</a>
-                                <p>Email: rishitc17@gmail.com</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
         </main>
 
-        <footer class="footer">
-            <p><span id="admin-trigger">&copy;</span> 2026 Rishit Choudhary.</p>
-        </footer>
+        <!-- Footer -->
+        <footer class="footer"></footer>
 
-        <!-- Modals -->
+        <!-- Scripts: data first, then modules, then page logic -->
+        <script src="/assets/js/data/site.js"></script>
+        <script src="/assets/js/data/projects.js"></script>
+        <script src="/assets/js/data/certificates.js"></script>
+        <script src="/assets/js/data/blender.js"></script>
+        <script src="/assets/js/modal.js"></script>
+        <script src="/assets/js/carousel.js"></script>
+        <script src="/assets/js/main.js"></script>
 
-        <div id="project-modal" class="modal">
-            <div class="modal-content glass-card">
-                <span class="close-modal">&times;</span>
-                <div id="modal-body"></div>
+        <!-- Homepage initialisation -->
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                /* ── Hero ──────────────────────────────── */
+                const hero = document.getElementById('hero');
+                if (hero) {
+                    hero.innerHTML = `
+          <h1 class="hero__name">${SITE.owner.name}</h1>
+          <p class="hero__philosophy">${SITE.owner.philosophy}</p>
+          <p class="hero__motto">${SITE.owner.motto}</p>
+        `;
+                }
+
+                /* ── About ─────────────────────────────── */
+                const about = document.getElementById('about');
+                if (about) {
+                    const a = SITE.owner.about;
+                    about.innerHTML = `
+          <p class="about__intro">${a.intro}</p>
+          <div class="about__grid">
+            <div class="about__block">
+              <h3>Interests</h3>
+              <ul class="about__list">
+                ${a.interests.map((i) => `<li>${i}</li>`).join('')}
+              </ul>
             </div>
-        </div>
-
-        <!-- Certificate Modal -->
-        <div id="cert-modal" class="modal">
-            <div class="modal-content glass-card">
-                <span class="close-modal" id="close-cert-modal">&times;</span>
-                <div id="cert-modal-body"></div>
+            <div class="about__block">
+              <h3>Explored Fields</h3>
+              <ul class="about__list">
+                ${a.exploredFields.map((f) => `<li>${f}</li>`).join('')}
+              </ul>
             </div>
-        </div>
+            <div class="about__block">
+              <h3>Mindset</h3>
+              <p>${a.mindset}</p>
+            </div>
+            <div class="about__block">
+              <h3>Current Focus</h3>
+              <p>${a.currentFocus}</p>
+            </div>
+          </div>
+        `;
+                }
 
-        <script src="data.js"></script>
-        <script src="script.js"></script>
+                /* ── Contact ───────────────────────────── */
+                const contact = document.getElementById('contact');
+                if (contact) {
+                    const c = SITE.owner.contact;
+                    contact.innerHTML = `
+          <h2 class="contact__title">Get in Touch</h2>
+          <div class="contact__links">
+            <a class="contact__link" href="${c.github}" target="_blank" rel="noopener noreferrer">GitHub &rarr;</a>
+            <a class="contact__link" href="mailto:${c.email}">Email &rarr;</a>
+          </div>
+        `;
+                }
+
+                /* ── Featured Carousels ────────────────── */
+                const featuredProjects = PROJECTS.filter((p) => p.featured);
+                initCarousel('#projects-carousel', featuredProjects, (project) =>
+                    createProjectCard(project, openProjectModal),
+                );
+
+                const featuredCerts = CERTIFICATES.filter((c) => c.featured);
+                initCarousel('#certificates-carousel', featuredCerts, (cert) =>
+                    createCertificateCard(cert, openCertificateModal),
+                );
+
+                const featuredBlender = BLENDER_PROJECTS.filter((b) => b.featured);
+                initCarousel('#blender-carousel', featuredBlender, (item) => createBlenderCard(item, openBlenderModal));
+            });
+        </script>
     </body>
 </html>
