@@ -43,7 +43,9 @@
                         authForm.style.display = 'none';
                         adminContent.style.display = 'block';
                         sessionStorage.setItem('adminAuth', 'true');
-                        initAdmin();
+                        if (window.Admin && typeof Admin.init === 'function') {
+                            Admin.init();
+                        }
                     } else {
                         passwordInput.value = '';
                         passwordInput.style.borderColor = '#c47070';
@@ -60,7 +62,9 @@
                 if (sessionStorage.getItem('adminAuth')) {
                     authForm.style.display = 'none';
                     adminContent.style.display = 'block';
-                    initAdmin();
+                    if (window.Admin && typeof Admin.init === 'function') {
+                        Admin.init();
+                    }
                 }
             });
         </script>

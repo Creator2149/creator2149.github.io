@@ -75,11 +75,39 @@ function buildFooter() {
     icon.className = 'footer__copyright-icon';
     icon.textContent = '';
     icon.innerHTML = '<i class="fas fa-copyright"></i>';
+    icon.setAttribute('role', 'button');
+    icon.setAttribute('tabindex', '0');
+    icon.setAttribute('aria-label', 'Copyright — triple-click for admin access');
 
     const text = document.createTextNode(` ${SITE.owner.copyright}`);
     p.appendChild(icon);
     p.appendChild(text);
     footer.appendChild(p);
+
+    let clickCount = 0;
+    let clickTimer = null;
+
+    const handleTripleClick = () => {
+        clickCount++;
+        if (clickTimer) clearTimeout(clickTimer);
+        clickTimer = setTimeout(() => {
+            clickCount = 0;
+        }, 500);
+
+        if (clickCount >= 3) {
+            clickCount = 0;
+            clearTimeout(clickTimer);
+            window.location.href = 'admin.html';
+        }
+    };
+
+    icon.addEventListener('click', handleTripleClick);
+    icon.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            handleTripleClick();
+        }
+    });
 }
 
 /* ── Admin Access Modal ─────────────────────────────────────── */
