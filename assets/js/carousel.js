@@ -1,11 +1,12 @@
 /**
- * carousel.js — Infinite carousel component with 6s pause
+ * carousel.js — Infinite carousel component with 4s pause
  *
  * Features:
  *   - Infinite looping (clones items at start and end)
- *   - Stops on a single item for 6 seconds, then smoothly advances
- *   - Left and right arrow navigation
+ *   - Stops on a single item for 4 seconds, then smoothly advances
+ *   - Left and right arrow navigation that doesn't overlap cards
  *   - Pauses on hover
+ *   - GPU Accelerated translate3d transitions
  *   - Responsive (1 slide mobile, 2 tablet, 3 desktop)
  *
  * Usage:
@@ -19,14 +20,12 @@ function initCarousel(containerSelector, items, cardFactory) {
         return;
     }
 
-    // Number of items in the original array
     const totalItems = items.length;
-    const pauseDuration = 6000; // 6 seconds pause
-    const transitionSpeed = '0.65s'; // Smooth transition duration
-    const transitionEasing = 'cubic-bezier(0.25, 1, 0.5, 1)';
+    const pauseDuration = 4000; // 4 seconds pause
+    const transitionSpeed = '0.5s';
+    const transitionEasing = 'cubic-bezier(0.4, 0, 0.2, 1)'; // Smooth standard material curve
 
     // Create extended array: [Last Item] + [All Items] + [First Item]
-    // This provides enough buffer for smooth infinite scrolling 1 step at a time
     const extendedItems = [items[totalItems - 1], ...items, items[0]];
 
     let currentIndex = 1; // Start at the first real item (index 1 because of clone)
@@ -38,7 +37,7 @@ function initCarousel(containerSelector, items, cardFactory) {
     const track = document.createElement('div');
     track.className = 'carousel__track';
 
-    extendedItems.forEach((item, index) => {
+    extendedItems.forEach((item) => {
         const slide = document.createElement('div');
         slide.className = 'carousel__slide';
         slide.appendChild(cardFactory(item));
@@ -47,7 +46,7 @@ function initCarousel(containerSelector, items, cardFactory) {
 
     container.appendChild(track);
 
-    // Controls (Left and Right Arrows)
+    // Controls
     const controls = document.createElement('div');
     controls.className = 'carousel__controls';
 
@@ -65,7 +64,7 @@ function initCarousel(containerSelector, items, cardFactory) {
     controls.appendChild(nextBtn);
     container.appendChild(controls);
 
-    // Core navigation logic
+    // Core logic
     function getSlideWidthPercent() {
         const width = window.innerWidth;
         if (width >= 1024) return 33.333;
@@ -80,7 +79,8 @@ function initCarousel(containerSelector, items, cardFactory) {
             track.style.transition = 'none';
         }
         const offset = currentIndex * getSlideWidthPercent();
-        track.style.transform = `translateX(-${offset}%)`;
+        // Using translate3d triggers GPU acceleration for smooth rendering
+        track.style.transform = `translate3d(-${offset}%, 0, 0)`;
     }
 
     function nextSlide() {
@@ -97,15 +97,13 @@ function initCarousel(containerSelector, items, cardFactory) {
         updateTrackPosition(true);
     }
 
-    // Handle infinite loop snapping (when hitting clones)
+    // Handle infinite loop snapping
     track.addEventListener('transitionend', () => {
         isTransitioning = false;
-        // If we've slid past the last real item to the clone
         if (currentIndex >= totalItems + 1) {
             currentIndex = 1;
             updateTrackPosition(false);
         }
-        // If we've slid before the first real item to the clone
         if (currentIndex <= 0) {
             currentIndex = totalItems;
             updateTrackPosition(false);
@@ -118,8 +116,7 @@ function initCarousel(containerSelector, items, cardFactory) {
         if (!isPaused) {
             autoScrollTimer = setTimeout(() => {
                 nextSlide();
-                // Restart timer after transition finishes
-                setTimeout(startAutoScroll, 650);
+                setTimeout(startAutoScroll, 500); // Restart timer after transition
             }, pauseDuration);
         }
     }
@@ -129,38 +126,33 @@ function initCarousel(containerSelector, items, cardFactory) {
         startAutoScroll();
     }
 
-    // Event Listeners
+    // Events
     prevBtn.addEventListener('click', () => {
         prevSlide();
         resetAutoScroll();
     });
-
     nextBtn.addEventListener('click', () => {
         nextSlide();
         resetAutoScroll();
     });
 
-    // Pause on hover
     container.addEventListener('mouseenter', () => {
         isPaused = true;
         clearTimeout(autoScrollTimer);
     });
-
     container.addEventListener('mouseleave', () => {
         isPaused = false;
         startAutoScroll();
     });
 
-    // Handle resize (recalculate position instantly)
+    // Handle resize
     let resizeTimeout;
     window.addEventListener('resize', () => {
         clearTimeout(resizeTimeout);
-        resizeTimeout = setTimeout(() => {
-            updateTrackPosition(false);
-        }, 150);
+        resizeTimeout = setTimeout(() => updateTrackPosition(false), 150);
     });
 
-    // Initial setup
+    // Init
     updateTrackPosition(false);
     startAutoScroll();
 }

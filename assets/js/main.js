@@ -393,3 +393,44 @@ function initScrollReveal() {
 
 // Append to existing DOMContentLoaded
 document.addEventListener('DOMContentLoaded', initScrollReveal);
+
+/* ── Fix Lazy Loading Images ────────────────────────────────── */
+/* Native lazy load sometimes needs a nudge to trigger properly, 
+   and ensures images don't get stuck invisible */
+
+function fixLazyImages() {
+    const images = document.querySelectorAll('img[loading="lazy"]');
+    images.forEach(img => {
+        if (img.complete) {
+            img.style.opacity = '1';
+        } else {
+            img.addEventListener('load', () => { img.style.opacity = '1'; });
+            img.addEventListener('error', () => { img.style.opacity = '1'; }); // Prevent stuck broken images
+        }
+    });
+}
+
+
+/* ── Scroll Reveal Observer ─────────────────────────────────── */
+
+function initScrollReveal() {
+    const reveals = document.querySelectorAll('.reveal');
+    if (!reveals.length) return;
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('revealed');
+                observer.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+    reveals.forEach(el => observer.observe(el));
+}
+
+// Append to existing DOMContentLoaded
+document.addEventListener('DOMContentLoaded', () => {
+    fixLazyImages();
+    initScrollReveal();
+});
