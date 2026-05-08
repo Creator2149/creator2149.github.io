@@ -328,14 +328,38 @@ function createBlenderCard(item, onClick) {
 
 /* ── Sort helper: newest first ──────────────────────────────── */
 
+function parseDate(dateStr) {
+    if (!dateStr) return 0;
+
+    /* Check if it's a simple year (e.g., "2024") */
+    if (/^\d{4}$/.test(dateStr)) {
+        return new Date(dateStr, 0, 1).getTime();
+    }
+
+    /* Parse "13th February, 2026" format */
+    const dateRegex = /^(\d{1,2})(?:st|nd|rd|th)\s+(\w+),\s+(\d{4})$/;
+    const match = dateStr.match(dateRegex);
+    if (match) {
+        const day = parseInt(match[1], 10);
+        const month = match[2];
+        const year = match[3];
+        const dateObj = new Date(`${month} ${day}, ${year}`);
+        return dateObj.getTime();
+    }
+
+    /* Fallback: try parsing as ISO date */
+    try {
+        return new Date(dateStr).getTime();
+    } catch {
+        return 0;
+    }
+}
+
 function sortByNewest(items, dateKey = 'year') {
     return [...items].sort((a, b) => {
-        const valA = a[dateKey];
-        const valB = b[dateKey];
-        /* Simple string comparison works for ISO dates and years */
-        if (valA > valB) return -1;
-        if (valA < valB) return 1;
-        return 0;
+        const timeA = parseDate(a[dateKey]);
+        const timeB = parseDate(b[dateKey]);
+        return timeB - timeA; /* Descending (newest first) */
     });
 }
 
