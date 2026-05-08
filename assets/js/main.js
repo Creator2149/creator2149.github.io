@@ -271,20 +271,6 @@ function createProjectCard(project, onClick) {
         body.appendChild(tech);
     }
 
-    /* Link indicator */
-    if (project.link && project.link.trim()) {
-        const link = document.createElement('a');
-        link.className = 'card__link';
-        link.href = project.link;
-        link.target = '_blank';
-        link.rel = 'noopener noreferrer';
-        link.textContent = 'View';
-        link.addEventListener('click', (e) => {
-            e.stopPropagation();
-        });
-        body.appendChild(link);
-    }
-
     card.appendChild(body);
 
     /* Click handler */
