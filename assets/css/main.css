@@ -499,7 +499,7 @@ body::after {
 .card__image {
     width: 100%;
     aspect-ratio: 16 / 9;
-    object-fit: contain;
+    object-fit: cover;
     background: var(--bg-tertiary);
     border-bottom: 1px solid var(--glass-border);
 }
@@ -812,11 +812,6 @@ body::after {
     transform: translateY(0) scale(1);
 }
 
-.modal__close::before {
-    content: '\f00d';
-    font-family: 'Font Awesome 6 Free';
-    font-weight: 900;
-}
 .modal__close:hover {
     color: var(--text-primary);
     border-color: var(--glass-border-hover);
@@ -825,14 +820,14 @@ body::after {
 .modal__image {
     width: 100%;
     aspect-ratio: 16 / 9;
-    object-fit: contain;
+    object-fit: cover;
     background: var(--bg-tertiary);
     border-radius: var(--radius-xl) var(--radius-xl) 0 0;
 }
 
 .modal__image--blender {
     aspect-ratio: 1 / 1;
-    object-fit: contain;
+    object-fit: cover;
 }
 
 .modal__image-placeholder {

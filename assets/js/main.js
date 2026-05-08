@@ -75,128 +75,17 @@ function buildFooter() {
     icon.className = 'footer__copyright-icon';
     icon.textContent = '';
     icon.innerHTML = '<i class="fas fa-copyright"></i>';
-    icon.setAttribute('role', 'button');
-    icon.setAttribute('tabindex', '0');
-    icon.setAttribute('aria-label', 'Copyright — triple-click for admin access');
 
     const text = document.createTextNode(` ${SITE.owner.copyright}`);
-
-    p.appendChild(icon);
-    p.appendChild(text);
-    footer.appendChild(p);
-
-    /* Triple-click detection for admin access */
-    let clickCount = 0;
-    let clickTimer = null;
-
-    const handleTripleClick = () => {
-        clickCount++;
-        if (clickTimer) clearTimeout(clickTimer);
-        clickTimer = setTimeout(() => {
-            clickCount = 0;
-        }, 500);
-
-        if (clickCount >= 3) {
-            clickCount = 0;
-            clearTimeout(clickTimer);
-            showAdminAccessModal();
-        }
-    };
-
-    icon.addEventListener('click', handleTripleClick);
-
-    /* Keyboard support */
-    icon.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault();
-            handleTripleClick();
-        }
-    });
 }
 
 /* ── Admin Access Modal ─────────────────────────────────────── */
-
-const ADMIN_HASH = 'c2102ea6340446722128b1db3b9ac26e59ed820b8898c4a69cbaf90b72012b72';
 
 async function sha256(message) {
     const msgBuffer = new TextEncoder().encode(message);
     const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
     const hashArray = Array.from(new Uint8Array(hashBuffer));
     return hashArray.map((b) => b.toString(16).padStart(2, '0')).join('');
-}
-
-function showAdminAccessModal() {
-    /* Remove any existing overlay */
-    const existing = document.querySelector('.admin-modal-overlay');
-    if (existing) existing.remove();
-
-    const overlay = document.createElement('div');
-    overlay.className = 'admin-modal-overlay';
-
-    const modal = document.createElement('div');
-    modal.className = 'admin-modal';
-
-    const title = document.createElement('h2');
-    title.className = 'admin-modal__title';
-    title.textContent = 'Admin Access';
-
-    const input = document.createElement('input');
-    input.className = 'admin-modal__input';
-    input.type = 'password';
-    input.placeholder = 'Enter password';
-    input.setAttribute('autocomplete', 'off');
-
-    const actions = document.createElement('div');
-    actions.className = 'admin-modal__actions';
-
-    const cancelBtn = document.createElement('button');
-    cancelBtn.className = 'admin-modal__btn admin-modal__btn--cancel';
-    cancelBtn.textContent = 'Cancel';
-    cancelBtn.addEventListener('click', () => overlay.remove());
-
-    const confirmBtn = document.createElement('button');
-    confirmBtn.className = 'admin-modal__btn admin-modal__btn--confirm';
-    confirmBtn.textContent = 'Enter';
-    confirmBtn.addEventListener('click', async () => {
-        const hash = await sha256(input.value);
-        if (hash === ADMIN_HASH) {
-            window.location.href = 'admin.html';
-        } else {
-            input.value = '';
-            input.style.borderColor = '#c47070';
-            setTimeout(() => {
-                input.style.borderColor = '';
-            }, 1500);
-        }
-    });
-
-    /* Enter key submits */
-    input.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') confirmBtn.click();
-    });
-
-    /* Escape key closes */
-    overlay.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') overlay.remove();
-    });
-
-    /* Click outside closes */
-    overlay.addEventListener('click', (e) => {
-        if (e.target === overlay) overlay.remove();
-    });
-
-    actions.appendChild(cancelBtn);
-    actions.appendChild(confirmBtn);
-    modal.appendChild(title);
-    modal.appendChild(input);
-    modal.appendChild(actions);
-    overlay.appendChild(modal);
-    document.body.appendChild(overlay);
-
-    requestAnimationFrame(() => {
-        overlay.classList.add('admin-modal-overlay--visible');
-        input.focus();
-    });
 }
 
 /* ── Utility helpers ────────────────────────────────────────── */
