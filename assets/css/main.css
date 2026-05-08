@@ -499,6 +499,7 @@ body::after {
 .card__image {
     width: 100%;
     height: auto;
+    max-height: 400px;
     object-fit: contain;
     object-position: center center;
     background: var(--bg-tertiary);
