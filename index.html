@@ -143,17 +143,26 @@
                 }
 
                 /* ── Featured Carousels ────────────────── */
-                const featuredProjects = PROJECTS.filter((p) => p.featured);
+                const featuredProjects = sortByNewest(
+                    PROJECTS.filter((p) => p.featured),
+                    'year',
+                );
                 initCarousel('#projects-carousel', featuredProjects, (project) =>
                     createProjectCard(project, openProjectModal),
                 );
 
-                const featuredCerts = CERTIFICATES.filter((c) => c.featured);
+                const featuredCerts = sortByNewest(
+                    CERTIFICATES.filter((c) => c.featured),
+                    'year',
+                );
                 initCarousel('#certificates-carousel', featuredCerts, (cert) =>
                     createCertificateCard(cert, openCertificateModal),
                 );
 
-                const featuredBlender = BLENDER_PROJECTS.filter((b) => b.featured);
+                const featuredBlender = sortByNewest(
+                    BLENDER_PROJECTS.filter((b) => b.featured),
+                    'date',
+                );
                 initCarousel('#blender-carousel', featuredBlender, (item) => createBlenderCard(item, openBlenderModal));
             });
         </script>
