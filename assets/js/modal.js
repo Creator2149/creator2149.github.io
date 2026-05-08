@@ -54,6 +54,7 @@ function openModal(html) {
     const closeBtn = document.createElement('button');
     closeBtn.className = 'modal__close';
     closeBtn.setAttribute('aria-label', 'Close modal');
+    closeBtn.innerHTML = '<i class="fas fa-times"></i>';
     closeBtn.addEventListener('click', closeModal);
     modal.prepend(closeBtn);
 

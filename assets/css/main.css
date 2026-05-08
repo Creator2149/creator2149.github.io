@@ -521,7 +521,7 @@ body::after {
 
 .card__image-placeholder::before {
     content: '\f03e';
-    font-family: 'Font Awesome 5 Free';
+    font-family: 'Font Awesome 6 Free';
     font-weight: 400;
     font-size: var(--text-2xl);
     opacity: 0.3;
