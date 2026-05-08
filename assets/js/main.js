@@ -224,7 +224,6 @@ function createProjectCard(project, onClick) {
     } else {
         const placeholder = document.createElement('div');
         placeholder.className = 'card__image-placeholder';
-        placeholder.innerHTML = '<span>no preview</span>';
         card.appendChild(placeholder);
     }
 
@@ -318,7 +317,6 @@ function createCertificateCard(cert, onClick) {
     } else {
         const placeholder = document.createElement('div');
         placeholder.className = 'card__image-placeholder';
-        placeholder.innerHTML = '<span>no image</span>';
         card.appendChild(placeholder);
     }
 
@@ -382,7 +380,6 @@ function createBlenderCard(item, onClick) {
     } else {
         const placeholder = document.createElement('div');
         placeholder.className = 'card__image-placeholder card__image-placeholder--blender';
-        placeholder.innerHTML = '<span>no render</span>';
         card.appendChild(placeholder);
     }
 
