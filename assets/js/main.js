@@ -77,6 +77,9 @@ function buildFooter() {
     icon.innerHTML = '<i class="fas fa-copyright"></i>';
 
     const text = document.createTextNode(` ${SITE.owner.copyright}`);
+    p.appendChild(icon);
+    p.appendChild(text);
+    footer.appendChild(p);
 }
 
 /* ── Admin Access Modal ─────────────────────────────────────── */

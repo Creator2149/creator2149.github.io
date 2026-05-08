@@ -17,125 +17,182 @@
         <link rel="stylesheet" href="assets/css/admin.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
         <script>
-            // SHA-256 hash function
-            async function sha256(message) {
-                const msgBuffer = new TextEncoder().encode(message);
-                const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
-                const hashArray = Array.from(new Uint8Array(hashBuffer));
-                return hashArray.map((b) => b.toString(16).padStart(2, '0')).join('');
-            }
+            document.addEventListener('DOMContentLoaded', () => {
+                // SHA-256 hash function
+                async function sha256(message) {
+                    const msgBuffer = new TextEncoder().encode(message);
+                    const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+                    const hashArray = Array.from(new Uint8Array(hashBuffer));
+                    return hashArray.map((b) => b.toString(16).padStart(2, '0')).join('');
+                }
 
-            // Admin hash from main.js
-            const ADMIN_HASH = 'c2102ea6340446722128b1db3b9ac26e59ed820b8898c4a69cbaf90b72012b72';
+                // Admin hash from main.js
+                const ADMIN_HASH = 'c2102ea6340446722128b1db3b9ac26e59ed820b8898c4a69cbaf90b72012b72';
 
-            // Handle authentication
-            const authForm = document.getElementById('auth-form');
-            const adminContent = document.getElementById('admin-content');
-            const passwordInput = document.getElementById('auth-password');
-            const submitBtn = document.getElementById('auth-submit');
+                // Handle authentication
+                const authForm = document.getElementById('auth-form');
+                const adminContent = document.getElementById('admin-content');
+                const passwordInput = document.getElementById('auth-password');
+                const submitBtn = document.getElementById('auth-submit');
 
-            submitBtn.addEventListener('click', async () => {
-                const password = passwordInput.value;
-                if (!password) return;
-                const hash = await sha256(password);
-                if (hash === ADMIN_HASH) {
+                submitBtn.addEventListener('click', async () => {
+                    const password = passwordInput.value;
+                    if (!password) return;
+                    const hash = await sha256(password);
+                    if (hash === ADMIN_HASH) {
+                        authForm.style.display = 'none';
+                        adminContent.style.display = 'block';
+                        sessionStorage.setItem('adminAuth', 'true');
+                        initAdmin();
+                    } else {
+                        passwordInput.value = '';
+                        passwordInput.style.borderColor = '#c47070';
+                        setTimeout(() => {
+                            passwordInput.style.borderColor = '';
+                        }, 1500);
+                    }
+                });
+
+                passwordInput.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter') submitBtn.click();
+                });
+
+                if (sessionStorage.getItem('adminAuth')) {
                     authForm.style.display = 'none';
                     adminContent.style.display = 'block';
-                    sessionStorage.setItem('adminAuth', 'true');
-                    // Load admin content
                     initAdmin();
-                } else {
-                    passwordInput.value = '';
-                    passwordInput.style.borderColor = '#c47070';
-                    setTimeout(() => {
-                        passwordInput.style.borderColor = '';
-                    }, 1500);
                 }
             });
-
-            passwordInput.addEventListener('keydown', (e) => {
-                if (e.key === 'Enter') submitBtn.click();
-            });
-
-            // Check if already authenticated
-            if (sessionStorage.getItem('adminAuth')) {
-                authForm.style.display = 'none';
-                adminContent.style.display = 'block';
-                initAdmin();
-            }
         </script>
     </head>
     <body>
         <!-- Password authentication form -->
-        <div id="auth-form" style="display: flex; align-items: center; justify-content: center; min-height: 100vh; background: var(--bg-base);">
-            <div style="background: var(--glass-bg-strong); backdrop-filter: blur(var(--blur-lg)); border: 1px solid var(--glass-border-hover); border-radius: var(--radius-xl); padding: var(--space-2xl); max-width: 400px; width: 100%; text-align: center;">
-                <h1 style="font-size: var(--text-xl); color: var(--text-heading); margin-bottom: var(--space-lg);">Admin Access</h1>
-                <input id="auth-password" type="password" placeholder="Enter password" style="width: 100%; padding: var(--space-md); background: rgba(10, 15, 26, 0.6); border: 1px solid var(--glass-border); border-radius: var(--radius-md); color: var(--text-primary); font-family: var(--font-mono); outline: none; margin-bottom: var(--space-lg);" autocomplete="off">
-                <button id="auth-submit" style="width: 100%; padding: var(--space-md); background: var(--accent); color: var(--bg-base); border: none; border-radius: var(--radius-md); font-family: var(--font-mono); font-weight: 500; cursor: pointer; transition: background var(--transition-fast);">Enter</button>
+        <div
+            id="auth-form"
+            style="
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                min-height: 100vh;
+                background: var(--bg-base);
+            "
+        >
+            <div
+                style="
+                    background: var(--glass-bg-strong);
+                    backdrop-filter: blur(var(--blur-lg));
+                    border: 1px solid var(--glass-border-hover);
+                    border-radius: var(--radius-xl);
+                    padding: var(--space-2xl);
+                    max-width: 400px;
+                    width: 100%;
+                    text-align: center;
+                "
+            >
+                <h1 style="font-size: var(--text-xl); color: var(--text-heading); margin-bottom: var(--space-lg)">
+                    Admin Access
+                </h1>
+                <input
+                    id="auth-password"
+                    type="password"
+                    placeholder="Enter password"
+                    style="
+                        width: 100%;
+                        padding: var(--space-md);
+                        background: rgba(10, 15, 26, 0.6);
+                        border: 1px solid var(--glass-border);
+                        border-radius: var(--radius-md);
+                        color: var(--text-primary);
+                        font-family: var(--font-mono);
+                        outline: none;
+                        margin-bottom: var(--space-lg);
+                    "
+                    autocomplete="off"
+                />
+                <button
+                    id="auth-submit"
+                    style="
+                        width: 100%;
+                        padding: var(--space-md);
+                        background: var(--accent);
+                        color: var(--bg-base);
+                        border: none;
+                        border-radius: var(--radius-md);
+                        font-family: var(--font-mono);
+                        font-weight: 500;
+                        cursor: pointer;
+                        transition: background var(--transition-fast);
+                    "
+                >
+                    Enter
+                </button>
             </div>
         </div>
 
         <!-- Admin content -->
-        <div id="admin-content" style="display: none;">
-        <div class="bg-grid" aria-hidden="true"></div>
+        <div id="admin-content" style="display: none">
+            <div class="bg-grid" aria-hidden="true"></div>
 
-        <header class="navbar">
-            <div class="navbar__inner"></div>
-        </header>
+            <header class="navbar">
+                <div class="navbar__inner"></div>
+            </header>
 
-        <main class="admin-layout">
-            <div class="container">
-                <div class="admin-header">
-                    <h1 class="admin-header__title">Admin Panel</h1>
-                    <p class="admin-header__subtitle">
-                        Manage projects, certificates, and Blender work. Changes sync to GitHub on push.
-                    </p>
+            <main class="admin-layout">
+                <div class="container">
+                    <div class="admin-header">
+                        <h1 class="admin-header__title">Admin Panel</h1>
+                        <p class="admin-header__subtitle">
+                            Manage projects, certificates, and Blender work. Changes sync to GitHub on push.
+                        </p>
+                    </div>
+
+                    <div id="pat-banner"></div>
+
+                    <section class="admin-section">
+                        <div class="admin-section__header">
+                            <h2 class="admin-section__title">
+                                Projects
+                                <span class="admin-section__count" id="projects-count"></span>
+                            </h2>
+                            <button class="btn btn--primary" onclick="Admin.openAddForm('projects')">
+                                Add Project
+                            </button>
+                        </div>
+                        <div id="projects-list"></div>
+                    </section>
+
+                    <section class="admin-section">
+                        <div class="admin-section__header">
+                            <h2 class="admin-section__title">
+                                Certificates
+                                <span class="admin-section__count" id="certificates-count"></span>
+                            </h2>
+                            <button class="btn btn--primary" onclick="Admin.openAddForm('certificates')">
+                                Add Certificate
+                            </button>
+                        </div>
+                        <div id="certificates-list"></div>
+                    </section>
+
+                    <section class="admin-section">
+                        <div class="admin-section__header">
+                            <h2 class="admin-section__title">
+                                Blender
+                                <span class="admin-section__count" id="blender-count"></span>
+                            </h2>
+                            <button class="btn btn--primary" onclick="Admin.openAddForm('blender')">
+                                Add Blender Project
+                            </button>
+                        </div>
+                        <div id="blender-list"></div>
+                    </section>
+
+                    <div id="form-container"></div>
+
+                    <div id="sync-bar"></div>
                 </div>
-
-                <div id="pat-banner"></div>
-
-                <section class="admin-section">
-                    <div class="admin-section__header">
-                        <h2 class="admin-section__title">
-                            Projects
-                            <span class="admin-section__count" id="projects-count"></span>
-                        </h2>
-                        <button class="btn btn--primary" onclick="Admin.openAddForm('projects')">Add Project</button>
-                    </div>
-                    <div id="projects-list"></div>
-                </section>
-
-                <section class="admin-section">
-                    <div class="admin-section__header">
-                        <h2 class="admin-section__title">
-                            Certificates
-                            <span class="admin-section__count" id="certificates-count"></span>
-                        </h2>
-                        <button class="btn btn--primary" onclick="Admin.openAddForm('certificates')">
-                            Add Certificate
-                        </button>
-                    </div>
-                    <div id="certificates-list"></div>
-                </section>
-
-                <section class="admin-section">
-                    <div class="admin-section__header">
-                        <h2 class="admin-section__title">
-                            Blender
-                            <span class="admin-section__count" id="blender-count"></span>
-                        </h2>
-                        <button class="btn btn--primary" onclick="Admin.openAddForm('blender')">
-                            Add Blender Project
-                        </button>
-                    </div>
-                    <div id="blender-list"></div>
-                </section>
-
-                <div id="form-container"></div>
-
-                <div id="sync-bar"></div>
-            </div>
-        </main>
+            </main>
+        </div>
 
         <script src="assets/js/data/site.js"></script>
         <script src="assets/js/data/projects.js"></script>
