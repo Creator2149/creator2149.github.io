@@ -115,20 +115,7 @@ function buildFooter() {
 
 /* ── Admin Access Modal ─────────────────────────────────────── */
 
-/**
- * ADMIN_HASH must be replaced with the SHA-256 hash of your chosen password.
- *
- * To generate the hash:
- *   1. Open your browser console
- *   2. Run: crypto.subtle.digest('SHA-256', new TextEncoder().encode('YOUR_PASSWORD'))
- *   3. Convert the ArrayBuffer to a hex string
- *
- * Or use this one-liner in the console:
- *   Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256', new TextEncoder().encode('YOUR_PASSWORD')))).map(b=>b.toString(16).padStart(2,'0')).join('')
- *
- * Then paste the resulting hex string as ADMIN_HASH below.
- */
-const ADMIN_HASH = 'REPLACE_THIS_HASH';
+const ADMIN_HASH = 'c2102ea6340446722128b1db3b9ac26e59ed820b8898c4a69cbaf90b72012b72';
 
 async function sha256(message) {
     const msgBuffer = new TextEncoder().encode(message);
