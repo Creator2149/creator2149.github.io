@@ -332,8 +332,6 @@ body::after {
     margin-right: var(--space-xs);
     color: var(--accent-muted);
 }
-
-/* FIX: Massive, prominent hero name */
 .hero__name {
     font-size: clamp(2.5rem, 6vw, 4.5rem);
     font-weight: 700;
@@ -356,7 +354,6 @@ body::after {
     margin-top: var(--space-md);
     box-shadow: var(--shadow-glow);
 }
-
 .hero__philosophy {
     font-size: var(--text-lg);
     color: var(--text-secondary);
@@ -438,6 +435,7 @@ body::after {
     font-family: var(--font-mono);
     transition: all var(--transition-fast);
     text-decoration: none;
+    white-space: nowrap;
 }
 .section__link:hover,
 .card__link:hover,
@@ -517,14 +515,17 @@ body::after {
     position: relative;
     border-radius: var(--radius-3xl) var(--radius-3xl) 0 0;
     margin-top: calc(-1 * var(--radius-3xl));
-    padding-top: calc(var(--space-3xl) + var(--radius-3xl));
+    /* FIX: Reduced top padding from space-3xl to space-2xl */
+    padding-top: calc(var(--space-2xl) + var(--radius-3xl));
     padding-bottom: var(--space-3xl);
     z-index: 2;
-    overflow: hidden; /* Contain the pseudo-element */
-    isolation: isolate; /* Stacking context */
+    overflow: hidden;
+    isolation: isolate;
+    /* FIX: Added explicit horizontal padding to push header/buttons inward */
+    padding-left: clamp(1.5rem, 5vw, 4rem);
+    padding-right: clamp(1.5rem, 5vw, 4rem);
 }
 
-/* The pseudo-element spans 200vw, guaranteeing full width regardless of scrollbar */
 #featured-projects::before,
 #featured-certificates::before,
 #featured-blender::before {
@@ -537,7 +538,6 @@ body::after {
     z-index: -1;
     pointer-events: none;
 }
-
 #featured-projects::before {
     background-color: var(--section-bg);
     background-image: radial-gradient(rgba(59, 130, 246, 0.03) 1px, transparent 1px);
@@ -556,7 +556,6 @@ body::after {
 #featured-blender::before {
     background: linear-gradient(160deg, #140d24 0%, #0f0a1a 50%, #150e22 100%);
 }
-
 #featured-blender::after {
     content: '';
     position: absolute;
@@ -669,12 +668,12 @@ body::after {
     color: var(--section-text);
 }
 
-/* ── Carousel (Arrow Spacing Fixed) ─────────────────────────── */
+/* ── Carousel (Symmetric Arrow Spacing) ─────────────────────── */
 
 .carousel {
     position: relative;
-    padding: 0 50px;
-} /* Ensures arrows never overlap cards */
+    padding: 0 56px;
+} /* Shifts track inward, making room for arrows */
 .carousel__track {
     display: flex;
     will-change: transform;
@@ -693,8 +692,8 @@ body::after {
     justify-content: space-between;
     pointer-events: none;
     z-index: 5;
-    padding: 0 4px;
-}
+    padding: 0 8px;
+} /* Symmetric padding inside the gap */
 .carousel__btn {
     pointer-events: auto;
     width: 40px;
@@ -1278,8 +1277,8 @@ body::after {
         display: flex;
     }
     .carousel {
-        padding: 0 36px;
-    } /* Slight adjustment for smaller arrows */
+        padding: 0 40px;
+    } /* Symmetric mobile padding */
 
     .hero {
         flex-direction: column;

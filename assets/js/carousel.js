@@ -1,6 +1,6 @@
 /**
  * carousel.js — Infinite carousel component with 4s pause
- * Pixel-based calculations for perfect mobile scrolling.
+ * Preloads images to prevent blank slides on fast navigation.
  */
 
 function initCarousel(containerSelector, items, cardFactory) {
@@ -23,6 +23,14 @@ function initCarousel(containerSelector, items, cardFactory) {
     let autoScrollTimer = null;
     let isPaused = false;
 
+    // FIX: Preload images into browser cache immediately to prevent blank slides
+    items.forEach((item) => {
+        if (item.image) {
+            const img = new Image();
+            img.src = item.image; // Forces the browser to fetch and cache
+        }
+    });
+
     const track = document.createElement('div');
     track.className = 'carousel__track';
 
@@ -31,12 +39,12 @@ function initCarousel(containerSelector, items, cardFactory) {
         slide.className = 'carousel__slide';
         const card = cardFactory(item);
 
-        // FIX: Force images inside clones to load eagerly to prevent blank carousel spaces
+        // Also force remove lazy loading on DOM elements just in case
         const images = card.querySelectorAll('img');
         images.forEach((img) => {
-            img.removeAttribute('loading'); // Remove lazy load
-            img.loading = 'eager'; // Force immediate network fetch
-            img.style.opacity = '1'; // Ensure they don't get stuck invisible
+            img.removeAttribute('loading');
+            img.loading = 'eager';
+            img.style.opacity = '1';
         });
 
         slide.appendChild(card);
