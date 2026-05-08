@@ -1,46 +1,53 @@
 /**
- * carousel.js — Infinite carousel component with pause functionality
+ * carousel.js — Infinite carousel component with 6s pause
  *
- * Renders an infinite scrolling carousel from an array of items.
- * Each item is rendered into a card using the provided factory function.
- * Features: infinite loop, pause on hover, manual controls, responsive.
+ * Features:
+ *   - Infinite looping (clones items at start and end)
+ *   - Stops on a single item for 6 seconds, then smoothly advances
+ *   - Left and right arrow navigation
+ *   - Pauses on hover
+ *   - Responsive (1 slide mobile, 2 tablet, 3 desktop)
  *
  * Usage:
  *   initCarousel(containerSelector, items, cardFactory)
- *     containerSelector — CSS selector for the carousel wrapper
- *     items             — array of data objects
- *     cardFactory       — function(item) => HTMLElement
  */
 
 function initCarousel(containerSelector, items, cardFactory) {
     const container = document.querySelector(containerSelector);
-    if (!container || !items.length) {
+    if (!container || !items || items.length === 0) {
         if (container) container.innerHTML = '<p class="empty-state">No featured items yet.</p>';
         return;
     }
 
-    // Duplicate items for infinite effect (at least 3 sets)
-    const duplicatedItems = [...items, ...items, ...items];
-    let currentIndex = 0;
-    let isPaused = false;
-    let pauseTimeout;
-    const pauseDuration = 6000; // 6 seconds pause on each item
+    // Number of items in the original array
+    const totalItems = items.length;
+    const pauseDuration = 6000; // 6 seconds pause
+    const transitionSpeed = '0.65s'; // Smooth transition duration
+    const transitionEasing = 'cubic-bezier(0.25, 1, 0.5, 1)';
 
-    /* Build track */
+    // Create extended array: [Last Item] + [All Items] + [First Item]
+    // This provides enough buffer for smooth infinite scrolling 1 step at a time
+    const extendedItems = [items[totalItems - 1], ...items, items[0]];
+
+    let currentIndex = 1; // Start at the first real item (index 1 because of clone)
+    let isTransitioning = false;
+    let autoScrollTimer = null;
+    let isPaused = false;
+
+    // Build track
     const track = document.createElement('div');
     track.className = 'carousel__track';
 
-    duplicatedItems.forEach((item, index) => {
+    extendedItems.forEach((item, index) => {
         const slide = document.createElement('div');
         slide.className = 'carousel__slide';
-        slide.setAttribute('data-index', index % items.length);
         slide.appendChild(cardFactory(item));
         track.appendChild(slide);
     });
 
     container.appendChild(track);
 
-    /* Controls */
+    // Controls (Left and Right Arrows)
     const controls = document.createElement('div');
     controls.className = 'carousel__controls';
 
@@ -58,95 +65,102 @@ function initCarousel(containerSelector, items, cardFactory) {
     controls.appendChild(nextBtn);
     container.appendChild(controls);
 
-    /* Navigation logic */
-    function updateCarousel(smooth = true) {
-        const slideWidth = 33.333; // percentage
-        const translateX = -currentIndex * slideWidth;
-        track.style.transition = smooth ? 'transform 0.8s cubic-bezier(0.4, 0, 0.2, 1)' : 'none';
-        track.style.transform = `translateX(${translateX}%)`;
+    // Core navigation logic
+    function getSlideWidthPercent() {
+        const width = window.innerWidth;
+        if (width >= 1024) return 33.333;
+        if (width >= 768) return 50;
+        return 100;
+    }
 
-        // Reset to middle set when reaching end/beginning for infinite effect
-        if (currentIndex >= items.length * 2) {
-            setTimeout(() => {
-                track.style.transition = 'none';
-                currentIndex = items.length;
-                track.style.transform = `translateX(-${currentIndex * slideWidth}%)`;
-            }, 800);
-        } else if (currentIndex <= -items.length) {
-            setTimeout(() => {
-                track.style.transition = 'none';
-                currentIndex = items.length - 1;
-                track.style.transform = `translateX(-${currentIndex * slideWidth}%)`;
-            }, 800);
+    function updateTrackPosition(animate = true) {
+        if (animate) {
+            track.style.transition = `transform ${transitionSpeed} ${transitionEasing}`;
+        } else {
+            track.style.transition = 'none';
         }
+        const offset = currentIndex * getSlideWidthPercent();
+        track.style.transform = `translateX(-${offset}%)`;
     }
 
     function nextSlide() {
-        if (!isPaused) {
-            currentIndex++;
-            updateCarousel();
-            schedulePause();
-        }
+        if (isTransitioning) return;
+        isTransitioning = true;
+        currentIndex++;
+        updateTrackPosition(true);
     }
 
     function prevSlide() {
+        if (isTransitioning) return;
+        isTransitioning = true;
+        currentIndex--;
+        updateTrackPosition(true);
+    }
+
+    // Handle infinite loop snapping (when hitting clones)
+    track.addEventListener('transitionend', () => {
+        isTransitioning = false;
+        // If we've slid past the last real item to the clone
+        if (currentIndex >= totalItems + 1) {
+            currentIndex = 1;
+            updateTrackPosition(false);
+        }
+        // If we've slid before the first real item to the clone
+        if (currentIndex <= 0) {
+            currentIndex = totalItems;
+            updateTrackPosition(false);
+        }
+    });
+
+    // Auto-scroll Timer
+    function startAutoScroll() {
+        clearTimeout(autoScrollTimer);
         if (!isPaused) {
-            currentIndex--;
-            updateCarousel();
-            schedulePause();
+            autoScrollTimer = setTimeout(() => {
+                nextSlide();
+                // Restart timer after transition finishes
+                setTimeout(startAutoScroll, 650);
+            }, pauseDuration);
         }
     }
 
-    function schedulePause() {
-        clearTimeout(pauseTimeout);
-        isPaused = true;
-        track.classList.add('carousel__track--paused');
-
-        pauseTimeout = setTimeout(() => {
-            isPaused = false;
-            track.classList.remove('carousel__track--paused');
-        }, pauseDuration);
+    function resetAutoScroll() {
+        clearTimeout(autoScrollTimer);
+        startAutoScroll();
     }
 
-    function startAutoScroll() {
-        setInterval(nextSlide, pauseDuration + 800); // pause + transition time
-    }
-
-    /* Event listeners */
+    // Event Listeners
     prevBtn.addEventListener('click', () => {
-        clearTimeout(pauseTimeout);
         prevSlide();
+        resetAutoScroll();
     });
 
     nextBtn.addEventListener('click', () => {
-        clearTimeout(pauseTimeout);
         nextSlide();
+        resetAutoScroll();
     });
 
     // Pause on hover
     container.addEventListener('mouseenter', () => {
-        clearTimeout(pauseTimeout);
         isPaused = true;
-        track.classList.add('carousel__track--paused');
+        clearTimeout(autoScrollTimer);
     });
 
     container.addEventListener('mouseleave', () => {
         isPaused = false;
-        track.classList.remove('carousel__track--paused');
-        schedulePause();
+        startAutoScroll();
     });
 
-    /* Handle resize */
+    // Handle resize (recalculate position instantly)
     let resizeTimeout;
     window.addEventListener('resize', () => {
         clearTimeout(resizeTimeout);
         resizeTimeout = setTimeout(() => {
-            updateCarousel(false); // Instant update on resize
+            updateTrackPosition(false);
         }, 150);
     });
 
-    /* Initial setup */
-    updateCarousel(false);
-    schedulePause();
+    // Initial setup
+    updateTrackPosition(false);
     startAutoScroll();
 }
