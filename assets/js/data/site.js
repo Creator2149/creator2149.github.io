@@ -35,16 +35,23 @@ const SITE = Object.freeze({
         },
         contact: {
             github: 'https://github.com/rishitc17',
-            email: 'rishitc17@gmail.com',
+            email: 'rishit@example.com',
         },
         copyright: 'Rishit Choudhary',
     },
 
+    /**
+     * Navigation links.
+     * Using relative paths so they work on:
+     *   - GitHub Pages (root domain)
+     *   - Local file:// protocol
+     *   - Any subdirectory deployment
+     */
     navigation: [
-        { label: 'Home', href: '/index.html' },
-        { label: 'Projects', href: '/projects.html' },
-        { label: 'Certificates', href: '/certificates.html' },
-        { label: 'Blender', href: '/blender.html' },
+        { label: 'Home', href: 'index.html' },
+        { label: 'Projects', href: 'projects.html' },
+        { label: 'Certificates', href: 'certificates.html' },
+        { label: 'Blender', href: 'blender.html' },
     ],
 
     /* GitHub repository used by the admin sync system */
@@ -54,15 +61,15 @@ const SITE = Object.freeze({
         branch: 'main',
     },
 
-    /* Image base paths — keep in sync with actual folder layout */
+    /* Image base paths — relative, no leading slash */
     paths: {
-        projectImages: '/assets/images/projects/',
-        certificateImages: '/assets/images/certificates/',
-        blenderImages: '/assets/images/blender/',
+        projectImages: 'assets/images/projects/',
+        certificateImages: 'assets/images/certificates/',
+        blenderImages: 'assets/images/blender/',
     },
 
     /* Design tokens exposed to JS if needed */
     theme: {
-        accentColor: '#6b8cae',
+        accentColor: '#5b9bd5',
     },
 });

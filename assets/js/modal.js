@@ -16,22 +16,22 @@ let _modalOverlay = null;
  * Returns the overlay element.
  */
 function ensureModalOverlay() {
-  if (_modalOverlay) return _modalOverlay;
+    if (_modalOverlay) return _modalOverlay;
 
-  const overlay = document.createElement("div");
-  overlay.className = "modal-overlay";
-  overlay.setAttribute("role", "dialog");
-  overlay.setAttribute("aria-modal", "true");
-  overlay.setAttribute("aria-label", "Detail view");
+    const overlay = document.createElement('div');
+    overlay.className = 'modal-overlay';
+    overlay.setAttribute('role', 'dialog');
+    overlay.setAttribute('aria-modal', 'true');
+    overlay.setAttribute('aria-label', 'Detail view');
 
-  /* Close on outside click */
-  overlay.addEventListener("click", (e) => {
-    if (e.target === overlay) closeModal();
-  });
+    /* Close on outside click */
+    overlay.addEventListener('click', (e) => {
+        if (e.target === overlay) closeModal();
+    });
 
-  document.body.appendChild(overlay);
-  _modalOverlay = overlay;
-  return overlay;
+    document.body.appendChild(overlay);
+    _modalOverlay = overlay;
+    return overlay;
 }
 
 /**
@@ -39,54 +39,54 @@ function ensureModalOverlay() {
  * @param {string} html — inner HTML for the modal content
  */
 function openModal(html) {
-  const overlay = ensureModalOverlay();
+    const overlay = ensureModalOverlay();
 
-  /* Remove old content */
-  const oldModal = overlay.querySelector(".modal");
-  if (oldModal) oldModal.remove();
+    /* Remove old content */
+    const oldModal = overlay.querySelector('.modal');
+    if (oldModal) oldModal.remove();
 
-  /* Create modal shell */
-  const modal = document.createElement("div");
-  modal.className = "modal";
-  modal.innerHTML = html;
+    /* Create modal shell */
+    const modal = document.createElement('div');
+    modal.className = 'modal';
+    modal.innerHTML = html;
 
-  /* Close button */
-  const closeBtn = document.createElement("button");
-  closeBtn.className = "modal__close";
-  closeBtn.setAttribute("aria-label", "Close modal");
-  closeBtn.innerHTML = "&times;";
-  closeBtn.addEventListener("click", closeModal);
-  modal.prepend(closeBtn);
+    /* Close button */
+    const closeBtn = document.createElement('button');
+    closeBtn.className = 'modal__close';
+    closeBtn.setAttribute('aria-label', 'Close modal');
+    closeBtn.innerHTML = '&times;';
+    closeBtn.addEventListener('click', closeModal);
+    modal.prepend(closeBtn);
 
-  overlay.appendChild(modal);
+    overlay.appendChild(modal);
 
-  /* Show */
-  requestAnimationFrame(() => {
-    overlay.classList.add("modal-overlay--visible");
-  });
+    /* Show */
+    requestAnimationFrame(() => {
+        overlay.classList.add('modal-overlay--visible');
+    });
 
-  /* Trap focus */
-  modal.focus();
+    /* Trap focus */
+    modal.focus();
 
-  /* Register escape key listener */
-  document.addEventListener("keydown", _modalEscHandler);
+    /* Register escape key listener */
+    document.addEventListener('keydown', _modalEscHandler);
 
-  /* Prevent body scroll */
-  document.body.style.overflow = "hidden";
+    /* Prevent body scroll */
+    document.body.style.overflow = 'hidden';
 }
 
 /**
  * Close the modal overlay.
  */
 function closeModal() {
-  if (!_modalOverlay) return;
-  _modalOverlay.classList.remove("modal-overlay--visible");
-  document.removeEventListener("keydown", _modalEscHandler);
-  document.body.style.overflow = "";
+    if (!_modalOverlay) return;
+    _modalOverlay.classList.remove('modal-overlay--visible');
+    document.removeEventListener('keydown', _modalEscHandler);
+    document.body.style.overflow = '';
 }
 
 function _modalEscHandler(e) {
-  if (e.key === "Escape") closeModal();
+    if (e.key === 'Escape') closeModal();
 }
 
 /* ── Content builders ───────────────────────────────────────── */
@@ -97,28 +97,28 @@ function _modalEscHandler(e) {
  * @returns {string}
  */
 function buildProjectModalHTML(project) {
-  let imageSection = "";
-  if (project.image) {
-    imageSection = `<img class="modal__image" src="${project.image}" alt="${project.title}" />`;
-  } else {
-    imageSection = `<div class="modal__image-placeholder">No preview available</div>`;
-  }
+    let imageSection = '';
+    if (project.image) {
+        imageSection = `<img class="modal__image" src="${project.image}" alt="${project.title}" />`;
+    } else {
+        imageSection = `<div class="modal__image-placeholder">no preview available</div>`;
+    }
 
-  const statusClass = project.status.toLowerCase().replace(/\s+/g, "-");
+    const statusClass = project.status.toLowerCase().replace(/\s+/g, '-');
 
-  let techHTML = "";
-  if (project.tech && project.tech.length) {
-    techHTML = `<div class="modal__tech">${project.tech
-      .map((t) => `<span class="card__tech-tag">${t}</span>`)
-      .join("")}</div>`;
-  }
+    let techHTML = '';
+    if (project.tech && project.tech.length) {
+        techHTML = `<div class="modal__tech">${project.tech
+            .map((t) => `<span class="card__tech-tag">${t}</span>`)
+            .join('')}</div>`;
+    }
 
-  let linkHTML = "";
-  if (project.link) {
-    linkHTML = `<a class="modal__link" href="${project.link}" target="_blank" rel="noopener noreferrer">View project &rarr;</a>`;
-  }
+    let linkHTML = '';
+    if (project.link) {
+        linkHTML = `<a class="modal__link" href="${project.link}" target="_blank" rel="noopener noreferrer">view project &rarr;</a>`;
+    }
 
-  return `
+    return `
     ${imageSection}
     <div class="modal__body">
       <h2 class="modal__title">${project.title}</h2>
@@ -139,14 +139,14 @@ function buildProjectModalHTML(project) {
  * @returns {string}
  */
 function buildCertificateModalHTML(cert) {
-  let imageSection = "";
-  if (cert.image) {
-    imageSection = `<img class="modal__image" src="${cert.image}" alt="${cert.title}" />`;
-  } else {
-    imageSection = `<div class="modal__image-placeholder">No image available</div>`;
-  }
+    let imageSection = '';
+    if (cert.image) {
+        imageSection = `<img class="modal__image" src="${cert.image}" alt="${cert.title}" />`;
+    } else {
+        imageSection = `<div class="modal__image-placeholder">no image available</div>`;
+    }
 
-  return `
+    return `
     ${imageSection}
     <div class="modal__body">
       <h2 class="modal__title">${cert.title}</h2>
@@ -164,14 +164,14 @@ function buildCertificateModalHTML(cert) {
  * @returns {string}
  */
 function buildBlenderModalHTML(item) {
-  let imageSection = "";
-  if (item.image) {
-    imageSection = `<img class="modal__image modal__image--blender" src="${item.image}" alt="${item.title}" />`;
-  } else {
-    imageSection = `<div class="modal__image-placeholder modal__image-placeholder--blender">No render available</div>`;
-  }
+    let imageSection = '';
+    if (item.image) {
+        imageSection = `<img class="modal__image modal__image--blender" src="${item.image}" alt="${item.title}" />`;
+    } else {
+        imageSection = `<div class="modal__image-placeholder modal__image-placeholder--blender">no render available</div>`;
+    }
 
-  return `
+    return `
     ${imageSection}
     <div class="modal__body">
       <h2 class="modal__title">${item.title}</h2>
@@ -186,19 +186,19 @@ function buildBlenderModalHTML(item) {
  * Convenience: open a project modal.
  */
 function openProjectModal(project) {
-  openModal(buildProjectModalHTML(project));
+    openModal(buildProjectModalHTML(project));
 }
 
 /**
  * Convenience: open a certificate modal.
  */
 function openCertificateModal(cert) {
-  openModal(buildCertificateModalHTML(cert));
+    openModal(buildCertificateModalHTML(cert));
 }
 
 /**
  * Convenience: open a Blender modal.
  */
 function openBlenderModal(item) {
-  openModal(buildBlenderModalHTML(item));
+    openModal(buildBlenderModalHTML(item));
 }

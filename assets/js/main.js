@@ -17,7 +17,7 @@ function buildNavbar() {
     /* Brand */
     const brand = document.createElement('a');
     brand.className = 'navbar__brand';
-    brand.href = '/index.html';
+    brand.href = 'index.html';
     brand.textContent = SITE.owner.name;
     inner.appendChild(brand);
 
@@ -32,7 +32,7 @@ function buildNavbar() {
         a.className = 'navbar__link';
         a.href = item.href;
         a.textContent = item.label;
-        if (currentPath.endsWith(item.href.replace('/', '')) || (currentPath === '/' && item.href === '/index.html')) {
+        if (currentPath.endsWith(item.href) || (currentPath === '/' && item.href === 'index.html')) {
             a.classList.add('navbar__link--active');
         }
         links.appendChild(a);
@@ -115,7 +115,20 @@ function buildFooter() {
 
 /* ── Admin Access Modal ─────────────────────────────────────── */
 
-const ADMIN_HASH = 'c2102ea6340446722128b1db3b9ac26e59ed820b8898c4a69cbaf90b72012b72';
+/**
+ * ADMIN_HASH must be replaced with the SHA-256 hash of your chosen password.
+ *
+ * To generate the hash:
+ *   1. Open your browser console
+ *   2. Run: crypto.subtle.digest('SHA-256', new TextEncoder().encode('YOUR_PASSWORD'))
+ *   3. Convert the ArrayBuffer to a hex string
+ *
+ * Or use this one-liner in the console:
+ *   Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256', new TextEncoder().encode('YOUR_PASSWORD')))).map(b=>b.toString(16).padStart(2,'0')).join('')
+ *
+ * Then paste the resulting hex string as ADMIN_HASH below.
+ */
+const ADMIN_HASH = 'REPLACE_THIS_HASH';
 
 async function sha256(message) {
     const msgBuffer = new TextEncoder().encode(message);
@@ -159,7 +172,7 @@ function showAdminAccessModal() {
     confirmBtn.addEventListener('click', async () => {
         const hash = await sha256(input.value);
         if (hash === ADMIN_HASH) {
-            window.location.href = '/admin.html';
+            window.location.href = 'admin.html';
         } else {
             input.value = '';
             input.style.borderColor = '#c47070';
@@ -224,7 +237,7 @@ function createProjectCard(project, onClick) {
     } else {
         const placeholder = document.createElement('div');
         placeholder.className = 'card__image-placeholder';
-        placeholder.textContent = 'No preview';
+        placeholder.innerHTML = '<span>no preview</span>';
         card.appendChild(placeholder);
     }
 
@@ -276,7 +289,7 @@ function createProjectCard(project, onClick) {
     if (project.link) {
         const link = document.createElement('span');
         link.className = 'card__link';
-        link.textContent = 'View project \u2192';
+        link.textContent = 'view \u2192';
         body.appendChild(link);
     }
 
@@ -318,7 +331,7 @@ function createCertificateCard(cert, onClick) {
     } else {
         const placeholder = document.createElement('div');
         placeholder.className = 'card__image-placeholder';
-        placeholder.textContent = 'No image';
+        placeholder.innerHTML = '<span>no image</span>';
         card.appendChild(placeholder);
     }
 
@@ -382,7 +395,7 @@ function createBlenderCard(item, onClick) {
     } else {
         const placeholder = document.createElement('div');
         placeholder.className = 'card__image-placeholder card__image-placeholder--blender';
-        placeholder.textContent = 'No render';
+        placeholder.innerHTML = '<span>no render</span>';
         card.appendChild(placeholder);
     }
 

@@ -5,16 +5,19 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Rishit Choudhary — Portfolio</title>
         <meta name="description" content="Personal portfolio and project archive for Rishit Choudhary." />
-        <link rel="icon" href="/assets/favicon/favicon.svg" type="image/svg+xml" />
+        <link rel="icon" href="assets/favicon/favicon.svg" type="image/svg+xml" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
         <link
             href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
             rel="stylesheet"
         />
-        <link rel="stylesheet" href="/assets/css/main.css" />
+        <link rel="stylesheet" href="assets/css/main.css" />
     </head>
     <body>
+        <!-- Ambient background layer -->
+        <div class="bg-grid" aria-hidden="true"></div>
+
         <!-- Navbar -->
         <header class="navbar">
             <div class="navbar__inner"></div>
@@ -33,7 +36,7 @@
                 <section class="section" id="featured-projects">
                     <div class="section__header">
                         <h2 class="section__title">Featured Projects</h2>
-                        <a href="/projects.html" class="section__link">View all &rarr;</a>
+                        <a href="projects.html" class="section__link">View all &rarr;</a>
                     </div>
                     <div class="carousel" id="projects-carousel"></div>
                 </section>
@@ -42,7 +45,7 @@
                 <section class="section" id="featured-certificates">
                     <div class="section__header">
                         <h2 class="section__title">Featured Certificates</h2>
-                        <a href="/certificates.html" class="section__link">View all &rarr;</a>
+                        <a href="certificates.html" class="section__link">View all &rarr;</a>
                     </div>
                     <div class="carousel" id="certificates-carousel"></div>
                 </section>
@@ -51,7 +54,7 @@
                 <section class="section" id="featured-blender">
                     <div class="section__header">
                         <h2 class="section__title">Featured Blender Work</h2>
-                        <a href="/blender.html" class="section__link">View all &rarr;</a>
+                        <a href="blender.html" class="section__link">View all &rarr;</a>
                     </div>
                     <div class="carousel" id="blender-carousel"></div>
                 </section>
@@ -65,13 +68,13 @@
         <footer class="footer"></footer>
 
         <!-- Scripts: data first, then modules, then page logic -->
-        <script src="/assets/js/data/site.js"></script>
-        <script src="/assets/js/data/projects.js"></script>
-        <script src="/assets/js/data/certificates.js"></script>
-        <script src="/assets/js/data/blender.js"></script>
-        <script src="/assets/js/modal.js"></script>
-        <script src="/assets/js/carousel.js"></script>
-        <script src="/assets/js/main.js"></script>
+        <script src="assets/js/data/site.js"></script>
+        <script src="assets/js/data/projects.js"></script>
+        <script src="assets/js/data/certificates.js"></script>
+        <script src="assets/js/data/blender.js"></script>
+        <script src="assets/js/modal.js"></script>
+        <script src="assets/js/carousel.js"></script>
+        <script src="assets/js/main.js"></script>
 
         <!-- Homepage initialisation -->
         <script>
@@ -80,6 +83,7 @@
                 const hero = document.getElementById('hero');
                 if (hero) {
                     hero.innerHTML = `
+          <div class="hero__tag">// portfolio</div>
           <h1 class="hero__name">${SITE.owner.name}</h1>
           <p class="hero__philosophy">${SITE.owner.philosophy}</p>
           <p class="hero__motto">${SITE.owner.motto}</p>
@@ -91,25 +95,26 @@
                 if (about) {
                     const a = SITE.owner.about;
                     about.innerHTML = `
+          <h2 class="about__heading">About</h2>
           <p class="about__intro">${a.intro}</p>
           <div class="about__grid">
-            <div class="about__block">
+            <div class="about__card">
               <h3>Interests</h3>
               <ul class="about__list">
                 ${a.interests.map((i) => `<li>${i}</li>`).join('')}
               </ul>
             </div>
-            <div class="about__block">
+            <div class="about__card">
               <h3>Explored Fields</h3>
               <ul class="about__list">
                 ${a.exploredFields.map((f) => `<li>${f}</li>`).join('')}
               </ul>
             </div>
-            <div class="about__block">
+            <div class="about__card">
               <h3>Mindset</h3>
               <p>${a.mindset}</p>
             </div>
-            <div class="about__block">
+            <div class="about__card">
               <h3>Current Focus</h3>
               <p>${a.currentFocus}</p>
             </div>
@@ -124,8 +129,12 @@
                     contact.innerHTML = `
           <h2 class="contact__title">Get in Touch</h2>
           <div class="contact__links">
-            <a class="contact__link" href="${c.github}" target="_blank" rel="noopener noreferrer">GitHub &rarr;</a>
-            <a class="contact__link" href="mailto:${c.email}">Email &rarr;</a>
+            <a class="contact__link" href="${c.github}" target="_blank" rel="noopener noreferrer">
+              <span class="contact__link-icon">&#9670;</span> GitHub
+            </a>
+            <a class="contact__link" href="mailto:${c.email}">
+              <span class="contact__link-icon">&#9670;</span> Email
+            </a>
           </div>
         `;
                 }

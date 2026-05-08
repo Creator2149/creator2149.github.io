@@ -5,49 +5,43 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Projects — Rishit Choudhary</title>
         <meta name="description" content="Full archive of projects by Rishit Choudhary." />
-        <link rel="icon" href="/assets/favicon/favicon.svg" type="image/svg+xml" />
+        <link rel="icon" href="assets/favicon/favicon.svg" type="image/svg+xml" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
         <link
             href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
             rel="stylesheet"
         />
-        <link rel="stylesheet" href="/assets/css/main.css" />
+        <link rel="stylesheet" href="assets/css/main.css" />
     </head>
     <body>
-        <!-- Navbar -->
+        <div class="bg-grid" aria-hidden="true"></div>
+
         <header class="navbar">
             <div class="navbar__inner"></div>
         </header>
 
-        <!-- Main Content -->
         <main class="page-content">
             <div class="container">
-                <!-- Page Header -->
                 <div class="page-header">
                     <h1 class="page-header__title">Projects</h1>
                     <p class="page-header__subtitle">Complete archive of engineering work, experiments, and tools.</p>
                 </div>
 
-                <!-- Filters -->
                 <div class="filters" id="project-filters"></div>
 
-                <!-- Project Grid -->
                 <div class="archive-grid" id="projects-grid"></div>
             </div>
         </main>
 
-        <!-- Footer -->
         <footer class="footer"></footer>
 
-        <!-- Scripts -->
-        <script src="/assets/js/data/site.js"></script>
-        <script src="/assets/js/data/projects.js"></script>
-        <script src="/assets/js/modal.js"></script>
-        <script src="/assets/js/filters.js"></script>
-        <script src="/assets/js/main.js"></script>
+        <script src="assets/js/data/site.js"></script>
+        <script src="assets/js/data/projects.js"></script>
+        <script src="assets/js/modal.js"></script>
+        <script src="assets/js/filters.js"></script>
+        <script src="assets/js/main.js"></script>
 
-        <!-- Page logic -->
         <script>
             document.addEventListener('DOMContentLoaded', () => {
                 const sorted = sortByNewest(PROJECTS, 'year');
@@ -68,10 +62,7 @@
                     });
                 }
 
-                /* Initial render */
                 renderGrid(sorted);
-
-                /* Filter system */
                 initFilters('#project-filters', sorted, renderGrid);
             });
         </script>

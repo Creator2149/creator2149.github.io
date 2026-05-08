@@ -1,111 +1,106 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Admin — Portfolio Management</title>
-  <meta name="description" content="Admin panel for managing portfolio content." />
-  <meta name="robots" content="noindex, nofollow" />
-  <link rel="icon" href="/assets/favicon/favicon.svg" type="image/svg+xml" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/assets/css/main.css" />
-  <link rel="stylesheet" href="/assets/css/admin.css" />
-</head>
-<body>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Admin — Portfolio Management</title>
+        <meta name="description" content="Admin panel for managing portfolio content." />
+        <meta name="robots" content="noindex, nofollow" />
+        <link rel="icon" href="assets/favicon/favicon.svg" type="image/svg+xml" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+            rel="stylesheet"
+        />
+        <link rel="stylesheet" href="assets/css/main.css" />
+        <link rel="stylesheet" href="assets/css/admin.css" />
+    </head>
+    <body>
+        <div class="bg-grid" aria-hidden="true"></div>
 
-  <!-- Navbar -->
-  <header class="navbar">
-    <div class="navbar__inner"></div>
-  </header>
+        <header class="navbar">
+            <div class="navbar__inner"></div>
+        </header>
 
-  <!-- Admin Layout -->
-  <main class="admin-layout">
-    <div class="container">
+        <main class="admin-layout">
+            <div class="container">
+                <div class="admin-header">
+                    <h1 class="admin-header__title">Admin Panel</h1>
+                    <p class="admin-header__subtitle">
+                        Manage projects, certificates, and Blender work. Changes sync to GitHub on push.
+                    </p>
+                </div>
 
-      <!-- Header -->
-      <div class="admin-header">
-        <h1 class="admin-header__title">Admin Panel</h1>
-        <p class="admin-header__subtitle">Manage projects, certificates, and Blender work. Changes sync to GitHub on push.</p>
-      </div>
+                <div id="pat-banner"></div>
 
-      <!-- PAT Banner -->
-      <div id="pat-banner"></div>
+                <section class="admin-section">
+                    <div class="admin-section__header">
+                        <h2 class="admin-section__title">
+                            Projects
+                            <span class="admin-section__count" id="projects-count"></span>
+                        </h2>
+                        <button class="btn btn--primary" onclick="Admin.openAddForm('projects')">Add Project</button>
+                    </div>
+                    <div id="projects-list"></div>
+                </section>
 
-      <!-- Projects Section -->
-      <section class="admin-section">
-        <div class="admin-section__header">
-          <h2 class="admin-section__title">
-            Projects
-            <span class="admin-section__count" id="projects-count"></span>
-          </h2>
-          <button class="btn btn--primary" onclick="Admin.openAddForm('projects')">Add Project</button>
-        </div>
-        <div id="projects-list"></div>
-      </section>
+                <section class="admin-section">
+                    <div class="admin-section__header">
+                        <h2 class="admin-section__title">
+                            Certificates
+                            <span class="admin-section__count" id="certificates-count"></span>
+                        </h2>
+                        <button class="btn btn--primary" onclick="Admin.openAddForm('certificates')">
+                            Add Certificate
+                        </button>
+                    </div>
+                    <div id="certificates-list"></div>
+                </section>
 
-      <!-- Certificates Section -->
-      <section class="admin-section">
-        <div class="admin-section__header">
-          <h2 class="admin-section__title">
-            Certificates
-            <span class="admin-section__count" id="certificates-count"></span>
-          </h2>
-          <button class="btn btn--primary" onclick="Admin.openAddForm('certificates')">Add Certificate</button>
-        </div>
-        <div id="certificates-list"></div>
-      </section>
+                <section class="admin-section">
+                    <div class="admin-section__header">
+                        <h2 class="admin-section__title">
+                            Blender
+                            <span class="admin-section__count" id="blender-count"></span>
+                        </h2>
+                        <button class="btn btn--primary" onclick="Admin.openAddForm('blender')">
+                            Add Blender Project
+                        </button>
+                    </div>
+                    <div id="blender-list"></div>
+                </section>
 
-      <!-- Blender Section -->
-      <section class="admin-section">
-        <div class="admin-section__header">
-          <h2 class="admin-section__title">
-            Blender
-            <span class="admin-section__count" id="blender-count"></span>
-          </h2>
-          <button class="btn btn--primary" onclick="Admin.openAddForm('blender')">Add Blender Project</button>
-        </div>
-        <div id="blender-list"></div>
-      </section>
+                <div id="form-container"></div>
 
-      <!-- Form Container -->
-      <div id="form-container"></div>
+                <div id="sync-bar"></div>
+            </div>
+        </main>
 
-      <!-- Sync Bar -->
-      <div id="sync-bar"></div>
+        <script src="assets/js/data/site.js"></script>
+        <script src="assets/js/data/projects.js"></script>
+        <script src="assets/js/data/certificates.js"></script>
+        <script src="assets/js/data/blender.js"></script>
+        <script src="assets/js/github.js"></script>
+        <script src="assets/js/main.js"></script>
+        <script src="assets/js/admin.js"></script>
 
-    </div>
-  </main>
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                function updateCounts() {
+                    const pc = document.getElementById('projects-count');
+                    const cc = document.getElementById('certificates-count');
+                    const bc = document.getElementById('blender-count');
+                    if (pc) pc.textContent = `(${PROJECTS.length})`;
+                    if (cc) cc.textContent = `(${CERTIFICATES.length})`;
+                    if (bc) bc.textContent = `(${BLENDER_PROJECTS.length})`;
+                }
+                updateCounts();
 
-  <!-- No footer on admin — but include scripts for navbar + admin -->
-  <script src="/assets/js/data/site.js"></script>
-  <script src="/assets/js/data/projects.js"></script>
-  <script src="/assets/js/data/certificates.js"></script>
-  <script src="/assets/js/data/blender.js"></script>
-  <script src="/assets/js/github.js"></script>
-  <script src="/assets/js/main.js"></script>
-  <script src="/assets/js/admin.js"></script>
-
-  <!-- Admin count updates -->
-  <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      function updateCounts() {
-        const pc = document.getElementById("projects-count");
-        const cc = document.getElementById("certificates-count");
-        const bc = document.getElementById("blender-count");
-        if (pc) pc.textContent = `(${PROJECTS.length})`;
-        if (cc) cc.textContent = `(${CERTIFICATES.length})`;
-        if (bc) bc.textContent = `(${BLENDER_PROJECTS.length})`;
-      }
-      updateCounts();
-
-      /* Re-run counts after any admin render (observe DOM changes) */
-      const observer = new MutationObserver(updateCounts);
-      const lists = document.querySelectorAll("#projects-list, #certificates-list, #blender-list");
-      lists.forEach((el) => observer.observe(el, { childList: true, subtree: true }));
-    });
-  </script>
-
-</body>
+                const observer = new MutationObserver(updateCounts);
+                const lists = document.querySelectorAll('#projects-list, #certificates-list, #blender-list');
+                lists.forEach((el) => observer.observe(el, { childList: true, subtree: true }));
+            });
+        </script>
+    </body>
 </html>
