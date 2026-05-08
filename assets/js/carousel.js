@@ -1,16 +1,6 @@
 /**
  * carousel.js — Infinite carousel component with 4s pause
- *
- * Features:
- *   - Infinite looping (clones items at start and end)
- *   - Stops on a single item for 4 seconds, then smoothly advances
- *   - Left and right arrow navigation that doesn't overlap cards
- *   - Pauses on hover
- *   - GPU Accelerated translate3d transitions
- *   - Responsive (1 slide mobile, 2 tablet, 3 desktop)
- *
- * Usage:
- *   initCarousel(containerSelector, items, cardFactory)
+ * Pixel-based calculations for perfect mobile scrolling.
  */
 
 function initCarousel(containerSelector, items, cardFactory) {
@@ -21,26 +11,34 @@ function initCarousel(containerSelector, items, cardFactory) {
     }
 
     const totalItems = items.length;
-    const pauseDuration = 4000; // 4 seconds pause
+    const pauseDuration = 4000;
     const transitionSpeed = '0.5s';
-    const transitionEasing = 'cubic-bezier(0.4, 0, 0.2, 1)'; // Smooth standard material curve
+    const transitionEasing = 'cubic-bezier(0.4, 0, 0.2, 1)';
 
-    // Create extended array: [Last Item] + [All Items] + [First Item]
+    // Extended array: [Last] + [All Items] + [First]
     const extendedItems = [items[totalItems - 1], ...items, items[0]];
 
-    let currentIndex = 1; // Start at the first real item (index 1 because of clone)
+    let currentIndex = 1;
     let isTransitioning = false;
     let autoScrollTimer = null;
     let isPaused = false;
 
-    // Build track
     const track = document.createElement('div');
     track.className = 'carousel__track';
 
     extendedItems.forEach((item) => {
         const slide = document.createElement('div');
         slide.className = 'carousel__slide';
-        slide.appendChild(cardFactory(item));
+        const card = cardFactory(item);
+
+        // Force images inside clones to load eagerly to prevent empty carousel spaces
+        const images = card.querySelectorAll('img');
+        images.forEach((img) => {
+            img.removeAttribute('loading');
+            img.style.opacity = '1';
+        });
+
+        slide.appendChild(card);
         track.appendChild(slide);
     });
 
@@ -64,23 +62,33 @@ function initCarousel(containerSelector, items, cardFactory) {
     controls.appendChild(nextBtn);
     container.appendChild(controls);
 
-    // Core logic
-    function getSlideWidthPercent() {
-        const width = window.innerWidth;
-        if (width >= 1024) return 33.333;
-        if (width >= 768) return 50;
-        return 100;
+    // Core logic - Pixel based for perfect alignment
+    function getVisibleCount() {
+        if (window.innerWidth >= 1024) return 3;
+        if (window.innerWidth >= 768) return 2;
+        return 1;
     }
 
     function updateTrackPosition(animate = true) {
+        const visibleCount = getVisibleCount();
+        const containerWidth = container.clientWidth;
+        // Calculate exact pixel width for each slide based on current container size
+        const slideWidth = containerWidth / visibleCount;
+
+        const slides = track.querySelectorAll('.carousel__slide');
+        slides.forEach((s) => {
+            s.style.flex = `0 0 ${slideWidth}px`;
+            s.style.padding = '0 8px'; // Gap between cards
+            s.style.boxSizing = 'border-box';
+        });
+
+        const offset = currentIndex * slideWidth;
         if (animate) {
             track.style.transition = `transform ${transitionSpeed} ${transitionEasing}`;
         } else {
             track.style.transition = 'none';
         }
-        const offset = currentIndex * getSlideWidthPercent();
-        // Using translate3d triggers GPU acceleration for smooth rendering
-        track.style.transform = `translate3d(-${offset}%, 0, 0)`;
+        track.style.transform = `translate3d(-${offset}px, 0, 0)`;
     }
 
     function nextSlide() {
@@ -97,7 +105,6 @@ function initCarousel(containerSelector, items, cardFactory) {
         updateTrackPosition(true);
     }
 
-    // Handle infinite loop snapping
     track.addEventListener('transitionend', () => {
         isTransitioning = false;
         if (currentIndex >= totalItems + 1) {
@@ -110,13 +117,12 @@ function initCarousel(containerSelector, items, cardFactory) {
         }
     });
 
-    // Auto-scroll Timer
     function startAutoScroll() {
         clearTimeout(autoScrollTimer);
         if (!isPaused) {
             autoScrollTimer = setTimeout(() => {
                 nextSlide();
-                setTimeout(startAutoScroll, 500); // Restart timer after transition
+                setTimeout(startAutoScroll, 500);
             }, pauseDuration);
         }
     }
@@ -126,7 +132,6 @@ function initCarousel(containerSelector, items, cardFactory) {
         startAutoScroll();
     }
 
-    // Events
     prevBtn.addEventListener('click', () => {
         prevSlide();
         resetAutoScroll();
@@ -145,7 +150,7 @@ function initCarousel(containerSelector, items, cardFactory) {
         startAutoScroll();
     });
 
-    // Handle resize
+    // Handle resize dynamically
     let resizeTimeout;
     window.addEventListener('resize', () => {
         clearTimeout(resizeTimeout);
