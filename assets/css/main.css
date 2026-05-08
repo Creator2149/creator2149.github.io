@@ -268,33 +268,15 @@ body::after {
     background: var(--accent-muted);
 }
 
-/* Mobile toggle */
 .navbar__toggle {
     display: none;
-    flex-direction: column;
-    gap: 5px;
     padding: var(--space-sm);
+    font-size: var(--text-lg);
+    color: var(--text-secondary);
+    transition: color var(--transition-fast);
 }
-
-.navbar__toggle span {
-    display: block;
-    width: 20px;
-    height: 2px;
-    background: var(--text-secondary);
-    border-radius: 1px;
-    transition:
-        transform var(--transition-base),
-        opacity var(--transition-base);
-}
-
-.navbar__toggle--open span:nth-child(1) {
-    transform: translateY(7px) rotate(45deg);
-}
-.navbar__toggle--open span:nth-child(2) {
-    opacity: 0;
-}
-.navbar__toggle--open span:nth-child(3) {
-    transform: translateY(-7px) rotate(-45deg);
+.navbar__toggle:hover {
+    color: var(--text-primary);
 }
 
 /* ── Hero ───────────────────────────────────────────────────── */
@@ -517,7 +499,7 @@ body::after {
 .card__image {
     width: 100%;
     aspect-ratio: 16 / 9;
-    object-fit: cover;
+    object-fit: contain;
     background: var(--bg-tertiary);
     border-bottom: 1px solid var(--glass-border);
 }
@@ -538,7 +520,9 @@ body::after {
 }
 
 .card__image-placeholder::before {
-    content: '[ ]';
+    content: '\f03e';
+    font-family: 'Font Awesome 5 Free';
+    font-weight: 400;
     font-size: var(--text-2xl);
     opacity: 0.3;
     position: absolute;
@@ -828,26 +812,10 @@ body::after {
     transform: translateY(0) scale(1);
 }
 
-.modal__close {
-    position: absolute;
-    top: var(--space-md);
-    right: var(--space-md);
-    width: 36px;
-    height: 36px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: var(--radius-sm);
-    color: var(--text-tertiary);
-    background: rgba(10, 15, 26, 0.6);
-    border: 1px solid var(--glass-border);
-    z-index: 1;
-    transition:
-        color var(--transition-fast),
-        border-color var(--transition-fast);
-    font-size: var(--text-lg);
-    backdrop-filter: blur(var(--blur-sm));
-    -webkit-backdrop-filter: blur(var(--blur-sm));
+.modal__close::before {
+    content: '\f00d';
+    font-family: 'Font Awesome 5 Free';
+    font-weight: 900;
 }
 .modal__close:hover {
     color: var(--text-primary);
@@ -857,13 +825,14 @@ body::after {
 .modal__image {
     width: 100%;
     aspect-ratio: 16 / 9;
-    object-fit: cover;
+    object-fit: contain;
     background: var(--bg-tertiary);
     border-radius: var(--radius-xl) var(--radius-xl) 0 0;
 }
 
 .modal__image--blender {
     aspect-ratio: 1 / 1;
+    object-fit: contain;
 }
 
 .modal__image-placeholder {
@@ -983,7 +952,7 @@ body::after {
 }
 
 .contact__link-icon {
-    font-size: 8px;
+    font-size: var(--text-sm);
     color: var(--accent);
 }
 

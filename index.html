@@ -13,6 +13,7 @@
             rel="stylesheet"
         />
         <link rel="stylesheet" href="assets/css/main.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     </head>
     <body>
         <!-- Ambient background layer -->
@@ -36,7 +37,7 @@
                 <section class="section" id="featured-projects">
                     <div class="section__header">
                         <h2 class="section__title">Featured Projects</h2>
-                        <a href="projects.html" class="section__link">View all &rarr;</a>
+                        <a href="projects.html" class="section__link">View all <i class="fas fa-arrow-right"></i></a>
                     </div>
                     <div class="carousel" id="projects-carousel"></div>
                 </section>
@@ -45,7 +46,9 @@
                 <section class="section" id="featured-certificates">
                     <div class="section__header">
                         <h2 class="section__title">Featured Certificates</h2>
-                        <a href="certificates.html" class="section__link">View all &rarr;</a>
+                        <a href="certificates.html" class="section__link"
+                            >View all <i class="fas fa-arrow-right"></i
+                        ></a>
                     </div>
                     <div class="carousel" id="certificates-carousel"></div>
                 </section>
@@ -54,7 +57,7 @@
                 <section class="section" id="featured-blender">
                     <div class="section__header">
                         <h2 class="section__title">Featured Blender Work</h2>
-                        <a href="blender.html" class="section__link">View all &rarr;</a>
+                        <a href="blender.html" class="section__link">View all <i class="fas fa-arrow-right"></i></a>
                     </div>
                     <div class="carousel" id="blender-carousel"></div>
                 </section>
@@ -130,10 +133,10 @@
           <h2 class="contact__title">Get in Touch</h2>
           <div class="contact__links">
             <a class="contact__link" href="${c.github}" target="_blank" rel="noopener noreferrer">
-              <span class="contact__link-icon">&#9670;</span> GitHub
+              <i class="fab fa-github contact__link-icon"></i> GitHub
             </a>
             <a class="contact__link" href="mailto:${c.email}">
-              <span class="contact__link-icon">&#9670;</span> Email
+              <i class="fas fa-envelope contact__link-icon"></i> Email
             </a>
           </div>
         `;

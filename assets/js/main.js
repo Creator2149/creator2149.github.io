@@ -44,7 +44,7 @@ function buildNavbar() {
     toggle.className = 'navbar__toggle';
     toggle.setAttribute('aria-label', 'Toggle navigation');
     toggle.setAttribute('aria-expanded', 'false');
-    toggle.innerHTML = '<span></span><span></span><span></span>';
+    toggle.innerHTML = '<i class="fas fa-bars"></i>';
     toggle.addEventListener('click', () => {
         const open = links.classList.toggle('navbar__links--open');
         toggle.classList.toggle('navbar__toggle--open', open);
@@ -73,7 +73,8 @@ function buildFooter() {
 
     const icon = document.createElement('span');
     icon.className = 'footer__copyright-icon';
-    icon.textContent = '\u00A9'; // © symbol
+    icon.textContent = '';
+    icon.innerHTML = '<i class="fas fa-copyright"></i>';
     icon.setAttribute('role', 'button');
     icon.setAttribute('tabindex', '0');
     icon.setAttribute('aria-label', 'Copyright — triple-click for admin access');
