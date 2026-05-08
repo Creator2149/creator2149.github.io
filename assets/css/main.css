@@ -4,8 +4,6 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
 
-/* ── Design Tokens ──────────────────────────────────────────── */
-
 :root {
     --bg-base: #0c0d12;
     --bg-primary: #111318;
@@ -173,12 +171,6 @@ img {
     opacity: 1;
     transform: translate3d(0, 0, 0);
 }
-.reveal-d1 {
-    transition-delay: 0.1s;
-}
-.reveal-d2 {
-    transition-delay: 0.2s;
-}
 
 .bg-grid {
     position: fixed;
@@ -290,9 +282,6 @@ body::after {
     transition: color var(--transition-fast);
     border-radius: var(--radius-md);
 }
-.navbar__toggle:hover {
-    color: var(--text-primary);
-}
 
 .hero {
     padding: var(--space-xl) 0 var(--space-2xl);
@@ -324,7 +313,6 @@ body::after {
     letter-spacing: 0.15em;
     text-transform: uppercase;
     margin-bottom: var(--space-lg);
-    opacity: 0.9;
     display: inline-block;
 }
 .hero__tag::before {
@@ -451,9 +439,7 @@ body::after {
     transform: translateX(3px);
 }
 
-/* ─────────────────────────────────────────────────────────────
-   SECTION-SPECIFIC THEMES
-   ───────────────────────────────────────────────────────────── */
+/* ── Themes ─────────────────────────────────────────────────── */
 
 #featured-projects,
 .page-projects {
@@ -507,7 +493,7 @@ body::after {
     --section-tag-color: #fb923c;
 }
 
-/* ── Full Width Section Backgrounds (No Scrollbar Gap) ─────── */
+/* ── Full Width Sections (Reduced Top Padding) ──────────────── */
 
 #featured-projects,
 #featured-certificates,
@@ -515,13 +501,12 @@ body::after {
     position: relative;
     border-radius: var(--radius-3xl) var(--radius-3xl) 0 0;
     margin-top: calc(-1 * var(--radius-3xl));
-    /* FIX: Reduced top padding from space-3xl to space-2xl */
-    padding-top: calc(var(--space-2xl) + var(--radius-3xl));
+    /* FIX: Reduced from space-2xl to space-md for much tighter top padding */
+    padding-top: calc(var(--space-md) + var(--radius-3xl));
     padding-bottom: var(--space-3xl);
     z-index: 2;
     overflow: hidden;
     isolation: isolate;
-    /* FIX: Added explicit horizontal padding to push header/buttons inward */
     padding-left: clamp(1.5rem, 5vw, 4rem);
     padding-right: clamp(1.5rem, 5vw, 4rem);
 }
@@ -668,12 +653,12 @@ body::after {
     color: var(--section-text);
 }
 
-/* ── Carousel (Symmetric Arrow Spacing) ─────────────────────── */
+/* ── Carousel ───────────────────────────────────────────────── */
 
 .carousel {
     position: relative;
     padding: 0 56px;
-} /* Shifts track inward, making room for arrows */
+}
 .carousel__track {
     display: flex;
     will-change: transform;
@@ -693,7 +678,7 @@ body::after {
     pointer-events: none;
     z-index: 5;
     padding: 0 8px;
-} /* Symmetric padding inside the gap */
+}
 .carousel__btn {
     pointer-events: auto;
     width: 40px;
@@ -1278,8 +1263,7 @@ body::after {
     }
     .carousel {
         padding: 0 40px;
-    } /* Symmetric mobile padding */
-
+    }
     .hero {
         flex-direction: column;
         gap: var(--space-xl);
@@ -1293,7 +1277,6 @@ body::after {
     .hero__content {
         max-width: 100%;
     }
-
     .about__grid {
         grid-template-columns: 1fr;
         gap: var(--space-md);
@@ -1302,8 +1285,6 @@ body::after {
     .archive-grid--blender {
         grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
     }
-
-    /* Mobile Modal Fix: Slides up from bottom */
     .modal-overlay {
         align-items: flex-end;
         padding: 0;
@@ -1317,7 +1298,6 @@ body::after {
     .modal-overlay--visible .modal {
         transform: translate3d(0, 0, 0);
     }
-
     .contact__links {
         flex-direction: column;
         gap: var(--space-sm);
