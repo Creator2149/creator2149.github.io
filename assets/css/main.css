@@ -282,7 +282,7 @@ body::after {
 /* ── Hero ───────────────────────────────────────────────────── */
 
 .hero {
-    padding: var(--space-3xl) 0 var(--space-2xl);
+    padding: var(--space-xl) 0 var(--space-2xl);
     position: relative;
     display: flex;
     align-items: center;
