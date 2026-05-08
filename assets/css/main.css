@@ -297,12 +297,10 @@ body::after {
 
 .hero__torus {
     flex: 1;
-    max-width: 500px;
-    height: 400px;
+    max-width: 600px;
+    height: 500px;
     border-radius: var(--radius-lg);
     overflow: hidden;
-    background: var(--bg-secondary);
-    border: 1px solid var(--glass-border);
 }
 
 .hero__tag {
@@ -1226,7 +1224,7 @@ body::after {
 
     .hero__torus {
         max-width: 100%;
-        height: 300px;
+        height: 400px;
     }
 
     .about__grid {
