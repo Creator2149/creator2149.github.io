@@ -3,21 +3,162 @@
  */
 
 const PROJECTS = [
-  {
-    "id": "jr-water-ambassadors",
-    "featured": true,
-    "title": "Jr. Water Ambassadors",
-    "status": "In Progress",
-    "year": "2026",
-    "tech": [
-      "HTML",
-      "CSS",
-      "JavaScript",
-      "GitHub Pages"
+    [
+        {
+            id: 'jr-water-ambassadors',
+            featured: true,
+            title: 'Water Ambassadors',
+            status: 'Complete',
+            year: '2026',
+            tech: ['HTML', 'CSS', 'JavaScript'],
+            image: '',
+            shortDescription: "I developed the showcase website for the school's Water Ambassadors program.",
+            longDescription:
+                'Although I was not directly part of the Water Ambassadors initiative, I created the official showcase website featuring cleanliness drives, awareness campaigns, posters, and collaborations with schools and organizations.',
+            link: '#',
+        },
+        {
+            id: 'school-menu-voting-system',
+            featured: true,
+            title: 'School Menu Voting System',
+            status: 'Complete',
+            year: '2026',
+            tech: ['HTML', 'CSS', 'JavaScript', 'Supabase'],
+            image: '',
+            shortDescription: 'A voting platform allowing students to decide the weekly school menu order.',
+            longDescription:
+                'This platform enables the school nutritionist to upload menu options for the upcoming week while students vote on which meals should appear on specific days. The system includes constraints to maintain nutritional balance and prevent duplicate selections.',
+            link: '#',
+        },
+        {
+            id: 'mealflow',
+            featured: true,
+            title: 'MealFlow',
+            status: 'Complete',
+            year: '2026',
+            tech: ['FastAPI', 'Appwrite', 'Tailwind CSS', 'Groq AI'],
+            image: '',
+            shortDescription: 'AI-powered meal planning for Indian households.',
+            longDescription:
+                'MealFlow helps Indian families generate personalized meal plans based on family member preferences, dietary goals, and available ingredients. The platform integrates AI-generated planning with a modern web stack using FastAPI, Appwrite, Tailwind CSS, and Groq AI.',
+            link: 'https://github.com/rishitc17/MealFlow',
+        },
+        {
+            id: 'nullary',
+            featured: true,
+            title: 'Nullary',
+            status: 'In Progress',
+            year: '2026',
+            tech: ['Mathematics', 'Research', 'LaTeX'],
+            image: '',
+            shortDescription: 'An axiomatic framework exploring division by zero.',
+            longDescription:
+                'Nullary is a mathematical research project proposing an axiomatic framework to simplify expressions involving division by zero. The paper is currently under active development and seeking expert feedback.',
+            link: '#',
+        },
+        {
+            id: 'rawcrypt',
+            featured: false,
+            title: 'RawCrypt',
+            status: 'Planned',
+            year: '2026',
+            tech: ['Python', 'FastAPI', 'Cryptography'],
+            image: '',
+            shortDescription: 'Educational platform teaching cryptography through intuitive explanations.',
+            longDescription:
+                'RawCrypt is planned as an educational platform introducing students to cryptographic systems ranging from Caesar Cipher to RSA using interactive mathematical explanations and modern web technologies.',
+            link: '#',
+        },
+        {
+            id: 'raksha',
+            featured: true,
+            title: 'Raksha',
+            status: 'Complete',
+            year: '2026',
+            tech: ['React', 'Python', 'Supabase', 'AI'],
+            image: '',
+            shortDescription: 'AI-powered self-defense learning platform.',
+            longDescription:
+                'Raksha is a self-defense training platform that uses webcam motion tracking and AI-powered feedback to help users learn techniques from home. I contributed to the project using React and Python.',
+            link: 'https://rakshaapp.github.io',
+        },
+        {
+            id: 'cybersecurity-for-elderly',
+            featured: false,
+            title: 'Cybersecurity for Elderly',
+            status: 'In Progress',
+            year: '2026',
+            tech: ['Education', 'Public Speaking', 'Community'],
+            image: '',
+            shortDescription: 'An awareness initiative focused on online safety for elderly people.',
+            longDescription:
+                'This initiative aims to educate elderly individuals about common online scams and cybersecurity threats through relatable real-world analogies and interactive online sessions.',
+            link: '#',
+        },
+        {
+            id: 'socra',
+            featured: true,
+            title: 'Socra',
+            status: 'Planned',
+            year: '2026',
+            tech: ['Business Strategy', 'NLP', 'Prompt Engineering'],
+            image: '',
+            shortDescription: 'Exploring Socratic questioning as a safeguard against passive AI dependence.',
+            longDescription:
+                'Socra is both a business concept and research project investigating how Socratic-style AI systems can encourage critical thinking instead of replacing it through direct answers. The project includes qualitative research and a proof-of-concept implementation.',
+            link: '#',
+        },
+        {
+            id: 'the-celestis-conclave',
+            featured: true,
+            title: 'The Celestis Conclave',
+            status: 'In Progress',
+            year: '2026',
+            tech: ['Leadership', 'STEM Education'],
+            image: '',
+            shortDescription: 'A regional student-led STEM learning community.',
+            longDescription:
+                'The Celestis Conclave is a student-led regional STEM organization focused on advanced learning and collaboration. I serve as the Mathematics Department Head and a member of the core council.',
+            link: 'https://celestisconclave.github.io',
+        },
+        {
+            id: 'nomad',
+            featured: true,
+            title: 'NOMAD — Neural Observation and Model Analysis of Digits',
+            status: 'Planned',
+            year: '2026',
+            tech: ['Python', 'Nengo', 'MNIST', 'NumPy', 'Matplotlib'],
+            image: '',
+            shortDescription: 'A neuromorphic computing benchmark using spiking neural networks.',
+            longDescription:
+                'NOMAD explores digit classification on the MNIST dataset using neuromorphic computing techniques. The project compares spiking neural networks implemented in Nengo against traditional machine learning and deep learning approaches to evaluate efficiency, accuracy, and computational trade-offs.',
+            link: '#',
+        },
+        {
+            id: 'echoes-of-etheryn',
+            featured: true,
+            title: 'Echoes of Etheryn',
+            status: 'In Progress',
+            year: '2025',
+            tech: ['Creative Writing', 'World Building'],
+            image: '',
+            shortDescription: 'A fantasy and science-fiction novel series.',
+            longDescription:
+                'Echoes of Etheryn is a long-form creative writing project blending high fantasy with science fiction themes, featuring interconnected storylines, cosmic lore, and morally complex characters.',
+            link: '#',
+        },
+        {
+            id: 'disease-spread-simulation',
+            featured: true,
+            title: 'Disease Spread Simulation',
+            status: 'Complete',
+            year: '2025',
+            tech: ['Python', 'Pygame', 'Simulation'],
+            image: '',
+            shortDescription: 'A Pygame simulation visualizing epidemiological spread.',
+            longDescription:
+                'This project models the transmission of diseases using mathematical epidemiology concepts and visualizes the spread dynamically through a Pygame-based simulation.',
+            link: 'https://github.com/rishitc17/DiseaseSpreadSimulation',
+        },
     ],
-    "image": "",
-    "shortDescription": "I created the website for our school's Junior Water Ambassadors program.",
-    "longDescription": "",
-    "link": "https://waterambassadors.github.io"
-  }
 ];
