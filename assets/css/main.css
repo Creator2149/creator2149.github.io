@@ -533,11 +533,16 @@ body::after {
 }
 
 .card__image-placeholder--blender {
-    aspect-ratio: 1 / 1;
+    width: 100%;
+    height: auto;
 }
 
 .card__image--blender {
-    aspect-ratio: 1 / 1;
+    width: 100%;
+    height: auto;
+    aspect-ratio: auto;
+    object-fit: contain;
+    object-position: center center;
 }
 
 .card__body {
