@@ -1,6 +1,7 @@
 /**
- * carousel.js — Infinite carousel with preloaded images
- * Prevents blank slides by proactively caching and replacing lazy images.
+ * carousel.js — Infinite carousel with symmetric peeks and deep buffer
+ * Prevents blank slides by maintaining a 2-item clone buffer and
+ * enforcing eager image rendering.
  */
 
 function initCarousel(containerSelector, items, cardFactory) {
@@ -14,180 +15,169 @@ function initCarousel(containerSelector, items, cardFactory) {
     const pauseDuration = 4000;
     const transitionSpeed = '0.5s';
     const transitionEasing = 'cubic-bezier(0.4, 0, 0.2, 1)';
-    const extendedItems = [items[totalItems - 1], ...items, items[0]];
 
-    let currentIndex = 1;
+    // Deep buffer: 2 clones at each end to prevent browser un-rendering off-screen items
+    const extendedItems = [items[totalItems - 2], items[totalItems - 1], ...items, items[0], items[1]];
+
+    let currentIndex = 2; // Start at the first real item
     let isTransitioning = false;
     let autoScrollTimer = null;
     let isPaused = false;
 
-    // STEP 1: Preload all image data into the browser's HTTP cache
-    function preloadImages() {
-        return Promise.all(
-            items.map((item) => {
-                if (!item.image) return Promise.resolve();
-                return new Promise((resolve) => {
-                    const img = new Image();
-                    img.src = item.image;
-                    img.onload = resolve;
-                    img.onerror = resolve;
-                });
-            }),
-        );
+    const track = document.createElement('div');
+    track.className = 'carousel__track';
+
+    extendedItems.forEach((item) => {
+        const slide = document.createElement('div');
+        slide.className = 'carousel__slide';
+        const card = cardFactory(item);
+
+        // CRITICAL FIX: The cardFactory generates images with loading="lazy".
+        // Browsers refuse to paint lazy-loaded images inside translate3d off-screen.
+        // We must remove 'lazy' and enforce 'eager' to fix the blank carousel issue.
+        card.querySelectorAll('img').forEach((img) => {
+            img.removeAttribute('loading');
+            img.loading = 'eager';
+            img.style.opacity = '1';
+        });
+
+        slide.appendChild(card);
+        track.appendChild(slide);
+    });
+
+    container.appendChild(track);
+
+    // Controls
+    const controls = document.createElement('div');
+    controls.className = 'carousel__controls';
+
+    const prevBtn = document.createElement('button');
+    prevBtn.className = 'carousel__btn carousel__btn--prev';
+    prevBtn.setAttribute('aria-label', 'Previous');
+    prevBtn.innerHTML = '<i class="fas fa-chevron-left"></i>';
+
+    const nextBtn = document.createElement('button');
+    nextBtn.className = 'carousel__btn carousel__btn--next';
+    nextBtn.setAttribute('aria-label', 'Next');
+    nextBtn.innerHTML = '<i class="fas fa-chevron-right"></i>';
+
+    controls.appendChild(prevBtn);
+    controls.appendChild(nextBtn);
+    container.appendChild(controls);
+
+    // Symmetric peek logic
+    function getCarouselLayout() {
+        const width = window.innerWidth;
+        // Subtract horizontal padding of the container (56px * 2 on desktop, 30px * 2 on mobile)
+        const containerPadding = width >= 768 ? 112 : 60;
+        const trackWidth = container.clientWidth - containerPadding;
+
+        if (width >= 1024) {
+            // Desktop: 3 full cards + 2 peeks
+            const peek = 40;
+            const slideWidth = (trackWidth - 2 * peek) / 3;
+            return { fullCards: 3, peek, slideWidth };
+        } else if (width >= 768) {
+            // Tablet: 1 full card + 2 peeks
+            const peek = 30;
+            const slideWidth = (trackWidth - 2 * peek) / 1;
+            return { fullCards: 1, peek, slideWidth };
+        } else {
+            // Mobile: 1 full card + 2 small peeks
+            const peek = 16;
+            const slideWidth = (trackWidth - 2 * peek) / 1;
+            return { fullCards: 1, peek, slideWidth };
+        }
     }
 
-    // STEP 2: Build the carousel with fresh, eager-loading image elements
-    function buildCarousel() {
-        const track = document.createElement('div');
-        track.className = 'carousel__track';
+    function updateTrackPosition(animate = true) {
+        const { fullCards, peek, slideWidth } = getCarouselLayout();
 
-        extendedItems.forEach((item) => {
-            const slide = document.createElement('div');
-            slide.className = 'carousel__slide';
-            const card = cardFactory(item);
-
-            // CRITICAL FIX: Replace any lazy-loaded images with fresh eager elements.
-            // This completely bypasses the browser bug where native lazy images
-            // inside translate3d containers refuse to render until scrolled to center.
-            const images = card.querySelectorAll('img');
-            images.forEach((img) => {
-                const parent = img.parentNode;
-                const newImg = document.createElement('img');
-
-                // Copy attributes except 'loading'
-                for (const attr of img.attributes) {
-                    if (attr.name !== 'loading') {
-                        newImg.setAttribute(attr.name, attr.value);
-                    }
-                }
-
-                // Set eager loading BEFORE appending to any DOM
-                newImg.loading = 'eager';
-                newImg.style.opacity = '1';
-
-                parent.replaceChild(newImg, img);
-            });
-
-            slide.appendChild(card);
-            track.appendChild(slide);
+        const slides = track.querySelectorAll('.carousel__slide');
+        slides.forEach((s) => {
+            s.style.flex = `0 0 ${slideWidth}px`;
+            s.style.padding = '0 8px'; // Gap
+            s.style.boxSizing = 'border-box';
         });
 
-        container.appendChild(track);
+        // General formula to center the currentIndex card symmetrically
+        // offset = (currentIndex - (fullCards - 1) / 2) * slideWidth - peek
+        const offset = (currentIndex - (fullCards - 1) / 2) * slideWidth - peek;
 
-        // Controls
-        const controls = document.createElement('div');
-        controls.className = 'carousel__controls';
-
-        const prevBtn = document.createElement('button');
-        prevBtn.className = 'carousel__btn carousel__btn--prev';
-        prevBtn.setAttribute('aria-label', 'Previous');
-        prevBtn.innerHTML = '<i class="fas fa-chevron-left"></i>';
-
-        const nextBtn = document.createElement('button');
-        nextBtn.className = 'carousel__btn carousel__btn--next';
-        nextBtn.setAttribute('aria-label', 'Next');
-        nextBtn.innerHTML = '<i class="fas fa-chevron-right"></i>';
-
-        controls.appendChild(prevBtn);
-        controls.appendChild(nextBtn);
-        container.appendChild(controls);
-
-        // Pixel-based positioning logic
-        function getVisibleCount() {
-            if (window.innerWidth >= 1024) return 3;
-            if (window.innerWidth >= 768) return 2;
-            return 1;
+        if (animate) {
+            track.style.transition = `transform ${transitionSpeed} ${transitionEasing}`;
+        } else {
+            track.style.transition = 'none';
         }
+        track.style.transform = `translate3d(-${offset}px, 0, 0)`;
+    }
 
-        function updateTrackPosition(animate = true) {
-            const visibleCount = getVisibleCount();
-            const containerWidth = container.clientWidth;
-            const slideWidth = containerWidth / visibleCount;
+    function nextSlide() {
+        if (isTransitioning) return;
+        isTransitioning = true;
+        currentIndex++;
+        updateTrackPosition(true);
+    }
 
-            const slides = track.querySelectorAll('.carousel__slide');
-            slides.forEach((s) => {
-                s.style.flex = `0 0 ${slideWidth}px`;
-                s.style.padding = '0 8px';
-                s.style.boxSizing = 'border-box';
-            });
+    function prevSlide() {
+        if (isTransitioning) return;
+        isTransitioning = true;
+        currentIndex--;
+        updateTrackPosition(true);
+    }
 
-            const offset = currentIndex * slideWidth;
-            if (animate) {
-                track.style.transition = `transform ${transitionSpeed} ${transitionEasing}`;
-            } else {
-                track.style.transition = 'none';
-            }
-            track.style.transform = `translate3d(-${offset}px, 0, 0)`;
+    track.addEventListener('transitionend', () => {
+        isTransitioning = false;
+        // Snap logic for 2-item buffer
+        if (currentIndex >= totalItems + 2) {
+            currentIndex -= totalItems;
+            updateTrackPosition(false);
         }
-
-        function nextSlide() {
-            if (isTransitioning) return;
-            isTransitioning = true;
-            currentIndex++;
-            updateTrackPosition(true);
+        if (currentIndex <= 1) {
+            currentIndex += totalItems;
+            updateTrackPosition(false);
         }
+    });
 
-        function prevSlide() {
-            if (isTransitioning) return;
-            isTransitioning = true;
-            currentIndex--;
-            updateTrackPosition(true);
+    function startAutoScroll() {
+        clearTimeout(autoScrollTimer);
+        if (!isPaused) {
+            autoScrollTimer = setTimeout(() => {
+                nextSlide();
+                setTimeout(startAutoScroll, 500);
+            }, pauseDuration);
         }
+    }
 
-        track.addEventListener('transitionend', () => {
-            isTransitioning = false;
-            if (currentIndex >= totalItems + 1) {
-                currentIndex = 1;
-                updateTrackPosition(false);
-            }
-            if (currentIndex <= 0) {
-                currentIndex = totalItems;
-                updateTrackPosition(false);
-            }
-        });
-
-        function startAutoScroll() {
-            clearTimeout(autoScrollTimer);
-            if (!isPaused) {
-                autoScrollTimer = setTimeout(() => {
-                    nextSlide();
-                    setTimeout(startAutoScroll, 500);
-                }, pauseDuration);
-            }
-        }
-
-        function resetAutoScroll() {
-            clearTimeout(autoScrollTimer);
-            startAutoScroll();
-        }
-
-        prevBtn.addEventListener('click', () => {
-            prevSlide();
-            resetAutoScroll();
-        });
-        nextBtn.addEventListener('click', () => {
-            nextSlide();
-            resetAutoScroll();
-        });
-        container.addEventListener('mouseenter', () => {
-            isPaused = true;
-            clearTimeout(autoScrollTimer);
-        });
-        container.addEventListener('mouseleave', () => {
-            isPaused = false;
-            startAutoScroll();
-        });
-
-        let resizeTimeout;
-        window.addEventListener('resize', () => {
-            clearTimeout(resizeTimeout);
-            resizeTimeout = setTimeout(() => updateTrackPosition(false), 150);
-        });
-
-        updateTrackPosition(false);
+    function resetAutoScroll() {
+        clearTimeout(autoScrollTimer);
         startAutoScroll();
     }
 
-    // Initialize: Preload first, then build
-    preloadImages().then(buildCarousel);
+    prevBtn.addEventListener('click', () => {
+        prevSlide();
+        resetAutoScroll();
+    });
+    nextBtn.addEventListener('click', () => {
+        nextSlide();
+        resetAutoScroll();
+    });
+
+    container.addEventListener('mouseenter', () => {
+        isPaused = true;
+        clearTimeout(autoScrollTimer);
+    });
+    container.addEventListener('mouseleave', () => {
+        isPaused = false;
+        startAutoScroll();
+    });
+
+    let resizeTimeout;
+    window.addEventListener('resize', () => {
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(() => updateTrackPosition(false), 150);
+    });
+
+    updateTrackPosition(false);
+    startAutoScroll();
 }

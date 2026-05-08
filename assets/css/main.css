@@ -493,7 +493,7 @@ body::after {
     --section-tag-color: #fb923c;
 }
 
-/* ── Full Width Sections (Reduced Top Padding) ──────────────── */
+/* ── Full Width Sections ────────────────────────────────────── */
 
 #featured-projects,
 #featured-certificates,
@@ -501,7 +501,6 @@ body::after {
     position: relative;
     border-radius: var(--radius-3xl) var(--radius-3xl) 0 0;
     margin-top: calc(-1 * var(--radius-3xl));
-    /* FIX: Reduced from space-2xl to space-md for much tighter top padding */
     padding-top: calc(var(--space-md) + var(--radius-3xl));
     padding-bottom: var(--space-3xl);
     z-index: 2;
@@ -553,8 +552,6 @@ body::after {
     pointer-events: none;
     z-index: -1;
 }
-
-/* ── Section Theme Applications ─────────────────────────────── */
 
 #featured-projects .section__title,
 .page-projects .page-header__title,
@@ -653,12 +650,12 @@ body::after {
     color: var(--section-text);
 }
 
-/* ── Carousel ───────────────────────────────────────────────── */
+/* ── Carousel (Symmetric Peeks) ─────────────────────────────── */
 
 .carousel {
     position: relative;
     padding: 0 56px;
-}
+} /* Space for arrows */
 .carousel__track {
     display: flex;
     will-change: transform;
@@ -1262,8 +1259,8 @@ body::after {
         display: flex;
     }
     .carousel {
-        padding: 0 40px;
-    }
+        padding: 0 30px;
+    } /* Adjust for smaller arrows */
     .hero {
         flex-direction: column;
         gap: var(--space-xl);
