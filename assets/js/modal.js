@@ -54,7 +54,6 @@ function openModal(html) {
     const closeBtn = document.createElement('button');
     closeBtn.className = 'modal__close';
     closeBtn.setAttribute('aria-label', 'Close modal');
-    closeBtn.innerHTML = '&times;';
     closeBtn.addEventListener('click', closeModal);
     modal.prepend(closeBtn);
 

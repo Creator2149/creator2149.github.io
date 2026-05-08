@@ -16,6 +16,36 @@
         <link rel="stylesheet" href="assets/css/main.css" />
         <link rel="stylesheet" href="assets/css/admin.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+        <script>
+            // SHA-256 hash function
+            async function sha256(message) {
+                const msgBuffer = new TextEncoder().encode(message);
+                const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+                const hashArray = Array.from(new Uint8Array(hashBuffer));
+                return hashArray.map((b) => b.toString(16).padStart(2, '0')).join('');
+            }
+
+            // Admin hash from main.js
+            const ADMIN_HASH = 'c2102ea6340446722128b1db3b9ac26e59ed820b8898c4a69cbaf90b72012b72';
+
+            // Password protection for direct admin access
+            (async () => {
+                if (!sessionStorage.getItem('adminAuth')) {
+                    const password = prompt('Enter admin password:');
+                    if (!password) {
+                        window.location.href = 'index.html';
+                        return;
+                    }
+                    const hash = await sha256(password);
+                    if (hash !== ADMIN_HASH) {
+                        alert('Incorrect password');
+                        window.location.href = 'index.html';
+                    } else {
+                        sessionStorage.setItem('adminAuth', 'true');
+                    }
+                }
+            })();
+        </script>
     </head>
     <body>
         <div class="bg-grid" aria-hidden="true"></div>

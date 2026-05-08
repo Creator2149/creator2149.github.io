@@ -814,7 +814,7 @@ body::after {
 
 .modal__close::before {
     content: '\f00d';
-    font-family: 'Font Awesome 5 Free';
+    font-family: 'Font Awesome 6 Free';
     font-weight: 900;
 }
 .modal__close:hover {
