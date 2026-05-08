@@ -148,8 +148,8 @@
                 const glyphs = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%&*+=-<>?/漢字アイウエオ';
 
                 const canvas = document.createElement('canvas');
-                canvas.width = 128;
-                canvas.height = 128;
+                canvas.width = 64;
+                canvas.height = 64;
                 const ctx = canvas.getContext('2d');
 
                 function randGlyph() {
@@ -157,13 +157,13 @@
                 }
 
                 function makeTexture(char) {
-                    ctx.clearRect(0, 0, 128, 128);
+                    ctx.clearRect(0, 0, 64, 64);
 
                     ctx.fillStyle = '#5b9bd5';
-                    ctx.font = 'bold 85px monospace';
+                    ctx.font = 'bold 42px monospace';
                     ctx.textAlign = 'center';
                     ctx.textBaseline = 'middle';
-                    ctx.fillText(char, 64, 64);
+                    ctx.fillText(char, 32, 32);
 
                     return new THREE.CanvasTexture(canvas);
                 }
@@ -174,8 +174,8 @@
 
                 const objects = [];
 
-                const U = 40;
-                const V = 20;
+                const U = 24;
+                const V = 12;
 
                 for (let i = 0; i < U; i++) {
                     for (let j = 0; j < V; j++) {
@@ -213,7 +213,7 @@
 
                         o.position.copy(torus(o.userData.u, o.userData.v));
 
-                        if (Math.random() < 0.02) {
+                        if (Math.random() < 0.005) {
                             o.material.map = makeTexture(randGlyph());
                         }
 
