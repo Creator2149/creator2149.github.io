@@ -6,7 +6,7 @@ const PROJECTS = [
     {
         id: 'jr-water-ambassadors',
         featured: true,
-        title: 'Water Ambassadors',
+        title: 'Jr. Water Ambassadors',
         status: 'Completed',
         year: '2026',
         tech: ['HTML', 'CSS', 'JavaScript'],
@@ -14,7 +14,7 @@ const PROJECTS = [
         shortDescription: "I developed the showcase website for the school's Water Ambassadors program.",
         longDescription:
             'Although I was not directly part of the Water Ambassadors initiative, I created the official showcase website featuring cleanliness drives, awareness campaigns, posters, and collaborations with schools and organizations.',
-        link: '#',
+        link: 'https://waterambassadors.github.io',
     },
     {
         id: 'school-menu-voting-system',
@@ -27,7 +27,7 @@ const PROJECTS = [
         shortDescription: 'A voting platform allowing students to decide the weekly school menu order.',
         longDescription:
             'This platform enables the school nutritionist to upload menu options for the upcoming week while students vote on which meals should appear on specific days. The system includes constraints to maintain nutritional balance and prevent duplicate selections.',
-        link: '#',
+        link: '',
     },
     {
         id: 'mealflow',
@@ -53,7 +53,7 @@ const PROJECTS = [
         shortDescription: 'An axiomatic framework exploring division by zero.',
         longDescription:
             'Nullary is a mathematical research project proposing an axiomatic framework to simplify expressions involving division by zero. The paper is currently under active development and seeking expert feedback.',
-        link: '#',
+        link: '',
     },
     {
         id: 'rawcrypt',
@@ -66,7 +66,7 @@ const PROJECTS = [
         shortDescription: 'Educational platform teaching cryptography through intuitive explanations.',
         longDescription:
             'RawCrypt is planned as an educational platform introducing students to cryptographic systems ranging from Caesar Cipher to RSA using interactive mathematical explanations and modern web technologies.',
-        link: '#',
+        link: '',
     },
     {
         id: 'raksha',
@@ -92,7 +92,7 @@ const PROJECTS = [
         shortDescription: 'An awareness initiative focused on online safety for elderly people.',
         longDescription:
             'This initiative aims to educate elderly individuals about common online scams and cybersecurity threats through relatable real-world analogies and interactive online sessions.',
-        link: '#',
+        link: '',
     },
     {
         id: 'socra',
@@ -105,7 +105,7 @@ const PROJECTS = [
         shortDescription: 'Exploring Socratic questioning as a safeguard against passive AI dependence.',
         longDescription:
             'Socra is both a business concept and research project investigating how Socratic-style AI systems can encourage critical thinking instead of replacing it through direct answers. The project includes qualitative research and a proof-of-concept implementation.',
-        link: '#',
+        link: '',
     },
     {
         id: 'the-celestis-conclave',
@@ -131,7 +131,7 @@ const PROJECTS = [
         shortDescription: 'A neuromorphic computing benchmark using spiking neural networks.',
         longDescription:
             'NOMAD explores digit classification on the MNIST dataset using neuromorphic computing techniques. The project compares spiking neural networks implemented in Nengo against traditional machine learning and deep learning approaches to evaluate efficiency, accuracy, and computational trade-offs.',
-        link: '#',
+        link: '',
     },
     {
         id: 'echoes-of-etheryn',
@@ -144,7 +144,7 @@ const PROJECTS = [
         shortDescription: 'A fantasy and science-fiction novel series.',
         longDescription:
             'Echoes of Etheryn is a long-form creative writing project blending high fantasy with science fiction themes, featuring interconnected storylines, cosmic lore, and morally complex characters.',
-        link: '#',
+        link: '',
     },
     {
         id: 'disease-spread-simulation',
