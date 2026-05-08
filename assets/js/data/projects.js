@@ -97,7 +97,7 @@ const PROJECTS = [
       "Supabase",
       "AI"
     ],
-    "image": "assets/images/projects/Raksha.png",
+    "image": "assets/images/projects/Raksha.jpeg",
     "shortDescription": "AI-powered self-defense learning platform.",
     "longDescription": "Raksha is a self-defense training platform that uses webcam motion tracking and AI-powered feedback to help users learn techniques from home. I contributed to the project using React and Python.",
     "link": "https://rakshaapp.github.io"
