@@ -222,7 +222,6 @@ body::before {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 44px;
     height: 44px;
     position: relative;
 }
@@ -241,9 +240,9 @@ body::before {
         system-ui,
         sans-serif;
     fill: var(--text-primary);
-    font-size: 18px;
+    font-size: 14px;
     font-weight: 600;
-    letter-spacing: 2px;
+    letter-spacing: 1.5px;
     dominant-baseline: central;
     text-anchor: middle;
     transition: fill 0.3s ease;
