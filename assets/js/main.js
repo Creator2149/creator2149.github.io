@@ -927,7 +927,7 @@
         card.addEventListener('click', () => {
             if (item.image && window.ImageLightbox) window.ImageLightbox.open(item.image, item.title);
         });
-        card.style.cursor = 'zoom-in';
+        card.style.cursor = 'pointer';
 
         return card;
     }
@@ -1137,6 +1137,7 @@
         visual.addEventListener('click', () => {
             if (item.image && window.ImageLightbox) window.ImageLightbox.open(item.image, item.title);
         });
+        visual.style.cursor = 'pointer';
 
         return itemEl;
     }
@@ -1244,7 +1245,8 @@
             );
         }
 
-        if (built) built.textContent = SITE_DATA.footer.built;
+        // Hide built section since footer is now centered
+        if (built) built.style.display = 'none';
     }
 
     /* =========================================================
