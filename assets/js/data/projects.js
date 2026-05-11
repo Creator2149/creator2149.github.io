@@ -1,7 +1,7 @@
 const PROJECTS_DATA = [
     {
         id: 'nullary',
-        featured: true,
+        flagship: true,
         featuredOnHome: true,
         title: 'Nullary',
         status: 'In Progress',
@@ -37,7 +37,6 @@ const PROJECTS_DATA = [
 
     {
         id: 'jr-water-ambassadors',
-        featured: true,
         featuredOnHome: true,
         title: 'Jr. Water Ambassadors',
         status: 'Completed',
@@ -74,7 +73,6 @@ const PROJECTS_DATA = [
 
     {
         id: 'school-menu-voting-system',
-        featured: true,
         featuredOnHome: true,
         title: 'School Menu Voting System',
         status: 'Completed',
@@ -110,7 +108,6 @@ const PROJECTS_DATA = [
 
     {
         id: 'mealflow',
-        featured: true,
         featuredOnHome: true,
         title: 'MealFlow',
         status: 'Completed',
@@ -146,8 +143,7 @@ const PROJECTS_DATA = [
 
     {
         id: 'raksha',
-        featured: false,
-        featuredOnHome: false,
+        featuredOnHome: true,
         title: 'Raksha',
         status: 'In Progress',
         statusDetails: 'Motion tracking and AI feedback systems under development',
@@ -179,8 +175,7 @@ const PROJECTS_DATA = [
 
     {
         id: 'socra',
-        featured: false,
-        featuredOnHome: false,
+        featuredOnHome: true,
         title: 'Socra',
         status: 'Planned',
         statusDetails: 'Research and proof-of-concept phase',
@@ -210,7 +205,6 @@ const PROJECTS_DATA = [
 
     {
         id: 'the-celestis-conclave',
-        featured: true,
         featuredOnHome: true,
         title: 'The Celestis Conclave',
         status: 'In Progress',
@@ -231,8 +225,7 @@ const PROJECTS_DATA = [
 
     {
         id: 'nomad',
-        featured: false,
-        featuredOnHome: false,
+        featuredOnHome: true,
         title: 'NOMAD — Neural Observation and Model Analysis of Digits',
         status: 'Planned',
         statusDetails: 'Research and benchmarking architecture in planning phase',
@@ -259,8 +252,7 @@ const PROJECTS_DATA = [
 
     {
         id: 'echoes-of-etheryn',
-        featured: false,
-        featuredOnHome: false,
+        featuredOnHome: true,
         title: 'Echoes of Etheryn',
         status: 'In Progress',
         statusDetails: 'Multi-book narrative and worldbuilding development ongoing',
@@ -282,8 +274,7 @@ const PROJECTS_DATA = [
 
     {
         id: 'disease-spread-simulation',
-        featured: false,
-        featuredOnHome: false,
+        featuredOnHome: true,
         title: 'Disease Spread Simulation',
         status: 'Completed',
         statusDetails: 'Simulation engine and visualization complete',
@@ -315,7 +306,6 @@ const PROJECTS_DATA = [
 
     {
         id: 'rawcrypt',
-        featured: false,
         featuredOnHome: false,
         title: 'RawCrypt',
         status: 'Planned',
@@ -337,7 +327,6 @@ const PROJECTS_DATA = [
 
     {
         id: 'cybersecurity-for-elderly',
-        featured: false,
         featuredOnHome: false,
         title: 'Cybersecurity for Elderly',
         status: 'In Progress',

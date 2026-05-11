@@ -1,7 +1,6 @@
 const CERTIFICATES_DATA = [
     {
         id: 'wharton-data-science-competition',
-        featured: false,
         featuredOnHome: false,
         title: 'Wharton Data Science Competition Participation',
         field: 'Data Science',
@@ -14,7 +13,6 @@ const CERTIFICATES_DATA = [
 
     {
         id: 'lodha-genius-shadow-the-scientists',
-        featured: false,
         featuredOnHome: false,
         title: 'Lodha Genius Programme & UC Santa Cruz Shadow the Scientists Programme Completion',
         field: 'Astronomy',
@@ -27,7 +25,6 @@ const CERTIFICATES_DATA = [
 
     {
         id: 'national-inter-dps-it-festival-2nd-place',
-        featured: true,
         featuredOnHome: true,
         title: 'National Inter DPS IT Festival — 2nd Place',
         field: 'Technology',
@@ -40,7 +37,6 @@ const CERTIFICATES_DATA = [
 
     {
         id: 'lodha-genius-programme-scholar',
-        featured: true,
         featuredOnHome: true,
         title: 'Lodha Genius Programme Scholar',
         field: 'Mathematics & Science',
@@ -53,7 +49,6 @@ const CERTIFICATES_DATA = [
 
     {
         id: 'wsc-global-round-toc-qualification',
-        featured: true,
         featuredOnHome: true,
         title: 'WSC Global Round — Qualified for Tournament of Champions',
         field: 'Academic',
@@ -66,7 +61,6 @@ const CERTIFICATES_DATA = [
 
     {
         id: 'nof-international-math-olympiad-rank-2',
-        featured: true,
         featuredOnHome: true,
         title: 'NOF International Math Olympiad — Rank 2',
         field: 'Mathematics',
@@ -79,7 +73,6 @@ const CERTIFICATES_DATA = [
 
     {
         id: 'istse-international-rank-110',
-        featured: false,
         featuredOnHome: false,
         title: 'ISTSE International Rank 110',
         field: 'Mathematics',
@@ -92,7 +85,6 @@ const CERTIFICATES_DATA = [
 
     {
         id: 'harvard-model-congress-yglp',
-        featured: false,
         featuredOnHome: false,
         title: 'Harvard Model Congress YGLP',
         field: 'Leadership',
@@ -105,7 +97,6 @@ const CERTIFICATES_DATA = [
 
     {
         id: 'amc-10-participation',
-        featured: false,
         featuredOnHome: false,
         title: 'AMC 10 Participation',
         field: 'Mathematics',
@@ -118,7 +109,6 @@ const CERTIFICATES_DATA = [
 
     {
         id: 'isro-summer-online-course',
-        featured: false,
         featuredOnHome: false,
         title: 'ISRO Summer Online Course',
         field: 'Science',
@@ -131,7 +121,6 @@ const CERTIFICATES_DATA = [
 
     {
         id: 'wsc-regional-round-2023',
-        featured: false,
         featuredOnHome: false,
         title: "World Scholar's Cup — Regional Round",
         field: 'Academic',
@@ -144,7 +133,6 @@ const CERTIFICATES_DATA = [
 
     {
         id: 'wsc-regional-round-2024',
-        featured: false,
         featuredOnHome: false,
         title: "World Scholar's Cup — Regional Round",
         field: 'Academic',
@@ -157,7 +145,6 @@ const CERTIFICATES_DATA = [
 
     {
         id: 'wsc-regional-round-2025',
-        featured: false,
         featuredOnHome: false,
         title: "World Scholar's Cup — Regional Round",
         field: 'Academic',
@@ -170,7 +157,6 @@ const CERTIFICATES_DATA = [
 
     {
         id: 'logiqids-round-1-complete',
-        featured: false,
         featuredOnHome: false,
         title: 'LogiQids Round 1 Complete (Reg. Round 2)',
         field: 'Logic',
@@ -183,7 +169,6 @@ const CERTIFICATES_DATA = [
 
     {
         id: 'national-road-safety-mission-course',
-        featured: false,
         featuredOnHome: false,
         title: 'National Road Safety Mission Course',
         field: 'Community',
@@ -196,7 +181,6 @@ const CERTIFICATES_DATA = [
 
     {
         id: 'roll-of-honour-2023',
-        featured: false,
         featuredOnHome: false,
         title: 'Roll of Honour for Academic Excellence',
         field: 'Academic',
@@ -209,7 +193,6 @@ const CERTIFICATES_DATA = [
 
     {
         id: 'ib-learner-profile-award-2023',
-        featured: false,
         featuredOnHome: false,
         title: 'IB Learner Profile Attribute Award',
         field: 'Academic',
@@ -222,7 +205,6 @@ const CERTIFICATES_DATA = [
 
     {
         id: 'roll-of-honour-2024',
-        featured: false,
         featuredOnHome: false,
         title: 'Roll of Honour for Academic Excellence',
         field: 'Academic',
@@ -235,7 +217,6 @@ const CERTIFICATES_DATA = [
 
     {
         id: 'ib-learner-profile-award-2024',
-        featured: false,
         featuredOnHome: false,
         title: 'IB Learner Profile Attribute Award',
         field: 'Academic',
@@ -248,7 +229,6 @@ const CERTIFICATES_DATA = [
 
     {
         id: 'roll-of-honour-2025',
-        featured: false,
         featuredOnHome: false,
         title: 'Roll of Honour for Academic Excellence',
         field: 'Academic',
@@ -261,7 +241,6 @@ const CERTIFICATES_DATA = [
 
     {
         id: 'ib-learner-profile-award-2025',
-        featured: false,
         featuredOnHome: false,
         title: 'IB Learner Profile Attribute Award',
         field: 'Academic',
@@ -274,7 +253,6 @@ const CERTIFICATES_DATA = [
 
     {
         id: 'sof-imo-round-1',
-        featured: false,
         featuredOnHome: false,
         title: 'SOF IMO Round 1',
         field: 'Mathematics',
@@ -287,7 +265,6 @@ const CERTIFICATES_DATA = [
 
     {
         id: 'lis-annual-interschool-fest-stop-motion',
-        featured: false,
         featuredOnHome: false,
         title: 'LIS Annual Interschool Fest — Stop Motion',
         field: 'Technology',
@@ -300,7 +277,6 @@ const CERTIFICATES_DATA = [
 
     {
         id: 'dps-international-techathlon-code-battle',
-        featured: false,
         featuredOnHome: false,
         title: 'DPS International Techathlon — Code Battle',
         field: 'Technology',
@@ -313,7 +289,6 @@ const CERTIFICATES_DATA = [
 
     {
         id: 'john-locke-essay-competition-shortlisting',
-        featured: true,
         featuredOnHome: true,
         title: 'Participation and Shortlisting for John Locke Essay Competition',
         field: 'Literature',

@@ -430,8 +430,8 @@
         const container = $('.featured-project');
         if (!container || !window.PROJECTS_DATA) return;
 
-        // Find the primary featured project (first with featuredOnHome)
-        const project = PROJECTS_DATA.find((p) => p.featured && p.featuredOnHome);
+        // Find the flagship project
+        const project = PROJECTS_DATA.find((p) => p.flagship);
         if (!project) return;
 
         // Update the section title dynamically
@@ -553,8 +553,8 @@
         if (!container || !window.PROJECTS_DATA) return;
 
         // Get featuredOnHome projects (excluding the flagship one)
-        const flagship = PROJECTS_DATA.find((p) => p.featured && p.featuredOnHome);
-        const curated = PROJECTS_DATA.filter((p) => p.featuredOnHome && p !== flagship);
+        const flagship = PROJECTS_DATA.find((p) => p.flagship);
+        const curated = PROJECTS_DATA.filter((p) => p.featuredOnHome && !p.flagship);
 
         container.innerHTML = '';
         curated.forEach((project) => {
@@ -575,9 +575,6 @@
             // Side-by-side layout
             const visual = createElement('div', { className: 'project-card__visual' });
             visual.appendChild(createImage(project.image, project.title, 'PROJECT'));
-            if (project.featured) {
-                visual.appendChild(createElement('div', { className: 'project-card__visual-label' }, ['FEATURED']));
-            }
             card.appendChild(visual);
 
             const content = createElement('div', { className: 'project-card__content' });
@@ -626,9 +623,6 @@
             // Standard vertical card
             const visual = createElement('div', { className: 'project-card__visual' });
             visual.appendChild(createImage(project.image, project.title, 'PROJECT'));
-            if (project.featured) {
-                visual.appendChild(createElement('div', { className: 'project-card__visual-label' }, ['FEATURED']));
-            }
             card.appendChild(visual);
 
             const content = createElement('div', { className: 'project-card__content' });
@@ -638,9 +632,6 @@
                 meta.appendChild(
                     createElement('span', { className: 'project-card__status', textContent: project.status }),
                 );
-            if (project.featured) {
-                meta.appendChild(createElement('span', { className: 'project-card__featured-badge' }, ['FEATURED']));
-            }
             content.appendChild(meta);
             content.appendChild(createElement('h3', { className: 'project-card__title', textContent: project.title }));
             content.appendChild(
@@ -821,7 +812,7 @@
 
     function createCertificateCard(cert) {
         const card = createElement('div', {
-            className: 'certificate-card' + (cert.featured ? ' featured' : ''),
+            className: 'certificate-card',
             dataset: { id: cert.id },
         });
 
@@ -971,7 +962,7 @@
 
             // Compare with stored hash
             // ADMIN_HASH should be set in the page or a config
-            const ADMIN_HASH = window.ADMIN_HASH || 'REPLACE_THIS_HASH';
+            const ADMIN_HASH = window.ADMIN_HASH || 'c2102ea6340446722128b1db3b9ac26e59ed820b8898c4a69cbaf90b72012b72';
 
             if (hashHex === ADMIN_HASH) {
                 window.location.href = '/admin.html';

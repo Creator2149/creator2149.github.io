@@ -160,7 +160,7 @@
     border-color: var(--border-accent);
 }
 
-.admin__list-item.featured {
+.admin__list-item.flagship {
     border-left: 3px solid var(--accent-amber);
 }
 

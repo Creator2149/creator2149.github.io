@@ -867,15 +867,6 @@ body::before {
     letter-spacing: 0.03em;
 }
 
-.project-card__featured-badge {
-    font-family: 'JetBrains Mono', 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
-    font-size: var(--tiny-size);
-    color: var(--accent-amber);
-    padding: 0.15em 0.5em;
-    border: 1px solid rgba(201, 149, 107, 0.3);
-    background: var(--accent-amber-dim);
-}
-
 .project-card__tags {
     display: flex;
     flex-wrap: wrap;

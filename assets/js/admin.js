@@ -201,14 +201,14 @@
 
         localProjects.forEach((project, index) => {
             const item = document.createElement('div');
-            item.className = 'admin__list-item' + (project.featured ? ' featured' : '');
+            item.className = 'admin__list-item' + (project.flagship ? ' flagship' : '');
 
             item.innerHTML = `
         <div class="admin__list-item-info">
           <div class="admin__list-item-title">${escapeHTML(project.title)}</div>
           <div class="admin__list-item-meta">
             ${escapeHTML(project.year)} · ${escapeHTML(project.status || 'No status')}
-            ${project.featured ? ' · FEATURED' : ''}
+            ${project.flagship ? ' · FLAGSHIP' : ''}
             ${project.featuredOnHome ? ' · ON HOME' : ''}
           </div>
         </div>
@@ -294,19 +294,17 @@
           <input class="admin__form-input" type="text" id="proj-tags" value="${isEdit ? escapeHTML((project.tags || []).join(', ')) : ''}">
         </div>
 
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
-          <div class="admin__form-group">
-            <label class="admin__form-toggle">
-              <input type="checkbox" id="proj-featured" ${isEdit && project.featured ? 'checked' : ''}>
-              <span class="admin__form-toggle-label">Featured</span>
-            </label>
-          </div>
-          <div class="admin__form-group">
-            <label class="admin__form-toggle">
-              <input type="checkbox" id="proj-home" ${isEdit && project.featuredOnHome ? 'checked' : ''}>
-              <span class="admin__form-toggle-label">Show on Homepage</span>
-            </label>
-          </div>
+        <div class="admin__form-group">
+          <label class="admin__form-toggle">
+            <input type="checkbox" id="proj-flagship" ${isEdit && project.flagship ? 'checked' : ''}>
+            <span class="admin__form-toggle-label">Flagship (homepage centerpiece)</span>
+          </label>
+        </div>
+        <div class="admin__form-group">
+          <label class="admin__form-toggle">
+            <input type="checkbox" id="proj-home" ${isEdit && project.featuredOnHome ? 'checked' : ''}>
+            <span class="admin__form-toggle-label">Show on Homepage</span>
+          </label>
         </div>
 
         <div class="admin__form-group">
@@ -391,7 +389,7 @@
                       .map((t) => t.trim())
                       .filter(Boolean)
                 : [],
-            featured: document.getElementById('proj-featured').checked,
+            flagship: document.getElementById('proj-flagship').checked,
             featuredOnHome: document.getElementById('proj-home').checked,
             image: index >= 0 && localProjects[index] ? localProjects[index].image : '',
         };
@@ -449,14 +447,13 @@
 
         localCertificates.forEach((cert, index) => {
             const item = document.createElement('div');
-            item.className = 'admin__list-item' + (cert.featured ? ' featured' : '');
+            item.className = 'admin__list-item';
 
             item.innerHTML = `
         <div class="admin__list-item-info">
           <div class="admin__list-item-title">${escapeHTML(cert.title)}</div>
           <div class="admin__list-item-meta">
             ${escapeHTML(String(cert.year))} · ${escapeHTML(cert.field || 'No field')}
-            ${cert.featured ? ' · FEATURED' : ''}
             ${cert.featuredOnHome ? ' · ON HOME' : ''}
           </div>
         </div>
@@ -510,19 +507,11 @@
           <textarea class="admin__form-textarea" id="cert-desc" rows="2">${isEdit ? escapeHTML(cert.description || '') : ''}</textarea>
         </div>
 
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
-          <div class="admin__form-group">
-            <label class="admin__form-toggle">
-              <input type="checkbox" id="cert-featured" ${isEdit && cert.featured ? 'checked' : ''}>
-              <span class="admin__form-toggle-label">Featured</span>
-            </label>
-          </div>
-          <div class="admin__form-group">
-            <label class="admin__form-toggle">
-              <input type="checkbox" id="cert-home" ${isEdit && cert.featuredOnHome ? 'checked' : ''}>
-              <span class="admin__form-toggle-label">Show on Homepage</span>
-            </label>
-          </div>
+        <div class="admin__form-group">
+          <label class="admin__form-toggle">
+            <input type="checkbox" id="cert-home" ${isEdit && cert.featuredOnHome ? 'checked' : ''}>
+            <span class="admin__form-toggle-label">Show on Homepage</span>
+          </label>
         </div>
 
         <div class="admin__form-group">
@@ -583,7 +572,6 @@
             field: document.getElementById('cert-field').value.trim() || '',
             issuer: document.getElementById('cert-issuer').value.trim() || '',
             description: document.getElementById('cert-desc').value.trim() || '',
-            featured: document.getElementById('cert-featured').checked,
             featuredOnHome: document.getElementById('cert-home').checked,
             image: index >= 0 && localCertificates[index] ? localCertificates[index].image : '',
         };
@@ -632,14 +620,13 @@
 
         localBlender.forEach((item, index) => {
             const el = document.createElement('div');
-            el.className = 'admin__list-item' + (item.featured ? ' featured' : '');
+            el.className = 'admin__list-item';
 
             el.innerHTML = `
         <div class="admin__list-item-info">
           <div class="admin__list-item-title">${escapeHTML(item.title)}</div>
           <div class="admin__list-item-meta">
             ${escapeHTML(item.date || '')} · ${escapeHTML(item.renderEngine || 'No engine')}
-            ${item.featured ? ' · FEATURED' : ''}
             ${item.featuredOnHome ? ' · ON HOME' : ''}
           </div>
         </div>
@@ -693,19 +680,11 @@
           <input class="admin__form-input" type="text" id="blend-techniques" value="${isEdit ? escapeHTML((item.techniques || []).join(', ')) : ''}">
         </div>
 
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
-          <div class="admin__form-group">
-            <label class="admin__form-toggle">
-              <input type="checkbox" id="blend-featured" ${isEdit && item.featured ? 'checked' : ''}>
-              <span class="admin__form-toggle-label">Featured</span>
-            </label>
-          </div>
-          <div class="admin__form-group">
-            <label class="admin__form-toggle">
-              <input type="checkbox" id="blend-home" ${isEdit && item.featuredOnHome ? 'checked' : ''}>
-              <span class="admin__form-toggle-label">Show on Homepage</span>
-            </label>
-          </div>
+        <div class="admin__form-group">
+          <label class="admin__form-toggle">
+            <input type="checkbox" id="blend-home" ${isEdit && item.featuredOnHome ? 'checked' : ''}>
+            <span class="admin__form-toggle-label">Show on Homepage</span>
+          </label>
         </div>
 
         <div class="admin__form-group">
@@ -773,7 +752,6 @@
                       .map((t) => t.trim())
                       .filter(Boolean)
                 : [],
-            featured: document.getElementById('blend-featured').checked,
             featuredOnHome: document.getElementById('blend-home').checked,
             image: index >= 0 && localBlender[index] ? localBlender[index].image : '',
         };
