@@ -204,7 +204,7 @@
             ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
             // Scale K1 based on canvas width for responsive sizing
-            K1 = (width * 0.2 * K2 * 3) / (8 * (R1 + R2));
+            K1 = (width * 0.07 * K2 * 3) / (8 * (R1 + R2));
         }
 
         resize();
@@ -383,7 +383,7 @@
             if (heroGreeting) heroGreeting.textContent = SITE_DATA.hero.greeting;
             if (heroTitle) heroTitle.textContent = SITE_DATA.hero.mainStatement;
             if (heroSubtitle) heroSubtitle.textContent = SITE_DATA.hero.subStatement;
-            if (heroSystemLabel) heroSystemLabel.textContent = `${SITE_DATA.domain} // v2.0`;
+            if (heroSystemLabel) heroSystemLabel.textContent = '';
         }
 
         // Render philosophy section
@@ -644,7 +644,13 @@
             }
             if (project.tags && project.tags.length) {
                 const tags = createElement('div', { className: 'project-card__tags' });
-                project.tags.forEach((t) => tags.appendChild(createTag(t)));
+                project.tags.forEach((t, i) => {
+                    if (i > 0)
+                        tags.appendChild(
+                            createElement('span', { className: 'project-card__tag-separator', textContent: '|' }),
+                        );
+                    tags.appendChild(createTag(t));
+                });
                 content.appendChild(tags);
             }
             card.appendChild(content);

@@ -880,6 +880,13 @@ body::before {
     color: var(--text-tertiary);
 }
 
+.project-card__tag-separator {
+    font-family: 'JetBrains Mono', 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+    font-size: var(--tiny-size);
+    color: var(--border);
+    margin: 0 0.1em;
+}
+
 /* --- Card Variant: Featured (larger, image-heavy) --- */
 .project-card--featured {
     grid-column: span 2;

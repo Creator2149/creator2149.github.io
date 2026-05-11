@@ -208,8 +208,9 @@
 
         // Tags
         if (project.tags && project.tags.length) {
-            html += '<div style="display:flex;flex-wrap:wrap;gap:0.35rem;margin-top:1rem;">';
-            project.tags.forEach((t) => {
+            html += '<div style="display:flex;flex-wrap:wrap;gap:0.35rem;margin-top:1rem;align-items:center;">';
+            project.tags.forEach((t, i) => {
+                if (i > 0) html += '<span class="project-card__tag-separator">|</span>';
                 html += `<span class="project-card__tag">${escapeHTML(t)}</span>`;
             });
             html += '</div>';

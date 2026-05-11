@@ -1,7 +1,7 @@
 const SITE_DATA = {
     name: 'Rishit Choudhary',
     domain: 'rishitc17.github.io',
-    tagline: 'Systems, computation, and visual thinking.',
+    tagline: 'Statuo. Persevero. Perficio.',
 
     hero: {
         greeting: "Hello, I'm",
@@ -50,7 +50,7 @@ const SITE_DATA = {
     footer: {
         copyright: 'Rishit',
         year: new Date().getFullYear(),
-        built: 'Built with vanilla HTML, CSS, and JS.',
+        built: '',
         repo: 'rishitc17/rishitc17.github.io',
     },
 };

@@ -1,7 +1,6 @@
 const CERTIFICATES_DATA = [
     {
         id: 'wharton-data-science-competition',
-        featuredOnHome: false,
         title: 'Wharton Data Science Competition Participation',
         field: 'Data Science',
         year: '2026',
@@ -13,7 +12,6 @@ const CERTIFICATES_DATA = [
 
     {
         id: 'lodha-genius-shadow-the-scientists',
-        featuredOnHome: false,
         title: 'Lodha Genius Programme & UC Santa Cruz Shadow the Scientists Programme Completion',
         field: 'Astronomy',
         year: '2026',
@@ -25,7 +23,6 @@ const CERTIFICATES_DATA = [
 
     {
         id: 'national-inter-dps-it-festival-2nd-place',
-        featuredOnHome: true,
         title: 'National Inter DPS IT Festival — 2nd Place',
         field: 'Technology',
         year: '2026',
@@ -37,7 +34,6 @@ const CERTIFICATES_DATA = [
 
     {
         id: 'lodha-genius-programme-scholar',
-        featuredOnHome: true,
         title: 'Lodha Genius Programme Scholar',
         field: 'Mathematics & Science',
         year: '2025',
@@ -49,7 +45,6 @@ const CERTIFICATES_DATA = [
 
     {
         id: 'wsc-global-round-toc-qualification',
-        featuredOnHome: true,
         title: 'WSC Global Round — Qualified for Tournament of Champions',
         field: 'Academic',
         year: '2026',
@@ -61,7 +56,6 @@ const CERTIFICATES_DATA = [
 
     {
         id: 'nof-international-math-olympiad-rank-2',
-        featuredOnHome: true,
         title: 'NOF International Math Olympiad — Rank 2',
         field: 'Mathematics',
         year: '2024',
@@ -73,7 +67,6 @@ const CERTIFICATES_DATA = [
 
     {
         id: 'istse-international-rank-110',
-        featuredOnHome: false,
         title: 'ISTSE International Rank 110',
         field: 'Mathematics',
         year: '2023',
@@ -85,7 +78,6 @@ const CERTIFICATES_DATA = [
 
     {
         id: 'harvard-model-congress-yglp',
-        featuredOnHome: false,
         title: 'Harvard Model Congress YGLP',
         field: 'Leadership',
         year: '2023',
@@ -97,7 +89,6 @@ const CERTIFICATES_DATA = [
 
     {
         id: 'amc-10-participation',
-        featuredOnHome: false,
         title: 'AMC 10 Participation',
         field: 'Mathematics',
         year: '2026',
@@ -109,7 +100,6 @@ const CERTIFICATES_DATA = [
 
     {
         id: 'isro-summer-online-course',
-        featuredOnHome: false,
         title: 'ISRO Summer Online Course',
         field: 'Science',
         year: '2022',
@@ -121,7 +111,6 @@ const CERTIFICATES_DATA = [
 
     {
         id: 'wsc-regional-round-2023',
-        featuredOnHome: false,
         title: "World Scholar's Cup — Regional Round",
         field: 'Academic',
         year: '2023',
@@ -133,7 +122,6 @@ const CERTIFICATES_DATA = [
 
     {
         id: 'wsc-regional-round-2024',
-        featuredOnHome: false,
         title: "World Scholar's Cup — Regional Round",
         field: 'Academic',
         year: '2024',
@@ -145,7 +133,6 @@ const CERTIFICATES_DATA = [
 
     {
         id: 'wsc-regional-round-2025',
-        featuredOnHome: false,
         title: "World Scholar's Cup — Regional Round",
         field: 'Academic',
         year: '2025',
@@ -157,7 +144,6 @@ const CERTIFICATES_DATA = [
 
     {
         id: 'logiqids-round-1-complete',
-        featuredOnHome: false,
         title: 'LogiQids Round 1 Complete (Reg. Round 2)',
         field: 'Logic',
         year: '2026',
@@ -169,7 +155,6 @@ const CERTIFICATES_DATA = [
 
     {
         id: 'national-road-safety-mission-course',
-        featuredOnHome: false,
         title: 'National Road Safety Mission Course',
         field: 'Community',
         year: '2026',
@@ -181,7 +166,6 @@ const CERTIFICATES_DATA = [
 
     {
         id: 'roll-of-honour-2023',
-        featuredOnHome: false,
         title: 'Roll of Honour for Academic Excellence',
         field: 'Academic',
         year: '2023',
@@ -193,7 +177,6 @@ const CERTIFICATES_DATA = [
 
     {
         id: 'ib-learner-profile-award-2023',
-        featuredOnHome: false,
         title: 'IB Learner Profile Attribute Award',
         field: 'Academic',
         year: '2023',
@@ -205,7 +188,6 @@ const CERTIFICATES_DATA = [
 
     {
         id: 'roll-of-honour-2024',
-        featuredOnHome: false,
         title: 'Roll of Honour for Academic Excellence',
         field: 'Academic',
         year: '2024',
@@ -217,7 +199,6 @@ const CERTIFICATES_DATA = [
 
     {
         id: 'ib-learner-profile-award-2024',
-        featuredOnHome: false,
         title: 'IB Learner Profile Attribute Award',
         field: 'Academic',
         year: '2024',
@@ -229,7 +210,6 @@ const CERTIFICATES_DATA = [
 
     {
         id: 'roll-of-honour-2025',
-        featuredOnHome: false,
         title: 'Roll of Honour for Academic Excellence',
         field: 'Academic',
         year: '2025',
@@ -241,7 +221,6 @@ const CERTIFICATES_DATA = [
 
     {
         id: 'ib-learner-profile-award-2025',
-        featuredOnHome: false,
         title: 'IB Learner Profile Attribute Award',
         field: 'Academic',
         year: '2025',
@@ -253,7 +232,6 @@ const CERTIFICATES_DATA = [
 
     {
         id: 'sof-imo-round-1',
-        featuredOnHome: false,
         title: 'SOF IMO Round 1',
         field: 'Mathematics',
         year: '2026',
@@ -265,7 +243,6 @@ const CERTIFICATES_DATA = [
 
     {
         id: 'lis-annual-interschool-fest-stop-motion',
-        featuredOnHome: false,
         title: 'LIS Annual Interschool Fest — Stop Motion',
         field: 'Technology',
         year: '2025',
@@ -277,7 +254,6 @@ const CERTIFICATES_DATA = [
 
     {
         id: 'dps-international-techathlon-code-battle',
-        featuredOnHome: false,
         title: 'DPS International Techathlon — Code Battle',
         field: 'Technology',
         year: '2026',
@@ -289,7 +265,6 @@ const CERTIFICATES_DATA = [
 
     {
         id: 'john-locke-essay-competition-shortlisting',
-        featuredOnHome: true,
         title: 'Participation and Shortlisting for John Locke Essay Competition',
         field: 'Literature',
         year: '2025',
