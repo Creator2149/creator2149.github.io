@@ -5,7 +5,7 @@ const SITE_DATA = {
 
     hero: {
         greeting: "Hello, I'm",
-        mainStatement: 'Rishit.',
+        mainStatement: 'Rishit Choudhary.',
         subStatement:
             'I build systems at the intersection of engineering, mathematics, and visual computation. This is a workspace — not a showcase. An archive of things built, explored, and thought through.',
     },
@@ -44,11 +44,11 @@ const SITE_DATA = {
             'Open to conversations about systems, computation, geometry, rendering, or interesting problems in general.',
         email: 'rishit@example.com',
         github: 'https://github.com/rishitc17',
-        linkedin: 'https://linkedin.com/in/rishitc17',
+        linkedin: '#',
     },
 
     footer: {
-        copyright: 'Rishit',
+        copyright: 'Rishit Choudhary',
         year: new Date().getFullYear(),
         built: '',
         repo: 'rishitc17/rishitc17.github.io',
