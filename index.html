@@ -1,158 +1,178 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rishit — Systems, Computation, Visual Thinking</title>
-    <meta name="description" content="Personal computational workspace. Systems programming, mathematical experimentation, and visual computation.">
-    <link rel="stylesheet" href="assets/css/main.css">
-    <!-- Favicon placeholder -->
-    <link rel="icon" href="assets/favicon/favicon.ico" type="image/x-icon">
-</head>
-<body class="page page--home">
-    <!-- Navbar -->
-    <nav class="navbar" role="navigation" aria-label="Main navigation">
-        <div class="navbar__inner">
-            <a href="/index.html" class="navbar__brand">R.</a>
-            <ul class="navbar__links">
-                <!-- Dynamically rendered by main.js -->
-            </ul>
-            <button class="navbar__toggle" aria-label="Toggle menu" aria-expanded="false">
-                <span></span>
-                <span></span>
-                <span></span>
-            </button>
-        </div>
-        <div class="navbar__mobile-menu">
-            <div class="navbar__mobile-menu-links">
-                <!-- Dynamically rendered -->
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Rishit — Systems, Computation, Visual Thinking</title>
+        <meta
+            name="description"
+            content="Personal computational workspace. Systems programming, mathematical experimentation, and visual computation."
+        />
+        <link rel="stylesheet" href="assets/css/main.css" />
+        <!-- Favicon placeholder -->
+        <link rel="icon" href="assets/favicon/favicon.ico" type="image/x-icon" />
+    </head>
+    <body class="page page--home">
+        <!-- Navbar -->
+        <nav class="navbar" role="navigation" aria-label="Main navigation">
+            <div class="navbar__inner">
+                <a href="/index.html" class="navbar__brand">R.</a>
+                <ul class="navbar__links">
+                    <!-- Dynamically rendered by main.js -->
+                </ul>
+                <button class="navbar__toggle" aria-label="Toggle menu" aria-expanded="false">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
             </div>
-        </div>
-    </nav>
-
-    <!-- Hero Section -->
-    <section class="hero" id="hero">
-        <div class="hero__canvas-container" id="donut-canvas"></div>
-        <div class="hero__content container">
-            <div class="hero__greeting"></div>
-            <h1 class="hero__title"></h1>
-            <p class="hero__subtitle"></p>
-        </div>
-        <div class="hero__scroll-indicator" aria-hidden="true">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                <path d="M12 5v14M5 12l7 7 7-7"/>
-            </svg>
-        </div>
-        <div class="hero__system-label"></div>
-    </section>
-
-    <!-- Philosophy Section -->
-    <section class="section philosophy" id="philosophy">
-        <div class="container">
-            <div class="section__header reveal">
-                <div class="section__label">About</div>
-                <h2 class="section__title"></h2>
+            <div class="navbar__mobile-menu">
+                <div class="navbar__mobile-menu-links">
+                    <!-- Dynamically rendered -->
+                </div>
             </div>
-            <div class="philosophy__content">
-                <div class="philosophy__text reveal reveal-delay-1"></div>
-                <div class="reveal reveal-delay-2">
-                    <div class="philosophy__interests"></div>
-                    <div class="philosophy__focus">
-                        <div class="philosophy__focus-label">CURRENT FOCUS</div>
-                        <div class="philosophy__focus-text"></div>
+        </nav>
+
+        <!-- Hero Section -->
+        <section class="hero" id="hero">
+            <div class="hero__canvas-container" id="donut-canvas"></div>
+            <div class="hero__content container">
+                <div class="hero__greeting"></div>
+                <h1 class="hero__title"></h1>
+                <p class="hero__subtitle"></p>
+            </div>
+            <div class="hero__scroll-indicator" aria-hidden="true">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <path d="M12 5v14M5 12l7 7 7-7" />
+                </svg>
+            </div>
+            <div class="hero__system-label"></div>
+        </section>
+
+        <!-- Philosophy Section -->
+        <section class="section philosophy" id="philosophy">
+            <div class="container">
+                <div class="section__header reveal">
+                    <div class="section__label">About</div>
+                    <h2 class="section__title"></h2>
+                </div>
+                <div class="philosophy__content">
+                    <div class="philosophy__text reveal reveal-delay-1"></div>
+                    <div class="reveal reveal-delay-2">
+                        <div class="philosophy__interests"></div>
+                        <div class="philosophy__focus">
+                            <div class="philosophy__focus-label">CURRENT FOCUS</div>
+                            <div class="philosophy__focus-text"></div>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- Section Divider -->
-    <div class="container">
-        <div class="section__divider"></div>
-    </div>
-
-    <!-- Featured Project (Cinematic Centerpiece) -->
-    <section class="section" id="featured">
+        <!-- Section Divider -->
         <div class="container">
-            <div class="section__header reveal">
-                <div class="section__label">Featured Work</div>
-                <h2 class="section__title">Computational Geometry Engine</h2>
-            </div>
+            <div class="section__divider"></div>
         </div>
-        <div class="featured-project reveal"></div>
-    </section>
 
-    <!-- Section Divider -->
-    <div class="container">
-        <div class="section__divider"></div>
-    </div>
+        <!-- Featured Project (Cinematic Centerpiece) -->
+        <section class="section" id="featured">
+            <div class="container">
+                <div class="section__header reveal">
+                    <div class="section__label">Featured Work</div>
+                    <h2 class="section__title"></h2>
+                </div>
+            </div>
+            <div class="featured-project reveal"></div>
+        </section>
 
-    <!-- Curated Projects -->
-    <section class="section" id="projects">
+        <!-- Section Divider -->
         <div class="container">
-            <div class="section__header reveal">
-                <div class="section__label">Selected Work</div>
-                <h2 class="section__title">Projects</h2>
-                <p class="section__subtitle">A curated selection of systems, tools, and experiments. Each project represents a different facet of computational thinking.</p>
-            </div>
-            <div class="home-projects__grid reveal">
-                <!-- Dynamically rendered by main.js -->
-            </div>
-            <div style="text-align:center;margin-top:var(--space-2xl);" class="reveal">
-                <a href="/projects.html" class="featured-project__link" style="font-size:0.875rem;">View all projects &rarr;</a>
-            </div>
+            <div class="section__divider"></div>
         </div>
-    </section>
 
-    <!-- Section Divider -->
-    <div class="container">
-        <div class="section__divider"></div>
-    </div>
+        <!-- Curated Projects -->
+        <section class="section" id="projects">
+            <div class="container">
+                <div class="section__header reveal">
+                    <div class="section__label">Selected Work</div>
+                    <h2 class="section__title">Projects</h2>
+                    <p class="section__subtitle">
+                        A curated selection of systems, tools, and experiments. Each project represents a different
+                        facet of computational thinking.
+                    </p>
+                </div>
+                <div class="home-projects__grid reveal">
+                    <!-- Dynamically rendered by main.js -->
+                </div>
+                <div style="text-align: center; margin-top: var(--space-2xl)" class="reveal">
+                    <a href="/projects.html" class="featured-project__link" style="font-size: 0.875rem"
+                        >View all projects &rarr;</a
+                    >
+                </div>
+            </div>
+        </section>
 
-    <!-- Blender Showcase -->
-    <section class="section" id="blender">
+        <!-- Section Divider -->
         <div class="container">
-            <div class="section__header reveal">
-                <div class="section__label">Visual Work</div>
-                <h2 class="section__title">Blender Renders</h2>
-                <p class="section__subtitle">Where mathematical structure meets visual form. Each render is an exploration of light, geometry, and procedural systems.</p>
-            </div>
-            <div class="home-blender__grid reveal" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:var(--space-xl);">
-                <!-- Dynamically rendered by main.js -->
-            </div>
-            <div style="text-align:center;margin-top:var(--space-2xl);" class="reveal">
-                <a href="/blender.html" class="featured-project__link" style="font-size:0.875rem;">View all renders &rarr;</a>
-            </div>
+            <div class="section__divider"></div>
         </div>
-    </section>
 
-    <!-- Contact Section -->
-    <section class="section contact" id="contact">
-        <div class="contact__inner container">
-            <h2 class="contact__heading reveal"></h2>
-            <p class="contact__statement reveal reveal-delay-1"></p>
-            <div class="contact__links reveal reveal-delay-2"></div>
-        </div>
-    </section>
+        <!-- Blender Showcase -->
+        <section class="section" id="blender">
+            <div class="container">
+                <div class="section__header reveal">
+                    <div class="section__label">Visual Work</div>
+                    <h2 class="section__title">Blender Renders</h2>
+                    <p class="section__subtitle">
+                        Where mathematical structure meets visual form. Each render is an exploration of light,
+                        geometry, and procedural systems.
+                    </p>
+                </div>
+                <div
+                    class="home-blender__grid reveal"
+                    style="
+                        display: grid;
+                        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+                        gap: var(--space-xl);
+                    "
+                >
+                    <!-- Dynamically rendered by main.js -->
+                </div>
+                <div style="text-align: center; margin-top: var(--space-2xl)" class="reveal">
+                    <a href="/blender.html" class="featured-project__link" style="font-size: 0.875rem"
+                        >View all renders &rarr;</a
+                    >
+                </div>
+            </div>
+        </section>
 
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="footer__inner">
-            <div class="footer__copyright"></div>
-            <div class="footer__built"></div>
-        </div>
-    </footer>
+        <!-- Contact Section -->
+        <section class="section contact" id="contact">
+            <div class="contact__inner container">
+                <h2 class="contact__heading reveal"></h2>
+                <p class="contact__statement reveal reveal-delay-1"></p>
+                <div class="contact__links reveal reveal-delay-2"></div>
+            </div>
+        </section>
 
-    <!-- Data Files (loaded first) -->
-    <script src="assets/js/data/site.js"></script>
-    <script src="assets/js/data/projects.js"></script>
-    <script src="assets/js/data/certificates.js"></script>
-    <script src="assets/js/data/blender.js"></script>
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer__inner">
+                <div class="footer__copyright"></div>
+                <div class="footer__built"></div>
+            </div>
+        </footer>
 
-    <!-- JS Modules -->
-    <script src="assets/js/modal.js"></script>
-    <script src="assets/js/carousel.js"></script>
-    <script src="assets/js/filters.js"></script>
-    <script src="assets/js/main.js"></script>
-</body>
+        <!-- Data Files (loaded first) -->
+        <script src="assets/js/data/site.js"></script>
+        <script src="assets/js/data/projects.js"></script>
+        <script src="assets/js/data/certificates.js"></script>
+        <script src="assets/js/data/blender.js"></script>
+
+        <!-- JS Modules -->
+        <script src="assets/js/modal.js"></script>
+        <script src="assets/js/carousel.js"></script>
+        <script src="assets/js/filters.js"></script>
+        <script src="assets/js/main.js"></script>
+    </body>
 </html>
