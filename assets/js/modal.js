@@ -219,7 +219,7 @@
         // Link
         if (project.link) {
             html += `<div style="margin-top:1.5rem;">
-        <a href="${escapeHTML(project.link)}" target="_blank" rel="noopener noreferrer" class="featured-project__link" style="font-size:0.875rem;">View Repository &rarr;</a>
+        <a href="${escapeHTML(project.link)}" target="_blank" rel="noopener noreferrer" class="featured-project__link" style="font-size:0.875rem;">View Project &rarr;</a>
       </div>`;
         }
 

@@ -883,7 +883,7 @@ body::before {
 .project-card__tag-separator {
     font-family: 'JetBrains Mono', 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
     font-size: var(--tiny-size);
-    color: var(--border);
+    color: var(--accent-amber);
     margin: 0 0.1em;
 }
 

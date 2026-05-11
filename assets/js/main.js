@@ -204,7 +204,7 @@
             ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
             // Scale K1 based on canvas width for responsive sizing
-            K1 = (width * 0.07 * K2 * 3) / (8 * (R1 + R2));
+            K1 = (width * 0.1 * K2 * 3) / (8 * (R1 + R2));
         }
 
         resize();
@@ -532,7 +532,7 @@
                     href: project.link,
                     target: '_blank',
                     rel: 'noopener noreferrer',
-                    innerHTML: 'View Repository &rarr;',
+                    innerHTML: 'View Project &rarr;',
                 }),
             );
         }
