@@ -455,9 +455,17 @@
         // Label
         content.appendChild(createElement('div', { className: 'featured-project__label' }, ['FEATURED WORK']));
 
-        // Status
+        // Status — with color-coded modifier class
         if (project.status) {
-            const status = createElement('div', { className: 'featured-project__status' });
+            const statusCls =
+                project.status === 'Completed'
+                    ? 'featured-project__status--completed'
+                    : project.status === 'In Progress'
+                      ? 'featured-project__status--in-progress'
+                      : project.status === 'Planned'
+                        ? 'featured-project__status--planned'
+                        : '';
+            const status = createElement('div', { className: `featured-project__status ${statusCls}`.trim() });
             status.appendChild(createElement('span', { className: 'featured-project__status-dot' }));
             status.appendChild(
                 createElement('span', {
@@ -562,6 +570,14 @@
         });
     }
 
+    /** Get status modifier class for project cards */
+    function getStatusClass(status) {
+        if (status === 'Completed') return 'project-card__status--completed';
+        if (status === 'In Progress') return 'project-card__status--in-progress';
+        if (status === 'Planned') return 'project-card__status--planned';
+        return '';
+    }
+
     function createProjectCard(project, variant = 'standard') {
         const hasImage = project.image && project.image.trim();
 
@@ -580,10 +596,15 @@
             const content = createElement('div', { className: 'project-card__content' });
             const meta = createElement('div', { className: 'project-card__meta' });
             meta.appendChild(createElement('span', { className: 'project-card__year', textContent: project.year }));
-            if (project.status)
+            if (project.status) {
+                const statusCls = getStatusClass(project.status);
                 meta.appendChild(
-                    createElement('span', { className: 'project-card__status', textContent: project.status }),
+                    createElement('span', {
+                        className: `project-card__status ${statusCls}`.trim(),
+                        textContent: project.status,
+                    }),
                 );
+            }
             content.appendChild(meta);
             content.appendChild(createElement('h3', { className: 'project-card__title', textContent: project.title }));
             content.appendChild(
@@ -604,10 +625,15 @@
             const content = createElement('div', { className: 'project-card__content' });
             const meta = createElement('div', { className: 'project-card__meta' });
             meta.appendChild(createElement('span', { className: 'project-card__year', textContent: project.year }));
-            if (project.status)
+            if (project.status) {
+                const statusCls = getStatusClass(project.status);
                 meta.appendChild(
-                    createElement('span', { className: 'project-card__status', textContent: project.status }),
+                    createElement('span', {
+                        className: `project-card__status ${statusCls}`.trim(),
+                        textContent: project.status,
+                    }),
                 );
+            }
             content.appendChild(meta);
             content.appendChild(createElement('h3', { className: 'project-card__title', textContent: project.title }));
             content.appendChild(
@@ -628,10 +654,15 @@
             const content = createElement('div', { className: 'project-card__content' });
             const meta = createElement('div', { className: 'project-card__meta' });
             meta.appendChild(createElement('span', { className: 'project-card__year', textContent: project.year }));
-            if (project.status)
+            if (project.status) {
+                const statusCls = getStatusClass(project.status);
                 meta.appendChild(
-                    createElement('span', { className: 'project-card__status', textContent: project.status }),
+                    createElement('span', {
+                        className: `project-card__status ${statusCls}`.trim(),
+                        textContent: project.status,
+                    }),
                 );
+            }
             content.appendChild(meta);
             content.appendChild(createElement('h3', { className: 'project-card__title', textContent: project.title }));
             content.appendChild(

@@ -122,18 +122,28 @@
         if (e.key === 'Escape') close();
     }
 
+    /** Get modal status modifier class */
+    function getModalStatusClass(status) {
+        if (status === 'Completed') return 'modal__status--completed';
+        if (status === 'In Progress') return 'modal__status--in-progress';
+        if (status === 'Planned') return 'modal__status--planned';
+        return '';
+    }
+
     /** Generate project modal HTML */
     function openProjectModal(project) {
         let html = '<div class="modal__header">';
         html += '<div class="modal__label">PROJECT</div>';
         html += `<h2 class="modal__title">${escapeHTML(project.title)}</h2>`;
 
-        // Meta row
+        // Meta row — status now uses color-coded pill class
         html += '<div style="display:flex;gap:1rem;align-items:center;margin-top:0.5rem;">';
         if (project.year)
             html += `<span style="font-family:var(--font-mono);font-size:0.75rem;color:var(--text-tertiary);">${escapeHTML(project.year)}</span>`;
-        if (project.status)
-            html += `<span style="font-family:var(--font-mono);font-size:0.75rem;color:var(--accent-amber);">${escapeHTML(project.status)}</span>`;
+        if (project.status) {
+            const statusCls = getModalStatusClass(project.status);
+            html += `<span class="modal__status ${statusCls}">${escapeHTML(project.status)}</span>`;
+        }
         html += '</div>';
         html += '</div>';
 
@@ -141,7 +151,7 @@
 
         // Image
         if (project.image && project.image.trim()) {
-            html += `<div style="margin-bottom:1.5rem;background:var(--bg-tertiary);border:1px solid var(--border);overflow:hidden;">
+            html += `<div style="margin-bottom:1.5rem;background:var(--bg-tertiary);border:1px solid var(--border);border-radius:0.5rem;overflow:hidden;">
         <img src="${escapeHTML(project.image)}" alt="${escapeHTML(project.title)}" style="width:100%;display:block;object-fit:contain;background:var(--bg-tertiary);" loading="lazy" onerror="this.parentElement.innerHTML='<div class=no-image>NO PREVIEW</div>'">
       </div>`;
         }
@@ -252,8 +262,8 @@
         }
 
         if (cert.image && cert.image.trim()) {
-            html += `<div style="margin-top:1.5rem;border:1px solid var(--border);overflow:hidden;">
-        <img src="${escapeHTML(cert.image)}" alt="${escapeHTML(cert.title)}" style="width:100%;display:block;" loading="lazy" onerror="this.parentElement.innerHTML='<div class=no-image>CERTIFICATE IMAGE</div>'">
+            html += `<div style="margin-top:1.5rem;border:1px solid var(--border);border-radius:0.5rem;overflow:hidden;">
+        <img src="${escapeHTML(cert.image)}" alt="${escapeHTML(cert.title)}" style="width:100%;display:block;object-fit:contain;background:var(--bg-tertiary);" loading="lazy" onerror="this.parentElement.innerHTML='<div class=no-image>CERTIFICATE IMAGE</div>'">
       </div>`;
         }
 
@@ -279,8 +289,8 @@
 
         // Large image
         if (item.image && item.image.trim()) {
-            html += `<div style="margin-bottom:1.5rem;border:1px solid var(--border);overflow:hidden;background:var(--bg-tertiary);">
-        <img src="${escapeHTML(item.image)}" alt="${escapeHTML(item.title)}" style="width:100%;display:block;" loading="lazy" onerror="this.parentElement.innerHTML='<div class=no-image style=\\'display:flex;align-items:center;justify-content:center;height:300px;font-family:var(--font-mono);font-size:0.8rem;color:var(--text-tertiary);\\'>NO RENDER</div>'">
+            html += `<div style="margin-bottom:1.5rem;border:1px solid var(--border);border-radius:0.5rem;overflow:hidden;background:var(--bg-tertiary);">
+        <img src="${escapeHTML(item.image)}" alt="${escapeHTML(item.title)}" style="width:100%;display:block;object-fit:contain;background:var(--bg-tertiary);" loading="lazy" onerror="this.parentElement.innerHTML='<div class=no-image style=\\'display:flex;align-items:center;justify-content:center;height:300px;font-family:var(--font-mono);font-size:0.8rem;color:var(--text-tertiary);\\'>NO RENDER</div>'">
       </div>`;
         }
 
