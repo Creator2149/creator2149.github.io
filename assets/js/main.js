@@ -563,8 +563,10 @@
     }
 
     function createProjectCard(project, variant = 'standard') {
+        const hasImage = project.image && project.image.trim();
+
         const card = createElement('div', {
-            className: `project-card project-card--${variant}`,
+            className: `project-card project-card--${variant}${!hasImage ? ' project-card--no-image' : ''}`,
             dataset: { id: project.id },
         });
 
@@ -605,8 +607,20 @@
             const content = createElement('div', { className: 'project-card__content' });
             const meta = createElement('div', { className: 'project-card__meta' });
             meta.appendChild(createElement('span', { className: 'project-card__year', textContent: project.year }));
+            if (project.status)
+                meta.appendChild(
+                    createElement('span', { className: 'project-card__status', textContent: project.status }),
+                );
             content.appendChild(meta);
             content.appendChild(createElement('h3', { className: 'project-card__title', textContent: project.title }));
+            content.appendChild(
+                createElement('p', { className: 'project-card__description', textContent: project.shortDescription }),
+            );
+            if (project.tech && project.tech.length) {
+                const tech = createElement('div', { className: 'project-card__tech' });
+                project.tech.slice(0, 3).forEach((t) => tech.appendChild(createTechTag(t)));
+                content.appendChild(tech);
+            }
             card.appendChild(content);
         } else {
             // Standard vertical card
@@ -779,19 +793,12 @@
         const grid = $('.projects-grid');
         if (!grid) return;
 
-        // Determine card variants for visual variety
         const projects = PROJECTS_DATA;
         grid.innerHTML = '';
 
-        projects.forEach((project, index) => {
-            let variant = 'standard';
-            // First featured project gets featured variant
-            if (index === 0 && project.featured) variant = 'featured';
-            // Every 5th project is compact for rhythm
-            else if (index % 5 === 4) variant = 'compact';
-            else variant = 'standard';
-
-            grid.appendChild(createProjectCard(project, variant));
+        projects.forEach((project) => {
+            // All cards use standard variant for consistent styling
+            grid.appendChild(createProjectCard(project, 'standard'));
         });
     }
 
@@ -964,7 +971,7 @@
 
             // Compare with stored hash
             // ADMIN_HASH should be set in the page or a config
-            const ADMIN_HASH = window.ADMIN_HASH || 'c2102ea6340446722128b1db3b9ac26e59ed820b8898c4a69cbaf90b72012b72';
+            const ADMIN_HASH = window.ADMIN_HASH || 'REPLACE_THIS_HASH';
 
             if (hashHex === ADMIN_HASH) {
                 window.location.href = '/admin.html';

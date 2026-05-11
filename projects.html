@@ -1,66 +1,72 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Projects — Rishit</title>
-    <meta name="description" content="Archive of engineered systems, computational tools, and visual experiments.">
-    <link rel="stylesheet" href="assets/css/main.css">
-    <link rel="icon" href="assets/favicon/favicon.ico" type="image/x-icon">
-</head>
-<body class="page page--projects">
-    <!-- Navbar -->
-    <nav class="navbar" role="navigation" aria-label="Main navigation">
-        <div class="navbar__inner">
-            <a href="/index.html" class="navbar__brand">R.</a>
-            <ul class="navbar__links"></ul>
-            <button class="navbar__toggle" aria-label="Toggle menu" aria-expanded="false">
-                <span></span>
-                <span></span>
-                <span></span>
-            </button>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Projects — Rishit</title>
+        <meta
+            name="description"
+            content="Archive of engineered systems, computational tools, and visual experiments."
+        />
+        <link rel="stylesheet" href="assets/css/main.css" />
+        <link rel="icon" href="assets/favicon/favicon.ico" type="image/x-icon" />
+    </head>
+    <body class="page page--projects">
+        <!-- Navbar -->
+        <nav class="navbar" role="navigation" aria-label="Main navigation">
+            <div class="navbar__inner">
+                <a href="/index.html" class="navbar__brand">RC.</a>
+                <ul class="navbar__links"></ul>
+                <button class="navbar__toggle" aria-label="Toggle menu" aria-expanded="false">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+            <div class="navbar__mobile-menu">
+                <div class="navbar__mobile-menu-links"></div>
+            </div>
+        </nav>
+
+        <!-- Page Header -->
+        <header class="page__header">
+            <div class="section__label">Archive</div>
+            <h1 class="section__title" style="font-size: var(--h1-size)">Projects</h1>
+            <p class="section__subtitle">
+                Systems built, tools engineered, problems explored. Each project is a record of structured thinking made
+                tangible.
+            </p>
+        </header>
+
+        <!-- Page Content -->
+        <div class="page__content">
+            <!-- Filters -->
+            <div class="projects-filters filters reveal"></div>
+
+            <!-- Projects Grid -->
+            <div class="projects-grid reveal">
+                <!-- Dynamically rendered by main.js -->
+            </div>
         </div>
-        <div class="navbar__mobile-menu">
-            <div class="navbar__mobile-menu-links"></div>
-        </div>
-    </nav>
 
-    <!-- Page Header -->
-    <header class="page__header">
-        <div class="section__label">Archive</div>
-        <h1 class="section__title" style="font-size:var(--h1-size);">Projects</h1>
-        <p class="section__subtitle">Systems built, tools engineered, problems explored. Each project is a record of structured thinking made tangible.</p>
-    </header>
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer__inner">
+                <div class="footer__copyright"></div>
+                <div class="footer__built"></div>
+            </div>
+        </footer>
 
-    <!-- Page Content -->
-    <div class="page__content">
-        <!-- Filters -->
-        <div class="projects-filters filters reveal"></div>
+        <!-- Data Files -->
+        <script src="assets/js/data/site.js"></script>
+        <script src="assets/js/data/projects.js"></script>
+        <script src="assets/js/data/certificates.js"></script>
+        <script src="assets/js/data/blender.js"></script>
 
-        <!-- Projects Grid -->
-        <div class="projects-grid reveal">
-            <!-- Dynamically rendered by main.js -->
-        </div>
-    </div>
-
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="footer__inner">
-            <div class="footer__copyright"></div>
-            <div class="footer__built"></div>
-        </div>
-    </footer>
-
-    <!-- Data Files -->
-    <script src="assets/js/data/site.js"></script>
-    <script src="assets/js/data/projects.js"></script>
-    <script src="assets/js/data/certificates.js"></script>
-    <script src="assets/js/data/blender.js"></script>
-
-    <!-- JS Modules -->
-    <script src="assets/js/modal.js"></script>
-    <script src="assets/js/carousel.js"></script>
-    <script src="assets/js/filters.js"></script>
-    <script src="assets/js/main.js"></script>
-</body>
+        <!-- JS Modules -->
+        <script src="assets/js/modal.js"></script>
+        <script src="assets/js/carousel.js"></script>
+        <script src="assets/js/filters.js"></script>
+        <script src="assets/js/main.js"></script>
+    </body>
 </html>

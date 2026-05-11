@@ -38,7 +38,7 @@ const PROJECTS_DATA = [
     {
         id: 'jr-water-ambassadors',
         featured: true,
-        featuredOnHome: false,
+        featuredOnHome: true,
         title: 'Jr. Water Ambassadors',
         status: 'Completed',
         statusDetails: 'Official showcase platform launched and deployed',
@@ -75,7 +75,7 @@ const PROJECTS_DATA = [
     {
         id: 'school-menu-voting-system',
         featured: true,
-        featuredOnHome: false,
+        featuredOnHome: true,
         title: 'School Menu Voting System',
         status: 'Completed',
         statusDetails: 'Deployed with Supabase-backed voting workflow',
@@ -111,7 +111,7 @@ const PROJECTS_DATA = [
     {
         id: 'mealflow',
         featured: true,
-        featuredOnHome: false,
+        featuredOnHome: true,
         title: 'MealFlow',
         status: 'Completed',
         statusDetails: 'AI-powered planning pipeline operational',
@@ -211,7 +211,7 @@ const PROJECTS_DATA = [
     {
         id: 'the-celestis-conclave',
         featured: true,
-        featuredOnHome: false,
+        featuredOnHome: true,
         title: 'The Celestis Conclave',
         status: 'In Progress',
         statusDetails: 'Regional STEM community expanding',
