@@ -162,8 +162,15 @@
 
     /* =========================================================
      HERO DONUT ANIMATION
-     Converted from Three.js to pure Canvas 2D
-     Classic donut.c approach with atmospheric enhancements
+     Enhanced ASCII torus renderer with:
+     - Mouse-reactive tilt
+     - Blue-to-amber surface gradient
+     - Motion trail afterglow
+     - Ambient floating particles
+     - Torus surface spark emission
+     - Layered atmospheric glow
+     - Subtle breathing scale oscillation
+     - Background star field
   ========================================================= */
 
     function initDonut() {
@@ -174,25 +181,117 @@
         container.appendChild(canvas);
         const ctx = canvas.getContext('2d');
 
-        // Character set — matrix glyphs
+        // --- Character sets ---
         const glyphs = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%&*+=-<>?/|~{}[]';
+        const luminanceChars = '.,-~:;=!*#$@';
 
-        // Torus parameters
+        // --- Torus geometry ---
         const R1 = 1; // minor radius
         const R2 = 2.2; // major radius
         const K2 = 5;
         let K1;
 
-        // Animation state
+        // --- Animation state ---
         let A = 0,
             B = 0;
         let animId;
         let width, height;
+        let frameCount = 0;
 
-        // Glyph cycling state — track which character each cell displays
+        // --- Mouse tracking (normalized -1 to 1) ---
+        let mouseX = 0,
+            mouseY = 0;
+        let targetMouseX = 0,
+            targetMouseY = 0;
+
+        document.addEventListener('mousemove', (e) => {
+            targetMouseX = (e.clientX / window.innerWidth - 0.5) * 2;
+            targetMouseY = (e.clientY / window.innerHeight - 0.5) * 2;
+        });
+
+        // --- Glyph cycling ---
         let glyphMap = {};
-        let glyphCycleCounter = 0;
 
+        // --- Background star field ---
+        const STAR_COUNT = 120;
+        let stars = [];
+
+        function generateStars() {
+            stars = [];
+            for (let i = 0; i < STAR_COUNT; i++) {
+                stars.push({
+                    x: Math.random() * width,
+                    y: Math.random() * height,
+                    size: 0.5 + Math.random() * 1.2,
+                    alpha: 0.1 + Math.random() * 0.25,
+                    twinkleSpeed: 0.002 + Math.random() * 0.008,
+                    twinkleOffset: Math.random() * Math.PI * 2,
+                });
+            }
+        }
+
+        // --- Ambient floating particles ---
+        const PARTICLE_COUNT = 40;
+        let particles = [];
+
+        function generateParticles() {
+            particles = [];
+            for (let i = 0; i < PARTICLE_COUNT; i++) {
+                particles.push(createParticle());
+            }
+        }
+
+        function createParticle(fromTorus) {
+            if (fromTorus) {
+                // Spawn from approximate torus center region
+                const angle = Math.random() * Math.PI * 2;
+                const dist = 80 + Math.random() * 120;
+                return {
+                    x: width / 2 + Math.cos(angle) * dist * (width / 800),
+                    y: height / 2 + Math.sin(angle) * dist * 0.5 * (height / 600),
+                    vx: (Math.random() - 0.5) * 0.4,
+                    vy: (Math.random() - 0.5) * 0.3 - 0.15,
+                    size: 0.8 + Math.random() * 1.5,
+                    alpha: 0.3 + Math.random() * 0.5,
+                    life: 1,
+                    decay: 0.002 + Math.random() * 0.004,
+                    color: Math.random() < 0.6 ? 'blue' : 'amber',
+                };
+            }
+            return {
+                x: Math.random() * width,
+                y: Math.random() * height,
+                vx: (Math.random() - 0.5) * 0.2,
+                vy: (Math.random() - 0.5) * 0.15,
+                size: 0.6 + Math.random() * 1.2,
+                alpha: 0.05 + Math.random() * 0.15,
+                life: 1,
+                decay: 0,
+                color: Math.random() < 0.7 ? 'blue' : 'amber',
+            };
+        }
+
+        // --- Surface spark particles (emitted from torus) ---
+        const SPARK_LIMIT = 60;
+        let sparks = [];
+
+        function emitSpark(screenX, screenY, ooz) {
+            if (sparks.length >= SPARK_LIMIT) return;
+            const angle = Math.random() * Math.PI * 2;
+            const speed = 0.3 + Math.random() * 0.8;
+            sparks.push({
+                x: screenX,
+                y: screenY,
+                vx: Math.cos(angle) * speed,
+                vy: Math.sin(angle) * speed,
+                alpha: 0.4 + Math.min(1, ooz * 2) * 0.4,
+                life: 1,
+                decay: 0.008 + Math.random() * 0.012,
+                size: 1 + Math.random() * 1.5,
+            });
+        }
+
+        // --- Resize ---
         function resize() {
             const dpr = Math.min(window.devicePixelRatio || 1, 2);
             width = container.clientWidth;
@@ -202,28 +301,77 @@
             canvas.style.width = width + 'px';
             canvas.style.height = height + 'px';
             ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-
-            // Scale K1 based on canvas width for responsive sizing
             K1 = (width * 0.1 * K2 * 3) / (8 * (R1 + R2));
+            generateStars();
+            generateParticles();
         }
 
         resize();
         window.addEventListener('resize', resize);
 
-        // Luminance to character mapping
-        const luminanceChars = '.,-~:;=!*#$@';
-
+        // --- Main render loop ---
         function renderFrame() {
-            ctx.clearRect(0, 0, width, height);
+            frameCount++;
 
-            const cosA = Math.cos(A),
-                sinA = Math.sin(A);
-            const cosB = Math.cos(B),
-                sinB = Math.sin(B);
+            // Smooth mouse interpolation (eased follow)
+            mouseX += (targetMouseX - mouseX) * 0.04;
+            mouseY += (targetMouseY - mouseY) * 0.04;
 
-            // Z-buffer and output buffers
+            // --- Afterglow: partial clear instead of full clear ---
+            ctx.fillStyle = 'rgba(10, 14, 23, 0.28)';
+            ctx.fillRect(0, 0, width, height);
+
+            // --- Background stars ---
+            const time = frameCount * 0.016;
+            for (const star of stars) {
+                const twinkle = 0.5 + 0.5 * Math.sin(time * star.twinkleSpeed * 60 + star.twinkleOffset);
+                const a = star.alpha * twinkle;
+                ctx.beginPath();
+                ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(232, 222, 211, ${a})`;
+                ctx.fill();
+            }
+
+            // --- Ambient floating particles ---
+            for (let i = 0; i < particles.length; i++) {
+                const p = particles[i];
+                p.x += p.vx;
+                p.y += p.vy;
+                p.life -= p.decay;
+
+                if (p.life <= 0 || p.x < -20 || p.x > width + 20 || p.y < -20 || p.y > height + 20) {
+                    particles[i] = createParticle(false);
+                    continue;
+                }
+
+                const drawAlpha = p.alpha * (p.decay > 0 ? p.life : 1);
+                const cr = p.color === 'amber' ? '201, 149, 107' : '91, 143, 185';
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(${cr}, ${drawAlpha})`;
+                ctx.fill();
+            }
+
+            // --- Breathing scale oscillation ---
+            const breathe = 1 + Math.sin(frameCount * 0.012) * 0.015;
+            const effectiveK1 = K1 * breathe;
+
+            // --- Mouse-influenced rotation offsets ---
+            const mouseA = mouseY * 0.15;
+            const mouseB = mouseX * 0.1;
+
+            const totalA = A + mouseA;
+            const totalB = B + mouseB;
+
+            const cosA = Math.cos(totalA),
+                sinA = Math.sin(totalA);
+            const cosB = Math.cos(totalB),
+                sinB = Math.sin(totalB);
+
+            // --- Z-buffer and character output ---
             const output = [];
             const zbuffer = [];
+            const colorData = []; // store per-cell color info
 
             const numCols = Math.floor(width / 10);
             const numRows = Math.floor(height / 16);
@@ -231,9 +379,10 @@
             for (let i = 0; i < numCols; i++) {
                 output[i] = new Array(numRows).fill(' ');
                 zbuffer[i] = new Array(numRows).fill(0);
+                colorData[i] = new Array(numRows).fill(null);
             }
 
-            // Render torus surface
+            // --- Render torus surface ---
             for (let theta = 0; theta < 6.28; theta += 0.07) {
                 const cosTheta = Math.cos(theta),
                     sinTheta = Math.sin(theta);
@@ -242,21 +391,17 @@
                     const cosPhi = Math.cos(phi),
                         sinPhi = Math.sin(phi);
 
-                    // Circle point
                     const cx = R2 + R1 * cosTheta;
                     const cy = R1 * sinTheta;
 
-                    // 3D coordinates after rotation
                     const x = cx * (cosB * cosPhi + sinA * sinB * sinPhi) - cy * cosA * sinB;
                     const y = cx * (sinB * cosPhi - sinA * cosB * sinPhi) + cy * cosA * cosB;
                     const z = K2 + cosA * cx * sinPhi + cy * sinA;
                     const ooz = 1 / z;
 
-                    // Project to 2D
-                    const xp = Math.floor(numCols / 2 + K1 * ooz * x);
-                    const yp = Math.floor(numRows / 2 - K1 * ooz * y * 0.5);
+                    const xp = Math.floor(numCols / 2 + effectiveK1 * ooz * x);
+                    const yp = Math.floor(numRows / 2 - effectiveK1 * ooz * y * 0.5);
 
-                    // Luminance
                     const L =
                         cosPhi * cosTheta * sinB -
                         cosA * cosTheta * sinPhi -
@@ -267,87 +412,120 @@
                         if (ooz > zbuffer[xp][yp]) {
                             zbuffer[xp][yp] = ooz;
 
-                            // Map luminance to glyph
+                            const depth = Math.min(1, ooz * 2);
+
+                            // --- Color: blue-to-amber gradient based on phi angle ---
+                            // phi goes 0..2pi around the torus tube
+                            // Map to a smooth gradient: top = blue, bottom = amber blend
+                            const phiNorm = (phi % (Math.PI * 2)) / (Math.PI * 2); // 0-1
+                            const colorMix = 0.5 + 0.5 * Math.sin(phiNorm * Math.PI * 2 - Math.PI * 0.5);
+
+                            // Blue base: (91, 143, 185), Amber base: (201, 149, 107)
+                            const baseR = 91 + (201 - 91) * colorMix;
+                            const baseG = 143 + (149 - 143) * colorMix;
+                            const baseB = 185 + (107 - 185) * colorMix;
+
+                            // Depth brightens
+                            const alpha = 0.12 + depth * 0.72;
+
+                            // Luminance character selection
                             const luminanceIdx = Math.max(0, Math.min(luminanceChars.length - 1, Math.floor(L * 8)));
-                            const depthFactor = Math.min(1, ooz * 2);
+                            const depthFactor = depth;
                             const charIdx = Math.floor(
                                 luminanceIdx * depthFactor + (luminanceChars.length - 1) * (1 - depthFactor) * 0.3,
                             );
 
-                            // Occasionally cycle glyphs for matrix effect
+                            // Glyph cycling
                             const key = xp + ',' + yp;
-                            if (Math.random() < 0.003) {
+                            if (Math.random() < 0.004) {
                                 glyphMap[key] = glyphs[Math.floor(Math.random() * glyphs.length)];
                             }
 
-                            if (glyphMap[key]) {
-                                output[xp][yp] = glyphMap[key];
-                            } else {
-                                output[xp][yp] =
-                                    luminanceChars[Math.max(0, Math.min(charIdx, luminanceChars.length - 1))];
+                            output[xp][yp] =
+                                glyphMap[key] ||
+                                luminanceChars[Math.max(0, Math.min(charIdx, luminanceChars.length - 1))];
+                            colorData[xp][yp] = { r: baseR, g: baseG, b: baseB, alpha, ooz, phi: phiNorm };
+
+                            // --- Occasionally emit a spark from bright surface points ---
+                            if (Math.random() < 0.0008 && depth > 0.6) {
+                                emitSpark(xp * 10, yp * 16, ooz);
                             }
                         }
                     }
                 }
             }
 
-            // Render to canvas
+            // --- Draw torus characters ---
             ctx.font = '12px "JetBrains Mono", "SF Mono", monospace';
             ctx.textBaseline = 'top';
 
             for (let x = 0; x < numCols; x++) {
                 for (let y = 0; y < numRows; y++) {
                     const char = output[x][y];
-                    if (char && char !== ' ') {
-                        const ooz = zbuffer[x][y];
-                        const depth = Math.min(1, ooz * 2);
-
-                        // Color based on depth — closer = brighter
-                        const baseR = 91,
-                            baseG = 143,
-                            baseB = 185;
-                        const alpha = 0.15 + depth * 0.7;
-
-                        // Subtle warm accent for closest points
-                        const warmMix = Math.max(0, depth - 0.7) * 3;
-                        const r = Math.floor(baseR + (201 - baseR) * warmMix * 0.3);
-                        const g = Math.floor(baseG + (149 - baseG) * warmMix * 0.2);
-                        const b = Math.floor(baseB + (107 - baseB) * warmMix * 0.1);
-
-                        ctx.fillStyle = `rgba(${r},${g},${b},${alpha})`;
+                    if (char && char !== ' ' && colorData[x][y]) {
+                        const c = colorData[x][y];
+                        ctx.fillStyle = `rgba(${c.r | 0},${c.g | 0},${c.b | 0},${c.alpha.toFixed(2)})`;
                         ctx.fillText(char, x * 10, y * 16);
                     }
                 }
             }
 
-            // Subtle depth glow effect
-            const gradient = ctx.createRadialGradient(
+            // --- Draw and update surface sparks ---
+            for (let i = sparks.length - 1; i >= 0; i--) {
+                const s = sparks[i];
+                s.x += s.vx;
+                s.y += s.vy;
+                s.vy += 0.01; // slight gravity
+                s.life -= s.decay;
+
+                if (s.life <= 0) {
+                    sparks.splice(i, 1);
+                    continue;
+                }
+
+                const sa = s.alpha * s.life;
+                ctx.beginPath();
+                ctx.arc(s.x, s.y, s.size * s.life, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(201, 149, 107, ${sa.toFixed(2)})`;
+                ctx.fill();
+            }
+
+            // --- Layered atmospheric glow ---
+            // Inner blue glow
+            const glow1 = ctx.createRadialGradient(
                 width / 2,
                 height / 2,
                 0,
                 width / 2,
                 height / 2,
-                Math.min(width, height) * 0.45,
+                Math.min(width, height) * 0.3,
             );
-            gradient.addColorStop(0, 'rgba(91,143,185,0.04)');
-            gradient.addColorStop(0.5, 'rgba(91,143,185,0.02)');
-            gradient.addColorStop(1, 'rgba(91,143,185,0)');
-            ctx.fillStyle = gradient;
+            glow1.addColorStop(0, 'rgba(91, 143, 185, 0.06)');
+            glow1.addColorStop(0.6, 'rgba(91, 143, 185, 0.02)');
+            glow1.addColorStop(1, 'rgba(91, 143, 185, 0)');
+            ctx.fillStyle = glow1;
             ctx.fillRect(0, 0, width, height);
 
-            // Rotate
+            // Outer warm glow (offset for directionality)
+            const offX = width / 2 + mouseX * 60;
+            const offY = height / 2 + mouseY * 40;
+            const glow2 = ctx.createRadialGradient(offX, offY, 0, offX, offY, Math.min(width, height) * 0.5);
+            glow2.addColorStop(0, 'rgba(201, 149, 107, 0.025)');
+            glow2.addColorStop(0.5, 'rgba(201, 149, 107, 0.01)');
+            glow2.addColorStop(1, 'rgba(201, 149, 107, 0)');
+            ctx.fillStyle = glow2;
+            ctx.fillRect(0, 0, width, height);
+
+            // --- Rotate base angles ---
             A += 0.004;
             B += 0.002;
 
-            // Slowly cycle some glyphs
-            glyphCycleCounter++;
-            if (glyphCycleCounter % 60 === 0) {
-                // Fade old glyph entries
+            // --- Glyph map cleanup ---
+            if (frameCount % 60 === 0) {
                 const keys = Object.keys(glyphMap);
-                if (keys.length > 200) {
-                    for (let i = 0; i < 20; i++) {
-                        const randKey = keys[Math.floor(Math.random() * keys.length)];
-                        delete glyphMap[randKey];
+                if (keys.length > 250) {
+                    for (let i = 0; i < 25; i++) {
+                        delete glyphMap[keys[Math.floor(Math.random() * keys.length)]];
                     }
                 }
             }
@@ -360,7 +538,6 @@
         if (!prefersReducedMotion) {
             renderFrame();
         } else {
-            // Render single frame
             renderFrame();
             cancelAnimationFrame(animId);
         }
