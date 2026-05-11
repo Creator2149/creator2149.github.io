@@ -1,0 +1,564 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>404 — Signal Lost</title>
+        <meta name="description" content="Page not found. The signal has been lost." />
+        <link rel="stylesheet" href="assets/css/main.css" />
+        <link rel="icon" href="assets/favicon/favicon.ico" type="image/x-icon" />
+        <style>
+            /* ===== 404 Page Overrides ===== */
+
+            body.page--404 {
+                min-height: 100vh;
+                display: flex;
+                flex-direction: column;
+                overflow: hidden;
+            }
+
+            /* --- Glitch Canvas (broken donut) --- */
+
+            .error-404__canvas {
+                position: fixed;
+                inset: 0;
+                z-index: 0;
+                opacity: 0.35;
+                pointer-events: none;
+            }
+
+            /* --- Main Content --- */
+
+            .error-404 {
+                flex: 1;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                position: relative;
+                z-index: 1;
+                padding: 2rem;
+                text-align: center;
+            }
+
+            /* --- Error Code (big glitched 404) --- */
+
+            .error-404__code {
+                font-family: 'JetBrains Mono', monospace;
+                font-size: clamp(6rem, 20vw, 14rem);
+                font-weight: 500;
+                line-height: 1;
+                letter-spacing: -0.04em;
+                color: var(--accent-blue);
+                position: relative;
+                margin-bottom: 0.25em;
+                animation: glitch-skew 4s infinite linear alternate-reverse;
+            }
+
+            .error-404__code::before,
+            .error-404__code::after {
+                content: '404';
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+            }
+
+            .error-404__code::before {
+                color: var(--accent-amber);
+                animation: glitch-1 3s infinite linear alternate-reverse;
+                clip-path: polygon(0 0, 100% 0, 100% 35%, 0 35%);
+            }
+
+            .error-404__code::after {
+                color: #5bf0b9;
+                animation: glitch-2 2.5s infinite linear alternate-reverse;
+                clip-path: polygon(0 65%, 100% 65%, 100% 100%, 0 100%);
+            }
+
+            @keyframes glitch-1 {
+                0%,
+                80% {
+                    transform: translate(0);
+                }
+                82% {
+                    transform: translate(-4px, -2px);
+                }
+                84% {
+                    transform: translate(4px, 1px);
+                }
+                86% {
+                    transform: translate(-2px, 3px);
+                }
+                88% {
+                    transform: translate(0);
+                }
+                100% {
+                    transform: translate(0);
+                }
+            }
+
+            @keyframes glitch-2 {
+                0%,
+                75% {
+                    transform: translate(0);
+                }
+                77% {
+                    transform: translate(3px, 2px);
+                }
+                79% {
+                    transform: translate(-3px, -1px);
+                }
+                81% {
+                    transform: translate(2px, -2px);
+                }
+                83% {
+                    transform: translate(0);
+                }
+                100% {
+                    transform: translate(0);
+                }
+            }
+
+            @keyframes glitch-skew {
+                0%,
+                90% {
+                    transform: skew(0deg);
+                }
+                91% {
+                    transform: skew(-1deg);
+                }
+                93% {
+                    transform: skew(0.5deg);
+                }
+                95% {
+                    transform: skew(0deg);
+                }
+                100% {
+                    transform: skew(0deg);
+                }
+            }
+
+            /* --- Status Line (terminal style) --- */
+
+            .error-404__terminal {
+                font-family: 'JetBrains Mono', monospace;
+                font-size: var(--label-size);
+                color: var(--text-tertiary);
+                background: var(--bg-secondary);
+                border: 1px solid var(--border);
+                border-radius: 0.75rem;
+                padding: 1.5rem 2rem;
+                max-width: 480px;
+                width: 100%;
+                text-align: left;
+                margin-bottom: 2.5rem;
+                line-height: 1.8;
+            }
+
+            .error-404__terminal-line {
+                display: block;
+            }
+
+            .error-404__terminal-prompt {
+                color: var(--accent-blue);
+            }
+
+            .error-404__terminal-error {
+                color: #ef4444;
+            }
+
+            .error-404__terminal-path {
+                color: var(--accent-amber);
+            }
+
+            .error-404__terminal-muted {
+                color: var(--text-tertiary);
+            }
+
+            .error-404__terminal-cursor {
+                display: inline-block;
+                width: 0.6em;
+                height: 1.1em;
+                background: var(--accent-blue);
+                vertical-align: text-bottom;
+                animation: blink 1s step-end infinite;
+                margin-left: 0.1em;
+            }
+
+            @keyframes blink {
+                0%,
+                50% {
+                    opacity: 1;
+                }
+                51%,
+                100% {
+                    opacity: 0;
+                }
+            }
+
+            /* --- Message --- */
+
+            .error-404__message {
+                font-family: 'Instrument Serif', serif;
+                font-size: clamp(1.25rem, 3vw, 1.75rem);
+                color: var(--text-primary);
+                font-style: italic;
+                margin-bottom: 0.5rem;
+            }
+
+            .error-404__sub {
+                font-family: 'Inter', sans-serif;
+                font-size: var(--small-size);
+                color: var(--text-tertiary);
+                margin-bottom: 2.5rem;
+                max-width: 360px;
+                line-height: 1.6;
+            }
+
+            /* --- Return Link --- */
+
+            .error-404__return {
+                font-family: 'JetBrains Mono', monospace;
+                font-size: var(--label-size);
+                color: var(--accent-blue);
+                text-decoration: none;
+                letter-spacing: 0.05em;
+                padding: 0.6rem 1.5rem;
+                border: 1px solid rgba(91, 143, 185, 0.3);
+                border-radius: 999px;
+                background: var(--accent-blue-dim);
+                transition: all 0.25s ease;
+                position: relative;
+            }
+
+            .error-404__return:hover {
+                background: rgba(91, 143, 185, 0.2);
+                border-color: var(--accent-blue);
+                transform: translateY(-1px);
+            }
+
+            .error-404__return-arrow {
+                display: inline-block;
+                transition: transform 0.25s ease;
+                margin-left: 0.3em;
+            }
+
+            .error-404__return:hover .error-404__return-arrow {
+                transform: translateX(-3px);
+            }
+
+            /* --- Scanline Overlay (CRT effect) --- */
+
+            .error-404__scanlines {
+                position: fixed;
+                inset: 0;
+                z-index: 2;
+                pointer-events: none;
+                background: repeating-linear-gradient(
+                    0deg,
+                    transparent,
+                    transparent 2px,
+                    rgba(0, 0, 0, 0.03) 2px,
+                    rgba(0, 0, 0, 0.03) 4px
+                );
+            }
+
+            /* --- Noise Flash (random interference) --- */
+
+            .error-404__noise {
+                position: fixed;
+                inset: 0;
+                z-index: 3;
+                pointer-events: none;
+                opacity: 0;
+                background: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+                mix-blend-mode: overlay;
+                animation: noise-flash 8s infinite;
+            }
+
+            @keyframes noise-flash {
+                0%,
+                95%,
+                100% {
+                    opacity: 0;
+                }
+                96% {
+                    opacity: 0.4;
+                }
+                97% {
+                    opacity: 0;
+                }
+                98% {
+                    opacity: 0.25;
+                }
+                99% {
+                    opacity: 0;
+                }
+            }
+
+            /* --- Responsive --- */
+
+            @media (max-width: 640px) {
+                .error-404__terminal {
+                    padding: 1rem 1.25rem;
+                    font-size: 0.65rem;
+                }
+            }
+        </style>
+    </head>
+    <body class="page page--404">
+        <!-- Broken Donut Canvas -->
+        <canvas class="error-404__canvas" id="error-canvas"></canvas>
+
+        <!-- CRT Scanlines -->
+        <div class="error-404__scanlines"></div>
+
+        <!-- Noise Flash -->
+        <div class="error-404__noise"></div>
+
+        <!-- Main Content -->
+        <main class="error-404">
+            <div class="error-404__code">404</div>
+
+            <div class="error-404__terminal">
+                <span class="error-404__terminal-line">
+                    <span class="error-404__terminal-prompt">rishit@portfolio</span
+                    ><span class="error-404__terminal-muted">:</span><span class="error-404__terminal-path">~</span
+                    ><span class="error-404__terminal-muted">$</span> locate <span id="requested-path">/page</span>
+                </span>
+                <span class="error-404__terminal-line">
+                    <span class="error-404__terminal-error">error</span
+                    ><span class="error-404__terminal-muted">:</span> signal lost — path does not resolve
+                </span>
+                <span class="error-404__terminal-line">
+                    <span class="error-404__terminal-prompt">rishit@portfolio</span
+                    ><span class="error-404__terminal-muted">:</span><span class="error-404__terminal-path">~</span
+                    ><span class="error-404__terminal-muted">$</span><span class="error-404__terminal-cursor"></span>
+                </span>
+            </div>
+
+            <p class="error-404__message">The signal has been lost.</p>
+            <p class="error-404__sub">
+                This page doesn't exist — or it was never meant to be found. Either way, there's nothing here but
+                static.
+            </p>
+
+            <a href="/index.html" class="error-404__return">
+                Return to base <span class="error-404__return-arrow">&larr;</span>
+            </a>
+        </main>
+
+        <script>
+            /**
+             * 404 Page — Broken Donut Animation
+             * A glitched, fragmented version of the hero donut.
+             * Same ASCII torus renderer but with intentional corruption.
+             */
+            (function () {
+                const canvas = document.getElementById('error-canvas');
+                if (!canvas) return;
+                const ctx = canvas.getContext('2d');
+
+                // Show the actual path the user tried to visit
+                const pathEl = document.getElementById('requested-path');
+                if (pathEl) {
+                    pathEl.textContent = window.location.pathname;
+                }
+
+                const glyphs = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%&*+=-<>?/|~{}[]!';
+
+                const R1 = 1;
+                const R2 = 2.2;
+                const K2 = 5;
+
+                let A = 0,
+                    B = 0;
+                let width, height, K1;
+                let glyphMap = {};
+                let frameCount = 0;
+
+                function resize() {
+                    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+                    width = window.innerWidth;
+                    height = window.innerHeight;
+                    canvas.width = width * dpr;
+                    canvas.height = height * dpr;
+                    canvas.style.width = width + 'px';
+                    canvas.style.height = height + 'px';
+                    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+                    K1 = (width * 0.1 * K2 * 3) / (8 * (R1 + R2));
+                }
+
+                resize();
+                window.addEventListener('resize', resize);
+
+                const luminanceChars = '.,-~:;=!*#$@';
+
+                // Corruption state — tracks glitch regions
+                let glitchLines = [];
+                let nextGlitchFrame = 60;
+
+                function renderFrame() {
+                    ctx.clearRect(0, 0, width, height);
+                    frameCount++;
+
+                    const cosA = Math.cos(A),
+                        sinA = Math.sin(A);
+                    const cosB = Math.cos(B),
+                        sinB = Math.sin(B);
+
+                    const output = [];
+                    const zbuffer = [];
+
+                    const numCols = Math.floor(width / 10);
+                    const numRows = Math.floor(height / 16);
+
+                    for (let i = 0; i < numCols; i++) {
+                        output[i] = new Array(numRows).fill(' ');
+                        zbuffer[i] = new Array(numRows).fill(0);
+                    }
+
+                    // Render torus — with periodic corruption
+                    const isGlitching = frameCount > nextGlitchFrame && frameCount < nextGlitchFrame + 12;
+                    const corruptTheta = isGlitching ? 0.15 : 0.07;
+                    const corruptPhi = isGlitching ? 0.08 : 0.02;
+
+                    for (let theta = 0; theta < 6.28; theta += corruptTheta) {
+                        const cosTheta = Math.cos(theta),
+                            sinTheta = Math.sin(theta);
+
+                        for (let phi = 0; phi < 6.28; phi += corruptPhi) {
+                            const cosPhi = Math.cos(phi),
+                                sinPhi = Math.sin(phi);
+
+                            // Introduce coordinate corruption during glitch frames
+                            let cx = R2 + R1 * cosTheta;
+                            let cy = R1 * sinTheta;
+
+                            if (isGlitching && Math.random() < 0.15) {
+                                // Scramble some points
+                                cx += (Math.random() - 0.5) * 2;
+                                cy += (Math.random() - 0.5) * 1.5;
+                            }
+
+                            const x = cx * (cosB * cosPhi + sinA * sinB * sinPhi) - cy * cosA * sinB;
+                            const y = cx * (sinB * cosPhi - sinA * cosB * sinPhi) + cy * cosA * cosB;
+                            const z = K2 + cosA * cx * sinPhi + cy * sinA;
+                            const ooz = 1 / z;
+
+                            const xp = Math.floor(numCols / 2 + K1 * ooz * x);
+                            const yp = Math.floor(numRows / 2 - K1 * ooz * y * 0.5);
+
+                            const L =
+                                cosPhi * cosTheta * sinB -
+                                cosA * cosTheta * sinPhi -
+                                sinA * sinTheta +
+                                cosB * (cosA * sinTheta - cosTheta * sinPhi * sinA);
+
+                            if (yp >= 0 && yp < numRows && xp >= 0 && xp < numCols) {
+                                if (ooz > zbuffer[xp][yp]) {
+                                    zbuffer[xp][yp] = ooz;
+                                    const luminanceIdx = Math.max(
+                                        0,
+                                        Math.min(luminanceChars.length - 1, Math.floor(L * 8)),
+                                    );
+                                    const key = xp + ',' + yp;
+
+                                    // More aggressive glyph cycling for unstable feel
+                                    if (Math.random() < (isGlitching ? 0.08 : 0.005)) {
+                                        glyphMap[key] = glyphs[Math.floor(Math.random() * glyphs.length)];
+                                    }
+
+                                    if (glyphMap[key]) {
+                                        output[xp][yp] = glyphMap[key];
+                                    } else {
+                                        output[xp][yp] =
+                                            luminanceChars[
+                                                Math.max(0, Math.min(luminanceIdx, luminanceChars.length - 1))
+                                            ];
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    // Schedule next glitch burst
+                    if (frameCount === nextGlitchFrame + 12) {
+                        nextGlitchFrame = frameCount + 80 + Math.floor(Math.random() * 120);
+                    }
+
+                    // Render to canvas
+                    ctx.font = '12px "JetBrains Mono", "SF Mono", monospace';
+                    ctx.textBaseline = 'top';
+
+                    for (let x = 0; x < numCols; x++) {
+                        for (let y = 0; y < numRows; y++) {
+                            const char = output[x][y];
+                            if (char && char !== ' ') {
+                                const ooz = zbuffer[x][y];
+                                const depth = Math.min(1, ooz * 2);
+
+                                // Muted color — dimmer than the hero donut
+                                const alpha = 0.08 + depth * 0.35;
+
+                                // Occasionally flash amber or green during glitches
+                                let r = 91,
+                                    g = 143,
+                                    b = 185;
+                                if (isGlitching && Math.random() < 0.05) {
+                                    // Amber flash
+                                    r = 201;
+                                    g = 149;
+                                    b = 107;
+                                } else if (isGlitching && Math.random() < 0.03) {
+                                    // Red error flash
+                                    r = 239;
+                                    g = 68;
+                                    b = 68;
+                                }
+
+                                ctx.fillStyle = `rgba(${r},${g},${b},${alpha})`;
+                                ctx.fillText(char, x * 10, y * 16);
+                            }
+                        }
+                    }
+
+                    // Horizontal displacement glitch lines
+                    if (isGlitching) {
+                        const sliceY = Math.random() * height;
+                        const sliceH = 4 + Math.random() * 16;
+                        const shift = (Math.random() - 0.5) * 30;
+                        const imgData = ctx.getImageData(0, Math.max(0, sliceY | 0), width, sliceH | 0);
+                        ctx.putImageData(imgData, shift, sliceY | 0);
+                    }
+
+                    // Rotate — slightly faster than hero for urgency
+                    A += 0.006;
+                    B += 0.003;
+
+                    // Slowly cull glyph map
+                    if (frameCount % 60 === 0) {
+                        const keys = Object.keys(glyphMap);
+                        if (keys.length > 200) {
+                            for (let i = 0; i < 25; i++) {
+                                delete glyphMap[keys[Math.floor(Math.random() * keys.length)]];
+                            }
+                        }
+                    }
+
+                    requestAnimationFrame(renderFrame);
+                }
+
+                // Respect reduced motion
+                const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+                if (!prefersReducedMotion) {
+                    renderFrame();
+                } else {
+                    renderFrame(); // Still show one frame
+                }
+            })();
+        </script>
+    </body>
+</html>
