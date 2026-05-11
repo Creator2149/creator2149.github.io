@@ -973,6 +973,13 @@
                     href: item.href,
                     textContent: item.label,
                 });
+                // Set active state on mobile links too
+                if (
+                    currentPath.endsWith(item.href) ||
+                    (item.href === '/index.html' && (currentPath === '/' || currentPath.endsWith('/')))
+                ) {
+                    link.classList.add('active');
+                }
                 mobileLinks.appendChild(link);
             });
         }

@@ -322,9 +322,88 @@ body::before {
     pointer-events: auto;
 }
 
-.navbar__mobile-menu .navbar__link {
-    font-size: 1.25rem;
-    letter-spacing: 0.1em;
+.navbar__mobile-menu-links {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-xl);
+}
+
+.navbar__mobile-link {
+    font-family:
+        'Inter',
+        -apple-system,
+        BlinkMacSystemFont,
+        'Segoe UI',
+        system-ui,
+        sans-serif;
+    font-size: 1.5rem;
+    font-weight: var(--weight-light);
+    color: var(--text-secondary);
+    text-decoration: none;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    transition:
+        color 0.25s ease,
+        opacity 0.25s ease;
+    position: relative;
+    padding: 0.25rem 0;
+}
+
+.navbar__mobile-link:hover {
+    color: var(--text-primary);
+}
+
+.navbar__mobile-link.active {
+    color: var(--text-primary);
+    font-weight: var(--weight-medium);
+}
+
+.navbar__mobile-link.active::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background-color: var(--accent-blue);
+}
+
+/* Close button inside mobile menu */
+.navbar__mobile-close {
+    position: absolute;
+    top: 1.25rem;
+    right: 1.5rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.5rem;
+    z-index: 1001;
+}
+
+.navbar__mobile-close::before,
+.navbar__mobile-close::after {
+    content: '';
+    display: block;
+    width: 20px;
+    height: 2px;
+    background-color: var(--text-secondary);
+    transition: background-color 0.2s ease;
+}
+
+.navbar__mobile-close::before {
+    transform: rotate(45deg) translateY(1px);
+}
+
+.navbar__mobile-close::after {
+    transform: rotate(-45deg) translateY(-1px);
+}
+
+.navbar__mobile-close:hover::before,
+.navbar__mobile-close:hover::after {
+    background-color: var(--text-primary);
 }
 
 /* ------------------------------------------------------------
@@ -1700,9 +1779,79 @@ body::before {
     color: var(--text-tertiary);
 }
 
+/* ------------------------------------------------------------
+   20. ADMIN PASSWORD MODAL
+   ------------------------------------------------------------ */
+.admin-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: var(--overlay);
+    z-index: 3000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+    padding: var(--space-xl);
+}
+
+.admin-modal-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.admin-modal {
+    max-width: 24rem;
+    width: 100%;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: 1rem;
+    padding: var(--space-xl);
+    transform: translateY(20px);
+    transition: transform 0.3s ease;
+}
+
+.admin-modal-overlay.active .admin-modal {
+    transform: translateY(0);
+}
+
+.admin-modal input {
+    width: 100%;
+    padding: var(--space-sm) var(--space-md);
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border);
+    border-radius: 0.5rem;
+    color: var(--text-primary);
+    font-family: 'JetBrains Mono', 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+    font-size: var(--small-size);
+    outline: none;
+    transition: border-color 0.2s ease;
+}
+
+.admin-modal input:focus {
+    border-color: var(--accent-blue);
+}
+
+.admin-modal button {
+    margin-top: var(--space-md);
+    padding: var(--space-sm) var(--space-xl);
+    background: var(--accent-blue-dim);
+    border: 1px solid rgba(91, 143, 185, 0.3);
+    border-radius: 0.5rem;
+    color: var(--accent-blue);
+    font-family: 'JetBrains Mono', 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.admin-modal button:hover {
+    background: rgba(91, 143, 185, 0.2);
+    border-color: var(--accent-blue);
+}
 
 /* ------------------------------------------------------------
-   20. ANIMATIONS
+   21. ANIMATIONS
    ------------------------------------------------------------ */
 @keyframes pulse {
     0%,
@@ -1747,7 +1896,7 @@ body::before {
 }
 
 /* ------------------------------------------------------------
-   21. REDUCED MOTION
+   22. REDUCED MOTION
    ------------------------------------------------------------ */
 @media (prefers-reduced-motion: reduce) {
     *,
@@ -1764,7 +1913,7 @@ body::before {
 }
 
 /* ------------------------------------------------------------
-   22. FOCUS STYLES (Accessibility)
+   23. FOCUS STYLES (Accessibility)
    ------------------------------------------------------------ */
 a:focus-visible,
 button:focus-visible,
@@ -1785,7 +1934,7 @@ textarea:focus-visible,
 }
 
 /* ------------------------------------------------------------
-   23. RESPONSIVE — Tablet (768px – 1024px)
+   24. RESPONSIVE — Tablet (768px – 1024px)
    ------------------------------------------------------------ */
 @media (max-width: 1024px) {
     /* Projects Grid: 2 columns */
@@ -1815,7 +1964,7 @@ textarea:focus-visible,
 }
 
 /* ------------------------------------------------------------
-   24. RESPONSIVE — Mobile (<768px)
+   25. RESPONSIVE — Mobile (<768px)
    ------------------------------------------------------------ */
 @media (max-width: 767px) {
     /* Navbar */
