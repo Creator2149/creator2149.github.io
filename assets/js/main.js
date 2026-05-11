@@ -204,7 +204,7 @@
             ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
             // Scale K1 based on canvas width for responsive sizing
-            K1 = (width * 0.35 * K2 * 3) / (8 * (R1 + R2));
+            K1 = (width * 0.2 * K2 * 3) / (8 * (R1 + R2));
         }
 
         resize();
