@@ -240,7 +240,7 @@ body::before {
         system-ui,
         sans-serif;
     fill: var(--text-primary);
-    font-size: 14px;
+    font-size: 20px;
     font-weight: 600;
     letter-spacing: 1.5px;
     dominant-baseline: central;
