@@ -222,8 +222,8 @@ body::before {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 52px;
-    height: 52px;
+    width: 44px;
+    height: 44px;
     position: relative;
 }
 
@@ -232,18 +232,7 @@ body::before {
     height: 100%;
 }
 
-.navbar__monogram-frame {
-    fill: none;
-    stroke: var(--accent-blue);
-    stroke-width: 3.5;
-    transition: stroke 0.3s ease;
-}
-
-.navbar__brand:hover .navbar__monogram-frame {
-    stroke: var(--accent-amber);
-}
-
-.navbar__monogram-text {
+.navbar__monogram-letter {
     font-family:
         'Inter',
         -apple-system,
@@ -252,11 +241,26 @@ body::before {
         system-ui,
         sans-serif;
     fill: var(--text-primary);
-    font-size: 14px;
-    font-weight: 500;
-    letter-spacing: 1.5px;
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: 2px;
     dominant-baseline: central;
     text-anchor: middle;
+    transition: fill 0.3s ease;
+}
+
+.navbar__monogram-accent {
+    stroke: var(--accent-blue);
+    fill: none;
+    transition: stroke 0.3s ease;
+}
+
+.navbar__brand:hover .navbar__monogram-accent {
+    stroke: var(--accent-amber);
+}
+
+.navbar__brand:hover .navbar__monogram-letter {
+    fill: var(--text-primary);
 }
 
 .navbar__links {
