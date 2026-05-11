@@ -1,71 +1,66 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Projects — Rishit Choudhary</title>
-        <meta name="description" content="Full archive of projects by Rishit Choudhary." />
-        <link rel="icon" href="assets/favicon/favicon.svg" type="image/svg+xml" />
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-        <link
-            href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
-            rel="stylesheet"
-        />
-        <link rel="stylesheet" href="assets/css/main.css" />
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-    </head>
-    <body class="page-projects">
-        <div class="bg-grid" aria-hidden="true"></div>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projects — Rishit</title>
+    <meta name="description" content="Archive of engineered systems, computational tools, and visual experiments.">
+    <link rel="stylesheet" href="assets/css/main.css">
+    <link rel="icon" href="assets/favicon/favicon.ico" type="image/x-icon">
+</head>
+<body class="page page--projects">
+    <!-- Navbar -->
+    <nav class="navbar" role="navigation" aria-label="Main navigation">
+        <div class="navbar__inner">
+            <a href="/index.html" class="navbar__brand">R.</a>
+            <ul class="navbar__links"></ul>
+            <button class="navbar__toggle" aria-label="Toggle menu" aria-expanded="false">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+        <div class="navbar__mobile-menu">
+            <div class="navbar__mobile-menu-links"></div>
+        </div>
+    </nav>
 
-        <header class="navbar">
-            <div class="navbar__inner"></div>
-        </header>
+    <!-- Page Header -->
+    <header class="page__header">
+        <div class="section__label">Archive</div>
+        <h1 class="section__title" style="font-size:var(--h1-size);">Projects</h1>
+        <p class="section__subtitle">Systems built, tools engineered, problems explored. Each project is a record of structured thinking made tangible.</p>
+    </header>
 
-        <main class="page-content">
-            <div class="container">
-                <div class="page-header">
-                    <h1 class="page-header__title">Projects</h1>
-                    <p class="page-header__subtitle">Complete archive of engineering work, experiments, and tools.</p>
-                </div>
+    <!-- Page Content -->
+    <div class="page__content">
+        <!-- Filters -->
+        <div class="projects-filters filters reveal"></div>
 
-                <div class="filters" id="project-filters"></div>
+        <!-- Projects Grid -->
+        <div class="projects-grid reveal">
+            <!-- Dynamically rendered by main.js -->
+        </div>
+    </div>
 
-                <div class="archive-grid" id="projects-grid"></div>
-            </div>
-        </main>
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer__inner">
+            <div class="footer__copyright"></div>
+            <div class="footer__built"></div>
+        </div>
+    </footer>
 
-        <footer class="footer"></footer>
+    <!-- Data Files -->
+    <script src="assets/js/data/site.js"></script>
+    <script src="assets/js/data/projects.js"></script>
+    <script src="assets/js/data/certificates.js"></script>
+    <script src="assets/js/data/blender.js"></script>
 
-        <script src="assets/js/data/site.js"></script>
-        <script src="assets/js/data/projects.js"></script>
-        <script src="assets/js/modal.js"></script>
-        <script src="assets/js/filters.js"></script>
-        <script src="assets/js/main.js"></script>
-
-        <script>
-            document.addEventListener('DOMContentLoaded', () => {
-                const sorted = sortByNewest(PROJECTS, 'year');
-
-                function renderGrid(items) {
-                    const grid = document.getElementById('projects-grid');
-                    if (!grid) return;
-                    grid.innerHTML = '';
-
-                    if (!items.length) {
-                        grid.innerHTML = '<p class="empty-state">No projects match this filter.</p>';
-                        return;
-                    }
-
-                    items.forEach((project) => {
-                        const card = createProjectCard(project, openProjectModal);
-                        grid.appendChild(card);
-                    });
-                }
-
-                renderGrid(sorted);
-                initFilters('#project-filters', sorted, renderGrid);
-            });
-        </script>
-    </body>
+    <!-- JS Modules -->
+    <script src="assets/js/modal.js"></script>
+    <script src="assets/js/carousel.js"></script>
+    <script src="assets/js/filters.js"></script>
+    <script src="assets/js/main.js"></script>
+</body>
 </html>

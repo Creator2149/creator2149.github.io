@@ -1,61 +1,52 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Certificates — Rishit Choudhary</title>
-        <meta name="description" content="Certificate archive for Rishit Choudhary." />
-        <link rel="icon" href="assets/favicon/favicon.svg" type="image/svg+xml" />
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-        <link
-            href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
-            rel="stylesheet"
-        />
-        <link rel="stylesheet" href="assets/css/main.css" />
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-    </head>
-    <body class="page-certificates">
-        <div class="bg-grid" aria-hidden="true"></div>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Certificates — Rishit</title>
+    <meta name="description" content="A record of consistent long-term exploration across computational fields.">
+    <link rel="stylesheet" href="assets/css/main.css">
+    <link rel="icon" href="assets/favicon/favicon.ico" type="image/x-icon">
+</head>
+<body class="page page--certificates">
+    <nav class="navbar" role="navigation" aria-label="Main navigation">
+        <div class="navbar__inner">
+            <a href="/index.html" class="navbar__brand">R.</a>
+            <ul class="navbar__links"></ul>
+            <button class="navbar__toggle" aria-label="Toggle menu" aria-expanded="false">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+        <div class="navbar__mobile-menu">
+            <div class="navbar__mobile-menu-links"></div>
+        </div>
+    </nav>
 
-        <header class="navbar">
-            <div class="navbar__inner"></div>
-        </header>
+    <header class="page__header">
+        <div class="section__label">Archive</div>
+        <h1 class="section__title" style="font-size:var(--h1-size);">Certificates</h1>
+        <p class="section__subtitle">A record of consistent exploration — not a collection of badges. Each certification represents sustained engagement with a field.</p>
+    </header>
 
-        <main class="page-content">
-            <div class="container">
-                <div class="page-header">
-                    <h1 class="page-header__title">Certificates</h1>
-                    <p class="page-header__subtitle">Verified credentials and completed programmes.</p>
-                </div>
+    <div class="page__content">
+        <div class="certificates-filters filters reveal"></div>
+        <div class="certificates-grid reveal"></div>
+    </div>
 
-                <div class="archive-grid archive-grid--certificates" id="certificates-grid"></div>
-            </div>
-        </main>
+    <footer class="footer">
+        <div class="footer__inner">
+            <div class="footer__copyright"></div>
+            <div class="footer__built"></div>
+        </div>
+    </footer>
 
-        <footer class="footer"></footer>
-
-        <script src="assets/js/data/site.js"></script>
-        <script src="assets/js/data/certificates.js"></script>
-        <script src="assets/js/modal.js"></script>
-        <script src="assets/js/main.js"></script>
-
-        <script>
-            document.addEventListener('DOMContentLoaded', () => {
-                const sorted = sortByNewest(CERTIFICATES, 'year');
-                const grid = document.getElementById('certificates-grid');
-                if (!grid) return;
-
-                if (!sorted.length) {
-                    grid.innerHTML = '<p class="empty-state">No certificates yet.</p>';
-                    return;
-                }
-
-                sorted.forEach((cert) => {
-                    const card = createCertificateCard(cert, openCertificateModal);
-                    grid.appendChild(card);
-                });
-            });
-        </script>
-    </body>
+    <script src="assets/js/data/site.js"></script>
+    <script src="assets/js/data/projects.js"></script>
+    <script src="assets/js/data/certificates.js"></script>
+    <script src="assets/js/data/blender.js"></script>
+    <script src="assets/js/modal.js"></script>
+    <script src="assets/js/carousel.js"></script>
+    <script src="assets/js/filters.js"></script>
+    <script src="assets/js/main.js"></script>
+</body>
 </html>

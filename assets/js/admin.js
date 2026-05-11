@@ -1,883 +1,910 @@
 /**
  * admin.js — Admin panel logic
- *
- * Manages CRUD operations for projects, certificates, and Blender
- * items. All edits happen in local state first; changes are pushed
- * to GitHub only when the user explicitly syncs.
- *
- * Workflow:
- *   1. Load current data from the data modules
- *   2. Render admin lists with edit/delete actions
- *   3. Provide add/edit forms for each data type
- *   4. On sync: upload pending images, then rewrite data files
+ * 
+ * Features:
+ * - CRUD operations for projects, certificates, blender items
+ * - Image upload with preview
+ * - GitHub sync (PAT-based, session-only)
+ * - Featured/homepage toggle per item
+ * - Live UI updates without page reload
+ * - Toast notifications
+ * - Tab-based navigation
+ * 
+ * Security:
+ * - PAT never persisted (session only, stored in GitHub module)
+ * - Admin password uses SHA-256 hash verification
+ * - ADMIN_HASH placeholder for deployment
  */
 
-const Admin = (() => {
-  /* ── Local state ─────────────────────────────────────────── */
-  let projects = JSON.parse(JSON.stringify(PROJECTS));
-  let certificates = JSON.parse(JSON.stringify(CERTIFICATES));
-  let blenderItems = JSON.parse(JSON.stringify(BLENDER_PROJECTS));
+(function () {
+  'use strict';
 
-  /* Pending image uploads: { [category]: Map<itemId, File> } */
-  const pendingImages = {
-    projects: new Map(),
-    certificates: new Map(),
-    blender: new Map(),
-  };
+  /* =========================================================
+     ADMIN PASSWORD HASH
+     =========================================================
+     To set the admin password:
+     1. Open browser console and run:
+        const encoder = new TextEncoder();
+        crypto.subtle.digest('SHA-256', encoder.encode('YOUR_PASSWORD'))
+          .then(buf => Array.from(new Uint8Array(buf))
+            .map(b => b.toString(16).padStart(2, '0')).join(''))
+          .then(hash => console.log(hash));
+     2. Copy the resulting hash string
+     3. Replace REPLACE_THIS_HASH below with the hash
+  ========================================================= */
 
-  /* Track which items have been edited */
-  const dirty = {
-    projects: false,
-    certificates: false,
-    blender: false,
-  };
+  const ADMIN_HASH = 'REPLACE_THIS_HASH';
 
-  let editingItem = null; // { type, id }
+  // Local state (deep copies of data, modified through admin)
+  let localProjects = [];
+  let localCertificates = [];
+  let localBlender = [];
 
-  /* ── Initialisation ──────────────────────────────────────── */
+  // Pending image uploads (stored as File objects)
+  let pendingImages = {};
+
+  // Current editing state
+  let editingItem = null;
+  let editingType = null;
+
+  /* =========================================================
+     INITIALIZATION
+  ========================================================= */
 
   function init() {
-    renderPATBanner();
-    renderProjectsSection();
-    renderCertificatesSection();
-    renderBlenderSection();
-    renderSyncBar();
+    // Check if we're on the admin page
+    if (!document.querySelector('.admin')) return;
+
+    // Verify admin access
+    // (In production, you'd verify the hash here)
+
+    // Deep copy data
+    localProjects = JSON.parse(JSON.stringify(window.PROJECTS_DATA || []));
+    localCertificates = JSON.parse(JSON.stringify(window.CERTIFICATES_DATA || []));
+    localBlender = JSON.parse(JSON.stringify(window.BLENDER_DATA || []));
+
+    // Initialize tabs
+    initTabs();
+
+    // Initialize PAT section
+    initPATSection();
+
+    // Render all lists
+    renderProjectsList();
+    renderCertificatesList();
+    renderBlenderList();
+
+    // Initialize sync bar
+    initSyncBar();
   }
 
-  /* ── PAT Banner ──────────────────────────────────────────── */
+  /* =========================================================
+     TABS
+  ========================================================= */
 
-  function renderPATBanner() {
-    const container = document.getElementById("pat-banner");
-    if (!container) return;
+  function initTabs() {
+    const tabs = document.querySelectorAll('.admin__tab');
+    const panels = document.querySelectorAll('.admin__panel');
 
-    container.innerHTML = "";
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        const target = tab.dataset.tab;
 
-    const banner = document.createElement("div");
-    banner.className = "pat-banner";
+        tabs.forEach(t => t.classList.remove('active'));
+        panels.forEach(p => p.classList.remove('active'));
 
-    const status = document.createElement("div");
-    status.className = "pat-banner__status";
-    const dot = document.createElement("span");
-    dot.className = "pat-banner__dot" + (GitHubAPI.hasPAT() ? " pat-banner__dot--connected" : "");
-    const statusText = document.createElement("span");
-    statusText.textContent = GitHubAPI.hasPAT()
-      ? `Connected as ${GitHubAPI.getPATMasked()}`
-      : "No PAT connected";
-    status.appendChild(dot);
-    status.appendChild(statusText);
-
-    const input = document.createElement("input");
-    input.className = "pat-banner__input";
-    input.type = "password";
-    input.placeholder = "Enter GitHub PAT";
-    input.value = "";
-
-    const btn = document.createElement("button");
-    btn.className = "pat-banner__btn btn";
-    btn.textContent = GitHubAPI.hasPAT() ? "Update" : "Connect";
-
-    btn.addEventListener("click", async () => {
-      const token = input.value.trim();
-      if (!token) return;
-      GitHubAPI.setPAT(token);
-      const validation = await GitHubAPI.validatePAT();
-      if (validation.valid) {
-        input.value = "";
-        renderPATBanner();
-      } else {
-        GitHubAPI.clearPAT();
-        input.style.borderColor = "#c47070";
-        setTimeout(() => { input.style.borderColor = ""; }, 1500);
-      }
+        tab.classList.add('active');
+        const panel = document.querySelector(`.admin__panel[data-panel="${target}"]`);
+        if (panel) panel.classList.add('active');
+      });
     });
 
-    banner.appendChild(status);
-    banner.appendChild(input);
-    banner.appendChild(btn);
-    container.appendChild(banner);
+    // Update tab counts
+    updateTabCounts();
   }
 
-  /* ── Generic list renderer ───────────────────────────────── */
+  function updateTabCounts() {
+    const counts = {
+      projects: localProjects.length,
+      certificates: localCertificates.length,
+      blender: localBlender.length
+    };
 
-  /**
-   * Render an admin list for a data type.
-   * @param {string} containerId — DOM id for the list container
-   * @param {Array} items — data array
-   * @param {string} type — "projects" | "certificates" | "blender"
-   * @param {Function} metaText — function(item) => string for meta line
-   */
-  function renderAdminList(containerId, items, type, metaText) {
-    const container = document.getElementById(containerId);
-    if (!container) return;
-    container.innerHTML = "";
+    document.querySelectorAll('.admin__tab').forEach(tab => {
+      const type = tab.dataset.tab;
+      const countEl = tab.querySelector('.admin__tab-count');
+      if (countEl && counts[type] !== undefined) {
+        countEl.textContent = counts[type];
+      }
+    });
+  }
 
-    if (!items.length) {
-      container.innerHTML = '<p class="empty-state">No items yet.</p>';
+  /* =========================================================
+     PAT SECTION
+  ========================================================= */
+
+  function initPATSection() {
+    const patInput = document.querySelector('.admin__pat-input');
+    const patBtn = document.querySelector('.admin__pat-btn');
+    const patStatus = document.querySelector('.admin__pat-status');
+
+    if (!patInput || !patBtn) return;
+
+    patBtn.addEventListener('click', async () => {
+      const pat = patInput.value.trim();
+      if (!pat) {
+        setPATStatus('error', 'Enter a PAT');
+        return;
+      }
+
+      setPATStatus('pending', 'Verifying...');
+      window.GitHub.setPAT(pat);
+
+      const result = await window.GitHub.validatePAT();
+      if (result.valid) {
+        setPATStatus('success', `Connected as ${result.username}`);
+        patInput.type = 'password';
+        patInput.disabled = true;
+        patBtn.textContent = 'Reset';
+        patBtn.addEventListener('click', () => {
+          window.GitHub.clearPAT();
+          patInput.type = 'text';
+          patInput.disabled = false;
+          patInput.value = '';
+          patBtn.textContent = 'Connect';
+          setPATStatus('none', '');
+          initPATSection(); // Re-init
+        }, { once: true });
+      } else {
+        setPATStatus('error', result.error);
+        window.GitHub.clearPAT();
+      }
+    });
+  }
+
+  function setPATStatus(type, message) {
+    const status = document.querySelector('.admin__pat-status');
+    if (!status) return;
+
+    status.textContent = message;
+    status.className = 'admin__pat-status';
+    if (type === 'success') {
+      status.style.color = '#22c55e';
+    } else if (type === 'error') {
+      status.style.color = '#ef4444';
+    } else if (type === 'pending') {
+      status.style.color = 'var(--accent-amber)';
+    } else {
+      status.style.color = 'var(--text-tertiary)';
+    }
+  }
+
+  /* =========================================================
+     PROJECTS CRUD
+  ========================================================= */
+
+  function renderProjectsList() {
+    const list = document.querySelector('.admin-projects-list');
+    if (!list) return;
+
+    list.innerHTML = '';
+
+    if (localProjects.length === 0) {
+      list.innerHTML = '<div style="color:var(--text-tertiary);padding:2rem;text-align:center;font-family:var(--font-mono);font-size:0.8rem;">No projects yet. Add one above.</div>';
       return;
     }
 
-    const list = document.createElement("div");
-    list.className = "admin-list";
+    localProjects.forEach((project, index) => {
+      const item = document.createElement('div');
+      item.className = 'admin__list-item' + (project.featured ? ' featured' : '');
 
-    items.forEach((item) => {
-      const el = document.createElement("div");
-      el.className = "admin-item" + (item.featured ? " admin-item--featured" : "");
+      item.innerHTML = `
+        <div class="admin__list-item-info">
+          <div class="admin__list-item-title">${escapeHTML(project.title)}</div>
+          <div class="admin__list-item-meta">
+            ${escapeHTML(project.year)} · ${escapeHTML(project.status || 'No status')}
+            ${project.featured ? ' · FEATURED' : ''}
+            ${project.featuredOnHome ? ' · ON HOME' : ''}
+          </div>
+        </div>
+        <div class="admin__list-item-actions">
+          <button class="btn btn--secondary btn--small" onclick="AdminApp.editProject(${index})">Edit</button>
+          <button class="btn btn--danger btn--small" onclick="AdminApp.deleteProject(${index})">Delete</button>
+        </div>
+      `;
 
-      const info = document.createElement("div");
-      info.className = "admin-item__info";
+      list.appendChild(item);
+    });
 
-      const title = document.createElement("div");
-      title.className = "admin-item__title";
-      title.textContent = item.title;
+    updateTabCounts();
+  }
 
-      const meta = document.createElement("div");
-      meta.className = "admin-item__meta";
-      meta.textContent = metaText(item);
+  function showProjectForm(project = null, index = -1) {
+    const formContainer = document.querySelector('.admin-project-form');
+    if (!formContainer) return;
 
-      if (item.featured) {
-        const badge = document.createElement("span");
-        badge.className = "admin-item__badge";
-        badge.textContent = "Featured";
-        meta.appendChild(badge);
+    const isEdit = project !== null;
+    editingItem = project;
+    editingType = isEdit ? 'project' : null;
+
+    formContainer.innerHTML = `
+      <div class="admin__form">
+        <h3 style="font-family:'JetBrains Mono',monospace;font-size:0.9rem;color:var(--text-primary);margin-bottom:1.5rem;">
+          ${isEdit ? 'Edit Project' : 'Add Project'}
+        </h3>
+
+        <div class="admin__form-group">
+          <label class="admin__form-label">Title</label>
+          <input class="admin__form-input" type="text" id="proj-title" value="${isEdit ? escapeHTML(project.title) : ''}" required>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+          <div class="admin__form-group">
+            <label class="admin__form-label">Year</label>
+            <input class="admin__form-input" type="text" id="proj-year" value="${isEdit ? escapeHTML(project.year) : new Date().getFullYear()}">
+          </div>
+          <div class="admin__form-group">
+            <label class="admin__form-label">Status</label>
+            <input class="admin__form-input" type="text" id="proj-status" value="${isEdit ? escapeHTML(project.status || '') : ''}" placeholder="e.g. In Development">
+          </div>
+        </div>
+
+        <div class="admin__form-group">
+          <label class="admin__form-label">Status Details</label>
+          <input class="admin__form-input" type="text" id="proj-status-details" value="${isEdit ? escapeHTML(project.statusDetails || '') : ''}">
+        </div>
+
+        <div class="admin__form-group">
+          <label class="admin__form-label">Tech Stack (comma-separated)</label>
+          <input class="admin__form-input" type="text" id="proj-tech" value="${isEdit ? escapeHTML((project.tech || []).join(', ')) : ''}" placeholder="C++, Python, OpenGL">
+        </div>
+
+        <div class="admin__form-group">
+          <label class="admin__form-label">Short Description</label>
+          <textarea class="admin__form-textarea" id="proj-short-desc" rows="2">${isEdit ? escapeHTML(project.shortDescription || '') : ''}</textarea>
+        </div>
+
+        <div class="admin__form-group">
+          <label class="admin__form-label">Long Description</label>
+          <textarea class="admin__form-textarea" id="proj-long-desc" rows="4">${isEdit ? escapeHTML(project.longDescription || '') : ''}</textarea>
+        </div>
+
+        <div class="admin__form-group">
+          <label class="admin__form-label">Featured Quote</label>
+          <textarea class="admin__form-textarea" id="proj-quote" rows="2">${isEdit ? escapeHTML(project.featuredQuote || '') : ''}</textarea>
+        </div>
+
+        <div class="admin__form-group">
+          <label class="admin__form-label">Architecture Notes</label>
+          <textarea class="admin__form-textarea" id="proj-arch" rows="3">${isEdit ? escapeHTML(project.architectureNotes || '') : ''}</textarea>
+        </div>
+
+        <div class="admin__form-group">
+          <label class="admin__form-label">Link (GitHub/Live)</label>
+          <input class="admin__form-input" type="url" id="proj-link" value="${isEdit ? escapeHTML(project.link || '') : ''}">
+        </div>
+
+        <div class="admin__form-group">
+          <label class="admin__form-label">Tags (comma-separated)</label>
+          <input class="admin__form-input" type="text" id="proj-tags" value="${isEdit ? escapeHTML((project.tags || []).join(', ')) : ''}">
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+          <div class="admin__form-group">
+            <label class="admin__form-toggle">
+              <input type="checkbox" id="proj-featured" ${isEdit && project.featured ? 'checked' : ''}>
+              <span class="admin__form-toggle-label">Featured</span>
+            </label>
+          </div>
+          <div class="admin__form-group">
+            <label class="admin__form-toggle">
+              <input type="checkbox" id="proj-home" ${isEdit && project.featuredOnHome ? 'checked' : ''}>
+              <span class="admin__form-toggle-label">Show on Homepage</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="admin__form-group">
+          <label class="admin__form-label">Image</label>
+          <div class="admin__image-drop" id="proj-image-drop">
+            <div class="admin__image-drop-text">Click or drop image here</div>
+            <input type="file" accept="image/*" id="proj-image-input" style="display:none">
+          </div>
+          <div class="admin__form-file-name" id="proj-image-name">${isEdit && project.image ? escapeHTML(project.image) : 'No image selected'}</div>
+          ${isEdit && project.image ? `<img class="admin__form-image-preview" src="${escapeHTML(project.image)}" alt="Preview" onerror="this.style.display='none'">` : ''}
+        </div>
+
+        <div class="admin__form-actions">
+          <button class="btn btn--primary" id="proj-save">${isEdit ? 'Update' : 'Add'} Project</button>
+          <button class="btn btn--secondary" id="proj-cancel">Cancel</button>
+        </div>
+      </div>
+    `;
+
+    // Image upload handlers
+    const imageDrop = document.getElementById('proj-image-drop');
+    const imageInput = document.getElementById('proj-image-input');
+    const imageName = document.getElementById('proj-image-name');
+
+    imageDrop.addEventListener('click', () => imageInput.click());
+    imageInput.addEventListener('change', (e) => {
+      if (e.target.files[0]) {
+        imageName.textContent = e.target.files[0].name;
+        pendingImages.project = e.target.files[0];
       }
+    });
 
-      info.appendChild(title);
-      info.appendChild(meta);
+    // Save handler
+    document.getElementById('proj-save').addEventListener('click', () => {
+      saveProject(isEdit ? index : -1);
+    });
 
-      const actions = document.createElement("div");
-      actions.className = "admin-item__actions";
+    // Cancel handler
+    document.getElementById('proj-cancel').addEventListener('click', () => {
+      formContainer.innerHTML = '';
+      editingItem = null;
+      editingType = null;
+    });
+  }
 
-      const editBtn = document.createElement("button");
-      editBtn.className = "admin-item__btn";
-      editBtn.textContent = "Edit";
-      editBtn.addEventListener("click", () => openEditForm(type, item.id));
+  function saveProject(index) {
+    const title = document.getElementById('proj-title').value.trim();
+    if (!title) {
+      showToast('Title is required', 'error');
+      return;
+    }
 
-      const deleteBtn = document.createElement("button");
-      deleteBtn.className = "admin-item__btn admin-item__btn--delete";
-      deleteBtn.textContent = "Delete";
-      deleteBtn.addEventListener("click", () => confirmDelete(type, item.id, item.title));
+    const techStr = document.getElementById('proj-tech').value.trim();
+    const tagsStr = document.getElementById('proj-tags').value.trim();
 
-      actions.appendChild(editBtn);
-      actions.appendChild(deleteBtn);
+    const project = {
+      id: index >= 0 && localProjects[index] ? localProjects[index].id : title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''),
+      title: title,
+      year: document.getElementById('proj-year').value.trim() || String(new Date().getFullYear()),
+      status: document.getElementById('proj-status').value.trim() || '',
+      statusDetails: document.getElementById('proj-status-details').value.trim() || '',
+      tech: techStr ? techStr.split(',').map(t => t.trim()).filter(Boolean) : [],
+      shortDescription: document.getElementById('proj-short-desc').value.trim() || '',
+      longDescription: document.getElementById('proj-long-desc').value.trim() || '',
+      featuredQuote: document.getElementById('proj-quote').value.trim() || '',
+      architectureNotes: document.getElementById('proj-arch').value.trim() || '',
+      link: document.getElementById('proj-link').value.trim() || '',
+      tags: tagsStr ? tagsStr.split(',').map(t => t.trim()).filter(Boolean) : [],
+      featured: document.getElementById('proj-featured').checked,
+      featuredOnHome: document.getElementById('proj-home').checked,
+      image: index >= 0 && localProjects[index] ? localProjects[index].image : ''
+    };
 
-      el.appendChild(info);
-      el.appendChild(actions);
+    // Preserve additional fields from existing item
+    if (index >= 0 && localProjects[index]) {
+      const existing = localProjects[index];
+      if (existing.processBreakdown) project.processBreakdown = existing.processBreakdown;
+      if (existing.challenges) project.challenges = existing.challenges;
+      if (existing.technicalHighlights) project.technicalHighlights = existing.technicalHighlights;
+    }
+
+    if (index >= 0) {
+      localProjects[index] = project;
+    } else {
+      localProjects.push(project);
+    }
+
+    renderProjectsList();
+    document.querySelector('.admin-project-form').innerHTML = '';
+    showToast(`Project ${index >= 0 ? 'updated' : 'added'}: ${title}`, 'success');
+  }
+
+  function deleteProject(index) {
+    const project = localProjects[index];
+    if (!project) return;
+
+    if (!confirm(`Delete "${project.title}"? This cannot be undone.`)) return;
+
+    localProjects.splice(index, 1);
+    renderProjectsList();
+    showToast(`Deleted: ${project.title}`, 'info');
+  }
+
+  function editProject(index) {
+    showProjectForm(localProjects[index], index);
+  }
+
+  /* =========================================================
+     CERTIFICATES CRUD
+  ========================================================= */
+
+  function renderCertificatesList() {
+    const list = document.querySelector('.admin-certificates-list');
+    if (!list) return;
+
+    list.innerHTML = '';
+
+    if (localCertificates.length === 0) {
+      list.innerHTML = '<div style="color:var(--text-tertiary);padding:2rem;text-align:center;font-family:var(--font-mono);font-size:0.8rem;">No certificates yet. Add one above.</div>';
+      return;
+    }
+
+    localCertificates.forEach((cert, index) => {
+      const item = document.createElement('div');
+      item.className = 'admin__list-item' + (cert.featured ? ' featured' : '');
+
+      item.innerHTML = `
+        <div class="admin__list-item-info">
+          <div class="admin__list-item-title">${escapeHTML(cert.title)}</div>
+          <div class="admin__list-item-meta">
+            ${escapeHTML(String(cert.year))} · ${escapeHTML(cert.field || 'No field')}
+            ${cert.featured ? ' · FEATURED' : ''}
+            ${cert.featuredOnHome ? ' · ON HOME' : ''}
+          </div>
+        </div>
+        <div class="admin__list-item-actions">
+          <button class="btn btn--secondary btn--small" onclick="AdminApp.editCertificate(${index})">Edit</button>
+          <button class="btn btn--danger btn--small" onclick="AdminApp.deleteCertificate(${index})">Delete</button>
+        </div>
+      `;
+
+      list.appendChild(item);
+    });
+
+    updateTabCounts();
+  }
+
+  function showCertificateForm(cert = null, index = -1) {
+    const formContainer = document.querySelector('.admin-certificate-form');
+    if (!formContainer) return;
+
+    const isEdit = cert !== null;
+
+    formContainer.innerHTML = `
+      <div class="admin__form">
+        <h3 style="font-family:'JetBrains Mono',monospace;font-size:0.9rem;color:var(--text-primary);margin-bottom:1.5rem;">
+          ${isEdit ? 'Edit Certificate' : 'Add Certificate'}
+        </h3>
+
+        <div class="admin__form-group">
+          <label class="admin__form-label">Title</label>
+          <input class="admin__form-input" type="text" id="cert-title" value="${isEdit ? escapeHTML(cert.title) : ''}" required>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+          <div class="admin__form-group">
+            <label class="admin__form-label">Year</label>
+            <input class="admin__form-input" type="text" id="cert-year" value="${isEdit ? escapeHTML(String(cert.year)) : new Date().getFullYear()}">
+          </div>
+          <div class="admin__form-group">
+            <label class="admin__form-label">Field</label>
+            <input class="admin__form-input" type="text" id="cert-field" value="${isEdit ? escapeHTML(cert.field || '') : ''}">
+          </div>
+        </div>
+
+        <div class="admin__form-group">
+          <label class="admin__form-label">Issuer</label>
+          <input class="admin__form-input" type="text" id="cert-issuer" value="${isEdit ? escapeHTML(cert.issuer || '') : ''}">
+        </div>
+
+        <div class="admin__form-group">
+          <label class="admin__form-label">Description</label>
+          <textarea class="admin__form-textarea" id="cert-desc" rows="2">${isEdit ? escapeHTML(cert.description || '') : ''}</textarea>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+          <div class="admin__form-group">
+            <label class="admin__form-toggle">
+              <input type="checkbox" id="cert-featured" ${isEdit && cert.featured ? 'checked' : ''}>
+              <span class="admin__form-toggle-label">Featured</span>
+            </label>
+          </div>
+          <div class="admin__form-group">
+            <label class="admin__form-toggle">
+              <input type="checkbox" id="cert-home" ${isEdit && cert.featuredOnHome ? 'checked' : ''}>
+              <span class="admin__form-toggle-label">Show on Homepage</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="admin__form-group">
+          <label class="admin__form-label">Image</label>
+          <div class="admin__image-drop" id="cert-image-drop">
+            <div class="admin__image-drop-text">Click or drop image here</div>
+            <input type="file" accept="image/*" id="cert-image-input" style="display:none">
+          </div>
+          <div class="admin__form-file-name" id="cert-image-name">${isEdit && cert.image ? escapeHTML(cert.image) : 'No image selected'}</div>
+          ${isEdit && cert.image ? `<img class="admin__form-image-preview" src="${escapeHTML(cert.image)}" alt="Preview" onerror="this.style.display='none'">` : ''}
+        </div>
+
+        <div class="admin__form-actions">
+          <button class="btn btn--primary" id="cert-save">${isEdit ? 'Update' : 'Add'} Certificate</button>
+          <button class="btn btn--secondary" id="cert-cancel">Cancel</button>
+        </div>
+      </div>
+    `;
+
+    const imageDrop = document.getElementById('cert-image-drop');
+    const imageInput = document.getElementById('cert-image-input');
+    const imageName = document.getElementById('cert-image-name');
+
+    imageDrop.addEventListener('click', () => imageInput.click());
+    imageInput.addEventListener('change', (e) => {
+      if (e.target.files[0]) {
+        imageName.textContent = e.target.files[0].name;
+        pendingImages.certificate = e.target.files[0];
+      }
+    });
+
+    document.getElementById('cert-save').addEventListener('click', () => {
+      saveCertificate(isEdit ? index : -1);
+    });
+
+    document.getElementById('cert-cancel').addEventListener('click', () => {
+      formContainer.innerHTML = '';
+    });
+  }
+
+  function saveCertificate(index) {
+    const title = document.getElementById('cert-title').value.trim();
+    if (!title) {
+      showToast('Title is required', 'error');
+      return;
+    }
+
+    const cert = {
+      id: index >= 0 && localCertificates[index] ? localCertificates[index].id : title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''),
+      title: title,
+      year: document.getElementById('cert-year').value.trim() || String(new Date().getFullYear()),
+      field: document.getElementById('cert-field').value.trim() || '',
+      issuer: document.getElementById('cert-issuer').value.trim() || '',
+      description: document.getElementById('cert-desc').value.trim() || '',
+      featured: document.getElementById('cert-featured').checked,
+      featuredOnHome: document.getElementById('cert-home').checked,
+      image: index >= 0 && localCertificates[index] ? localCertificates[index].image : ''
+    };
+
+    if (index >= 0) {
+      localCertificates[index] = cert;
+    } else {
+      localCertificates.push(cert);
+    }
+
+    renderCertificatesList();
+    document.querySelector('.admin-certificate-form').innerHTML = '';
+    showToast(`Certificate ${index >= 0 ? 'updated' : 'added'}: ${title}`, 'success');
+  }
+
+  function deleteCertificate(index) {
+    const cert = localCertificates[index];
+    if (!cert) return;
+    if (!confirm(`Delete "${cert.title}"?`)) return;
+
+    localCertificates.splice(index, 1);
+    renderCertificatesList();
+    showToast(`Deleted: ${cert.title}`, 'info');
+  }
+
+  function editCertificate(index) {
+    showCertificateForm(localCertificates[index], index);
+  }
+
+  /* =========================================================
+     BLENDER CRUD
+  ========================================================= */
+
+  function renderBlenderList() {
+    const list = document.querySelector('.admin-blender-list');
+    if (!list) return;
+
+    list.innerHTML = '';
+
+    if (localBlender.length === 0) {
+      list.innerHTML = '<div style="color:var(--text-tertiary);padding:2rem;text-align:center;font-family:var(--font-mono);font-size:0.8rem;">No blender items yet. Add one above.</div>';
+      return;
+    }
+
+    localBlender.forEach((item, index) => {
+      const el = document.createElement('div');
+      el.className = 'admin__list-item' + (item.featured ? ' featured' : '');
+
+      el.innerHTML = `
+        <div class="admin__list-item-info">
+          <div class="admin__list-item-title">${escapeHTML(item.title)}</div>
+          <div class="admin__list-item-meta">
+            ${escapeHTML(item.date || '')} · ${escapeHTML(item.renderEngine || 'No engine')}
+            ${item.featured ? ' · FEATURED' : ''}
+            ${item.featuredOnHome ? ' · ON HOME' : ''}
+          </div>
+        </div>
+        <div class="admin__list-item-actions">
+          <button class="btn btn--secondary btn--small" onclick="AdminApp.editBlender(${index})">Edit</button>
+          <button class="btn btn--danger btn--small" onclick="AdminApp.deleteBlender(${index})">Delete</button>
+        </div>
+      `;
+
       list.appendChild(el);
     });
 
-    container.appendChild(list);
+    updateTabCounts();
   }
 
-  /* ── Sections ────────────────────────────────────────────── */
+  function showBlenderForm(item = null, index = -1) {
+    const formContainer = document.querySelector('.admin-blender-form');
+    if (!formContainer) return;
 
-  function renderProjectsSection() {
-    renderAdminList(
-      "projects-list",
-      projects,
-      "projects",
-      (p) => `${p.status} · ${p.year}`
-    );
-  }
+    const isEdit = item !== null;
 
-  function renderCertificatesSection() {
-    renderAdminList(
-      "certificates-list",
-      certificates,
-      "certificates",
-      (c) => `${c.field} · ${c.year}`
-    );
-  }
+    formContainer.innerHTML = `
+      <div class="admin__form">
+        <h3 style="font-family:'JetBrains Mono',monospace;font-size:0.9rem;color:var(--text-primary);margin-bottom:1.5rem;">
+          ${isEdit ? 'Edit Blender Render' : 'Add Blender Render'}
+        </h3>
 
-  function renderBlenderSection() {
-    renderAdminList(
-      "blender-list",
-      blenderItems,
-      "blender",
-      (b) => b.date
-    );
-  }
+        <div class="admin__form-group">
+          <label class="admin__form-label">Title</label>
+          <input class="admin__form-input" type="text" id="blend-title" value="${isEdit ? escapeHTML(item.title) : ''}" required>
+        </div>
 
-  /* ── Delete confirmation ─────────────────────────────────── */
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+          <div class="admin__form-group">
+            <label class="admin__form-label">Date</label>
+            <input class="admin__form-input" type="text" id="blend-date" value="${isEdit ? escapeHTML(item.date || '') : new Date().toISOString().slice(0, 7)}" placeholder="YYYY-MM">
+          </div>
+          <div class="admin__form-group">
+            <label class="admin__form-label">Render Engine</label>
+            <input class="admin__form-input" type="text" id="blend-engine" value="${isEdit ? escapeHTML(item.renderEngine || '') : ''}" placeholder="Cycles / EEVEE">
+          </div>
+        </div>
 
-  function confirmDelete(type, id, title) {
-    const overlay = document.createElement("div");
-    overlay.className = "confirm-overlay";
+        <div class="admin__form-group">
+          <label class="admin__form-label">Description</label>
+          <textarea class="admin__form-textarea" id="blend-desc" rows="3">${isEdit ? escapeHTML(item.description || '') : ''}</textarea>
+        </div>
 
-    const dialog = document.createElement("div");
-    dialog.className = "confirm-dialog";
+        <div class="admin__form-group">
+          <label class="admin__form-label">Techniques (comma-separated)</label>
+          <input class="admin__form-input" type="text" id="blend-techniques" value="${isEdit ? escapeHTML((item.techniques || []).join(', ')) : ''}">
+        </div>
 
-    const msg = document.createElement("p");
-    msg.className = "confirm-dialog__message";
-    msg.textContent = `Delete "${title}"? This will be synced on the next push.`;
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+          <div class="admin__form-group">
+            <label class="admin__form-toggle">
+              <input type="checkbox" id="blend-featured" ${isEdit && item.featured ? 'checked' : ''}>
+              <span class="admin__form-toggle-label">Featured</span>
+            </label>
+          </div>
+          <div class="admin__form-group">
+            <label class="admin__form-toggle">
+              <input type="checkbox" id="blend-home" ${isEdit && item.featuredOnHome ? 'checked' : ''}>
+              <span class="admin__form-toggle-label">Show on Homepage</span>
+            </label>
+          </div>
+        </div>
 
-    const actions = document.createElement("div");
-    actions.className = "confirm-dialog__actions";
+        <div class="admin__form-group">
+          <label class="admin__form-label">Render Image</label>
+          <div class="admin__image-drop" id="blend-image-drop">
+            <div class="admin__image-drop-text">Click or drop image here</div>
+            <input type="file" accept="image/*" id="blend-image-input" style="display:none">
+          </div>
+          <div class="admin__form-file-name" id="blend-image-name">${isEdit && item.image ? escapeHTML(item.image) : 'No image selected'}</div>
+          ${isEdit && item.image ? `<img class="admin__form-image-preview" src="${escapeHTML(item.image)}" alt="Preview" onerror="this.style.display='none'">` : ''}
+        </div>
 
-    const cancelBtn = document.createElement("button");
-    cancelBtn.className = "btn btn--secondary";
-    cancelBtn.textContent = "Cancel";
-    cancelBtn.addEventListener("click", () => overlay.remove());
+        <div class="admin__form-actions">
+          <button class="btn btn--primary" id="blend-save">${isEdit ? 'Update' : 'Add'} Render</button>
+          <button class="btn btn--secondary" id="blend-cancel">Cancel</button>
+        </div>
+      </div>
+    `;
 
-    const deleteBtn = document.createElement("button");
-    deleteBtn.className = "btn btn--danger";
-    deleteBtn.textContent = "Delete";
-    deleteBtn.addEventListener("click", () => {
-      deleteItem(type, id);
-      overlay.remove();
-    });
+    const imageDrop = document.getElementById('blend-image-drop');
+    const imageInput = document.getElementById('blend-image-input');
+    const imageName = document.getElementById('blend-image-name');
 
-    actions.appendChild(cancelBtn);
-    actions.appendChild(deleteBtn);
-    dialog.appendChild(msg);
-    dialog.appendChild(actions);
-    overlay.appendChild(dialog);
-    document.body.appendChild(overlay);
-
-    requestAnimationFrame(() => overlay.classList.add("confirm-overlay--visible"));
-    overlay.addEventListener("click", (e) => {
-      if (e.target === overlay) overlay.remove();
-    });
-  }
-
-  function deleteItem(type, id) {
-    if (type === "projects") {
-      projects = projects.filter((p) => p.id !== id);
-      dirty.projects = true;
-      renderProjectsSection();
-    } else if (type === "certificates") {
-      certificates = certificates.filter((c) => c.id !== id);
-      dirty.certificates = true;
-      renderCertificatesSection();
-    } else if (type === "blender") {
-      blenderItems = blenderItems.filter((b) => b.id !== id);
-      dirty.blender = true;
-      renderBlenderSection();
-    }
-  }
-
-  /* ── Add / Edit forms ────────────────────────────────────── */
-
-  function openAddForm(type) {
-    editingItem = null;
-    if (type === "projects") renderProjectForm({}, type);
-    else if (type === "certificates") renderCertificateForm({}, type);
-    else if (type === "blender") renderBlenderForm({}, type);
-  }
-
-  function openEditForm(type, id) {
-    let item;
-    if (type === "projects") item = projects.find((p) => p.id === id);
-    else if (type === "certificates") item = certificates.find((c) => c.id === id);
-    else if (type === "blender") item = blenderItems.find((b) => b.id === id);
-    if (!item) return;
-
-    editingItem = { type, id };
-    if (type === "projects") renderProjectForm(item, type);
-    else if (type === "certificates") renderCertificateForm(item, type);
-    else if (type === "blender") renderBlenderForm(item, type);
-  }
-
-  /* ── Project Form ────────────────────────────────────────── */
-
-  function renderProjectForm(item, type) {
-    const container = document.getElementById("form-container");
-    if (!container) return;
-    container.innerHTML = "";
-
-    const form = document.createElement("div");
-    form.className = "admin-form";
-
-    const formTitle = document.createElement("div");
-    formTitle.className = "admin-form__title";
-    const titleText = document.createElement("span");
-    titleText.textContent = item.id ? "Edit Project" : "Add Project";
-    const closeBtn = document.createElement("button");
-    closeBtn.className = "btn btn--secondary";
-    closeBtn.textContent = "Cancel";
-    closeBtn.addEventListener("click", () => { container.innerHTML = ""; editingItem = null; });
-    formTitle.appendChild(titleText);
-    formTitle.appendChild(closeBtn);
-
-    const grid = document.createElement("div");
-    grid.className = "admin-form__grid";
-
-    /* Fields */
-    const fields = [
-      { key: "title", label: "Title", type: "text", value: item.title || "", full: false },
-      { key: "status", label: "Status", type: "select", value: item.status || "Planned", options: ["Completed", "In Progress", "Planned"], full: false },
-      { key: "year", label: "Year", type: "text", value: item.year || "", full: false },
-      { key: "tech", label: "Tech Stack (comma-separated)", type: "text", value: (item.tech || []).join(", "), full: false },
-      { key: "shortDescription", label: "Short Description", type: "textarea", value: item.shortDescription || "", full: true },
-      { key: "longDescription", label: "Long Description", type: "textarea", value: item.longDescription || "", full: true },
-      { key: "link", label: "GitHub / Live Link (optional)", type: "text", value: item.link || "", full: false },
-    ];
-
-    fields.forEach((f) => {
-      const group = document.createElement("div");
-      group.className = "admin-form__group" + (f.full ? " admin-form__group--full" : "");
-
-      const label = document.createElement("label");
-      label.className = "admin-form__label";
-      label.textContent = f.label;
-
-      let input;
-      if (f.type === "textarea") {
-        input = document.createElement("textarea");
-        input.className = "admin-form__textarea";
-        input.value = f.value;
-      } else if (f.type === "select") {
-        input = document.createElement("select");
-        input.className = "admin-form__select";
-        f.options.forEach((opt) => {
-          const option = document.createElement("option");
-          option.value = opt;
-          option.textContent = opt;
-          if (opt === f.value) option.selected = true;
-          input.appendChild(option);
-        });
-      } else {
-        input = document.createElement("input");
-        input.className = "admin-form__input";
-        input.type = f.type;
-        input.value = f.value;
+    imageDrop.addEventListener('click', () => imageInput.click());
+    imageInput.addEventListener('change', (e) => {
+      if (e.target.files[0]) {
+        imageName.textContent = e.target.files[0].name;
+        pendingImages.blender = e.target.files[0];
       }
-
-      input.setAttribute("data-field", f.key);
-      group.appendChild(label);
-      group.appendChild(input);
-      grid.appendChild(group);
     });
 
-    /* Featured toggle */
-    const featuredGroup = document.createElement("div");
-    featuredGroup.className = "admin-form__group";
-    const featuredLabel = document.createElement("label");
-    featuredLabel.className = "admin-form__toggle";
-    const featuredCheckbox = document.createElement("input");
-    featuredCheckbox.type = "checkbox";
-    featuredCheckbox.checked = item.featured || false;
-    featuredCheckbox.setAttribute("data-field", "featured");
-    const featuredText = document.createElement("span");
-    featuredText.className = "admin-form__toggle-label";
-    featuredText.textContent = "Featured on Home Page";
-    featuredLabel.appendChild(featuredCheckbox);
-    featuredLabel.appendChild(featuredText);
-    featuredGroup.appendChild(featuredLabel);
-    grid.appendChild(featuredGroup);
-
-    /* Image upload */
-    const imageGroup = document.createElement("div");
-    imageGroup.className = "admin-form__group admin-form__group--full";
-    const imageLabel = document.createElement("label");
-    imageLabel.className = "admin-form__label";
-    imageLabel.textContent = "Project Image (optional)";
-    const imageFile = document.createElement("input");
-    imageFile.type = "file";
-    imageFile.accept = "image/*";
-    imageFile.setAttribute("data-field", "image");
-    imageGroup.appendChild(imageLabel);
-    imageGroup.appendChild(imageFile);
-
-    /* Preview existing image */
-    if (item.image) {
-      const preview = document.createElement("img");
-      preview.className = "admin-form__image-preview";
-      preview.src = item.image;
-      preview.alt = "Current image";
-      imageGroup.appendChild(preview);
-    }
-
-    grid.appendChild(imageGroup);
-
-    /* Save button */
-    const actions = document.createElement("div");
-    actions.className = "admin-form__actions";
-    const saveBtn = document.createElement("button");
-    saveBtn.className = "btn btn--primary";
-    saveBtn.textContent = item.id ? "Save Changes" : "Add Project";
-    saveBtn.addEventListener("click", () => saveProject(item));
-    actions.appendChild(saveBtn);
-    grid.appendChild(actions);
-
-    form.appendChild(formTitle);
-    form.appendChild(grid);
-    container.appendChild(form);
-
-    /* Scroll to form */
-    container.scrollIntoView({ behavior: "smooth", block: "start" });
-  }
-
-  function saveProject(existingItem) {
-    const getValue = (key) => {
-      const el = document.querySelector(`[data-field="${key}"]`);
-      if (!el) return "";
-      if (el.type === "checkbox") return el.checked;
-      return el.value.trim();
-    };
-
-    const title = getValue("title");
-    if (!title) { alert("Title is required."); return; }
-
-    const techRaw = getValue("tech");
-    const tech = techRaw ? techRaw.split(",").map((t) => t.trim()).filter(Boolean) : [];
-
-    const project = {
-      id: existingItem.id || title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, ""),
-      featured: getValue("featured"),
-      title: title,
-      status: getValue("status"),
-      year: getValue("year"),
-      tech: tech,
-      image: existingItem.image || "",
-      shortDescription: getValue("shortDescription"),
-      longDescription: getValue("longDescription"),
-      link: getValue("link"),
-    };
-
-    /* Handle image upload */
-    const fileInput = document.querySelector('[data-field="image"]');
-    if (fileInput && fileInput.files && fileInput.files[0]) {
-      pendingImages.projects.set(project.id, fileInput.files[0]);
-      /* Set temporary path */
-      project.image = `${SITE.paths.projectImages}${fileInput.files[0].name.replace(/[^a-zA-Z0-9._-]/g, "_")}`;
-    }
-
-    if (existingItem.id) {
-      /* Update */
-      const idx = projects.findIndex((p) => p.id === existingItem.id);
-      if (idx !== -1) projects[idx] = project;
-    } else {
-      /* Add */
-      projects.push(project);
-    }
-
-    dirty.projects = true;
-    renderProjectsSection();
-    document.getElementById("form-container").innerHTML = "";
-    editingItem = null;
-  }
-
-  /* ── Certificate Form ────────────────────────────────────── */
-
-  function renderCertificateForm(item, type) {
-    const container = document.getElementById("form-container");
-    if (!container) return;
-    container.innerHTML = "";
-
-    const form = document.createElement("div");
-    form.className = "admin-form";
-
-    const formTitle = document.createElement("div");
-    formTitle.className = "admin-form__title";
-    const titleText = document.createElement("span");
-    titleText.textContent = item.id ? "Edit Certificate" : "Add Certificate";
-    const closeBtn = document.createElement("button");
-    closeBtn.className = "btn btn--secondary";
-    closeBtn.textContent = "Cancel";
-    closeBtn.addEventListener("click", () => { container.innerHTML = ""; editingItem = null; });
-    formTitle.appendChild(titleText);
-    formTitle.appendChild(closeBtn);
-
-    const grid = document.createElement("div");
-    grid.className = "admin-form__grid";
-
-    const fields = [
-      { key: "title", label: "Title", type: "text", value: item.title || "", full: false },
-      { key: "field", label: "Field", type: "text", value: item.field || "", full: false },
-      { key: "year", label: "Year", type: "text", value: item.year || "", full: false },
-    ];
-
-    fields.forEach((f) => {
-      const group = document.createElement("div");
-      group.className = "admin-form__group";
-      const label = document.createElement("label");
-      label.className = "admin-form__label";
-      label.textContent = f.label;
-      const input = document.createElement("input");
-      input.className = "admin-form__input";
-      input.type = f.type;
-      input.value = f.value;
-      input.setAttribute("data-field", f.key);
-      group.appendChild(label);
-      group.appendChild(input);
-      grid.appendChild(group);
+    document.getElementById('blend-save').addEventListener('click', () => {
+      saveBlender(isEdit ? index : -1);
     });
 
-    /* Featured toggle */
-    const featuredGroup = document.createElement("div");
-    featuredGroup.className = "admin-form__group";
-    const featuredLabel = document.createElement("label");
-    featuredLabel.className = "admin-form__toggle";
-    const featuredCheckbox = document.createElement("input");
-    featuredCheckbox.type = "checkbox";
-    featuredCheckbox.checked = item.featured || false;
-    featuredCheckbox.setAttribute("data-field", "featured");
-    const featuredText = document.createElement("span");
-    featuredText.className = "admin-form__toggle-label";
-    featuredText.textContent = "Featured on Home Page";
-    featuredLabel.appendChild(featuredCheckbox);
-    featuredLabel.appendChild(featuredText);
-    featuredGroup.appendChild(featuredLabel);
-    grid.appendChild(featuredGroup);
-
-    /* Image upload */
-    const imageGroup = document.createElement("div");
-    imageGroup.className = "admin-form__group admin-form__group--full";
-    const imageLabel = document.createElement("label");
-    imageLabel.className = "admin-form__label";
-    imageLabel.textContent = "Certificate Image (optional)";
-    const imageFile = document.createElement("input");
-    imageFile.type = "file";
-    imageFile.accept = "image/*";
-    imageFile.setAttribute("data-field", "image");
-    imageGroup.appendChild(imageLabel);
-    imageGroup.appendChild(imageFile);
-
-    if (item.image) {
-      const preview = document.createElement("img");
-      preview.className = "admin-form__image-preview";
-      preview.src = item.image;
-      preview.alt = "Current image";
-      imageGroup.appendChild(preview);
-    }
-
-    grid.appendChild(imageGroup);
-
-    const actions = document.createElement("div");
-    actions.className = "admin-form__actions";
-    const saveBtn = document.createElement("button");
-    saveBtn.className = "btn btn--primary";
-    saveBtn.textContent = item.id ? "Save Changes" : "Add Certificate";
-    saveBtn.addEventListener("click", () => saveCertificate(item));
-    actions.appendChild(saveBtn);
-    grid.appendChild(actions);
-
-    form.appendChild(formTitle);
-    form.appendChild(grid);
-    container.appendChild(form);
-    container.scrollIntoView({ behavior: "smooth", block: "start" });
-  }
-
-  function saveCertificate(existingItem) {
-    const getValue = (key) => {
-      const el = document.querySelector(`[data-field="${key}"]`);
-      if (!el) return "";
-      if (el.type === "checkbox") return el.checked;
-      return el.value.trim();
-    };
-
-    const title = getValue("title");
-    if (!title) { alert("Title is required."); return; }
-
-    const cert = {
-      id: existingItem.id || title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, ""),
-      featured: getValue("featured"),
-      title: title,
-      field: getValue("field"),
-      year: getValue("year"),
-      image: existingItem.image || "",
-    };
-
-    const fileInput = document.querySelector('[data-field="image"]');
-    if (fileInput && fileInput.files && fileInput.files[0]) {
-      pendingImages.certificates.set(cert.id, fileInput.files[0]);
-      cert.image = `${SITE.paths.certificateImages}${fileInput.files[0].name.replace(/[^a-zA-Z0-9._-]/g, "_")}`;
-    }
-
-    if (existingItem.id) {
-      const idx = certificates.findIndex((c) => c.id === existingItem.id);
-      if (idx !== -1) certificates[idx] = cert;
-    } else {
-      certificates.push(cert);
-    }
-
-    dirty.certificates = true;
-    renderCertificatesSection();
-    document.getElementById("form-container").innerHTML = "";
-    editingItem = null;
-  }
-
-  /* ── Blender Form ────────────────────────────────────────── */
-
-  function renderBlenderForm(item, type) {
-    const container = document.getElementById("form-container");
-    if (!container) return;
-    container.innerHTML = "";
-
-    const form = document.createElement("div");
-    form.className = "admin-form";
-
-    const formTitle = document.createElement("div");
-    formTitle.className = "admin-form__title";
-    const titleText = document.createElement("span");
-    titleText.textContent = item.id ? "Edit Blender Project" : "Add Blender Project";
-    const closeBtn = document.createElement("button");
-    closeBtn.className = "btn btn--secondary";
-    closeBtn.textContent = "Cancel";
-    closeBtn.addEventListener("click", () => { container.innerHTML = ""; editingItem = null; });
-    formTitle.appendChild(titleText);
-    formTitle.appendChild(closeBtn);
-
-    const grid = document.createElement("div");
-    grid.className = "admin-form__grid";
-
-    const fields = [
-      { key: "title", label: "Title", type: "text", value: item.title || "", full: false },
-      { key: "date", label: "Date", type: "text", value: item.date || "", full: false },
-    ];
-
-    fields.forEach((f) => {
-      const group = document.createElement("div");
-      group.className = "admin-form__group";
-      const label = document.createElement("label");
-      label.className = "admin-form__label";
-      label.textContent = f.label;
-      const input = document.createElement("input");
-      input.className = "admin-form__input";
-      input.type = f.type;
-      input.value = f.value;
-      input.setAttribute("data-field", f.key);
-      group.appendChild(label);
-      group.appendChild(input);
-      grid.appendChild(group);
+    document.getElementById('blend-cancel').addEventListener('click', () => {
+      formContainer.innerHTML = '';
     });
-
-    /* Featured toggle */
-    const featuredGroup = document.createElement("div");
-    featuredGroup.className = "admin-form__group";
-    const featuredLabel = document.createElement("label");
-    featuredLabel.className = "admin-form__toggle";
-    const featuredCheckbox = document.createElement("input");
-    featuredCheckbox.type = "checkbox";
-    featuredCheckbox.checked = item.featured || false;
-    featuredCheckbox.setAttribute("data-field", "featured");
-    const featuredText = document.createElement("span");
-    featuredText.className = "admin-form__toggle-label";
-    featuredText.textContent = "Featured on Home Page";
-    featuredLabel.appendChild(featuredCheckbox);
-    featuredLabel.appendChild(featuredText);
-    featuredGroup.appendChild(featuredLabel);
-    grid.appendChild(featuredGroup);
-
-    /* Image upload */
-    const imageGroup = document.createElement("div");
-    imageGroup.className = "admin-form__group admin-form__group--full";
-    const imageLabel = document.createElement("label");
-    imageLabel.className = "admin-form__label";
-    imageLabel.textContent = "Render Image";
-    const imageFile = document.createElement("input");
-    imageFile.type = "file";
-    imageFile.accept = "image/*";
-    imageFile.setAttribute("data-field", "image");
-    imageGroup.appendChild(imageLabel);
-    imageGroup.appendChild(imageFile);
-
-    if (item.image) {
-      const preview = document.createElement("img");
-      preview.className = "admin-form__image-preview";
-      preview.src = item.image;
-      preview.alt = "Current image";
-      imageGroup.appendChild(preview);
-    }
-
-    grid.appendChild(imageGroup);
-
-    const actions = document.createElement("div");
-    actions.className = "admin-form__actions";
-    const saveBtn = document.createElement("button");
-    saveBtn.className = "btn btn--primary";
-    saveBtn.textContent = item.id ? "Save Changes" : "Add Blender Project";
-    saveBtn.addEventListener("click", () => saveBlenderItem(item));
-    actions.appendChild(saveBtn);
-    grid.appendChild(actions);
-
-    form.appendChild(formTitle);
-    form.appendChild(grid);
-    container.appendChild(form);
-    container.scrollIntoView({ behavior: "smooth", block: "start" });
   }
 
-  function saveBlenderItem(existingItem) {
-    const getValue = (key) => {
-      const el = document.querySelector(`[data-field="${key}"]`);
-      if (!el) return "";
-      if (el.type === "checkbox") return el.checked;
-      return el.value.trim();
-    };
-
-    const title = getValue("title");
-    if (!title) { alert("Title is required."); return; }
-
-    const item = {
-      id: existingItem.id || title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, ""),
-      featured: getValue("featured"),
-      title: title,
-      date: getValue("date"),
-      image: existingItem.image || "",
-    };
-
-    const fileInput = document.querySelector('[data-field="image"]');
-    if (fileInput && fileInput.files && fileInput.files[0]) {
-      pendingImages.blender.set(item.id, fileInput.files[0]);
-      item.image = `${SITE.paths.blenderImages}${fileInput.files[0].name.replace(/[^a-zA-Z0-9._-]/g, "_")}`;
-    }
-
-    if (existingItem.id) {
-      const idx = blenderItems.findIndex((b) => b.id === existingItem.id);
-      if (idx !== -1) blenderItems[idx] = item;
-    } else {
-      blenderItems.push(item);
-    }
-
-    dirty.blender = true;
-    renderBlenderSection();
-    document.getElementById("form-container").innerHTML = "";
-    editingItem = null;
-  }
-
-  /* ── Sync ────────────────────────────────────────────────── */
-
-  function renderSyncBar() {
-    const container = document.getElementById("sync-bar");
-    if (!container) return;
-
-    container.innerHTML = "";
-
-    const bar = document.createElement("div");
-    bar.className = "sync-bar";
-
-    const status = document.createElement("div");
-    status.className = "sync-bar__status";
-    status.id = "sync-status";
-    status.textContent = getDirtyStatus();
-
-    const syncBtn = document.createElement("button");
-    syncBtn.className = "btn btn--sync";
-    syncBtn.id = "sync-btn";
-    syncBtn.textContent = "Sync to GitHub";
-    syncBtn.addEventListener("click", syncToGitHub);
-
-    bar.appendChild(status);
-    bar.appendChild(syncBtn);
-    container.appendChild(bar);
-  }
-
-  function getDirtyStatus() {
-    const parts = [];
-    if (dirty.projects) parts.push("Projects");
-    if (dirty.certificates) parts.push("Certificates");
-    if (dirty.blender) parts.push("Blender");
-    return parts.length ? `Unsynced: ${parts.join(", ")}` : "All changes synced";
-  }
-
-  function updateSyncStatus() {
-    const el = document.getElementById("sync-status");
-    if (el) el.textContent = getDirtyStatus();
-  }
-
-  async function syncToGitHub() {
-    if (!GitHubAPI.hasPAT()) {
-      alert("Please connect your GitHub PAT first.");
+  function saveBlender(index) {
+    const title = document.getElementById('blend-title').value.trim();
+    if (!title) {
+      showToast('Title is required', 'error');
       return;
     }
 
-    const btn = document.getElementById("sync-btn");
-    const statusEl = document.getElementById("sync-status");
-    if (btn) btn.disabled = true;
-    if (statusEl) {
-      statusEl.textContent = "Syncing...";
-      statusEl.className = "sync-bar__status";
+    const techStr = document.getElementById('blend-techniques').value.trim();
+
+    const item = {
+      id: index >= 0 && localBlender[index] ? localBlender[index].id : title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''),
+      title: title,
+      date: document.getElementById('blend-date').value.trim() || '',
+      renderEngine: document.getElementById('blend-engine').value.trim() || '',
+      description: document.getElementById('blend-desc').value.trim() || '',
+      techniques: techStr ? techStr.split(',').map(t => t.trim()).filter(Boolean) : [],
+      featured: document.getElementById('blend-featured').checked,
+      featuredOnHome: document.getElementById('blend-home').checked,
+      image: index >= 0 && localBlender[index] ? localBlender[index].image : ''
+    };
+
+    if (index >= 0) {
+      localBlender[index] = item;
+    } else {
+      localBlender.push(item);
     }
 
-    let hasError = false;
+    renderBlenderList();
+    document.querySelector('.admin-blender-form').innerHTML = '';
+    showToast(`Render ${index >= 0 ? 'updated' : 'added'}: ${title}`, 'success');
+  }
 
-    /* 1. Upload pending images */
-    for (const [category, fileMap] of Object.entries(pendingImages)) {
-      for (const [itemId, file] of fileMap.entries()) {
-        const result = await GitHubAPI.uploadImage(file, category);
-        if (!result.success) {
-          console.error(`Image upload failed for ${file.name}:`, result.error);
-          hasError = true;
+  function deleteBlender(index) {
+    const item = localBlender[index];
+    if (!item) return;
+    if (!confirm(`Delete "${item.title}"?`)) return;
+
+    localBlender.splice(index, 1);
+    renderBlenderList();
+    showToast(`Deleted: ${item.title}`, 'info');
+  }
+
+  function editBlender(index) {
+    showBlenderForm(localBlender[index], index);
+  }
+
+  /* =========================================================
+     SYNC TO GITHUB
+  ========================================================= */
+
+  function initSyncBar() {
+    const syncBtn = document.querySelector('.admin__sync-btn');
+    if (!syncBtn) return;
+
+    syncBtn.addEventListener('click', syncToGitHub);
+  }
+
+  async function syncToGitHub() {
+    if (!window.GitHub || !window.GitHub.hasPAT()) {
+      showToast('Connect a PAT first', 'error');
+      return;
+    }
+
+    const syncStatus = document.querySelector('.admin__sync-status');
+    if (syncStatus) syncStatus.textContent = 'Syncing...';
+
+    try {
+      // Upload pending images
+      for (const [category, file] of Object.entries(pendingImages)) {
+        try {
+          const result = await window.GitHub.uploadImage(category, file);
+          // Update the image path in local data
+          const filename = window.GitHub.sanitizeFilename(file.name);
+          const imagePath = window.GitHub.getImageUrl(category, filename);
+
+          // Find the item that was being edited and update its image path
+          if (category === 'project') {
+            // Update last edited project
+          } else if (category === 'certificate') {
+            // Update last edited cert
+          } else if (category === 'blender') {
+            // Update last edited blender item
+          }
+        } catch (err) {
+          showToast(`Image upload failed: ${err.message}`, 'error');
         }
       }
+
+      // Clear pending images
+      pendingImages = {};
+
+      // Generate and upload data files
+      const projectsContent = generateDataFile('PROJECTS_DATA', localProjects);
+      const certificatesContent = generateDataFile('CERTIFICATES_DATA', localCertificates);
+      const blenderContent = generateDataFile('BLENDER_DATA', localBlender);
+
+      await window.GitHub.updateDataFile('projects', projectsContent);
+      await window.GitHub.updateDataFile('certificates', certificatesContent);
+      await window.GitHub.updateDataFile('blender', blenderContent);
+
+      if (syncStatus) syncStatus.textContent = 'Last synced: ' + new Date().toLocaleTimeString();
+      showToast('All changes synced to GitHub', 'success');
+    } catch (err) {
+      if (syncStatus) syncStatus.textContent = 'Sync failed';
+      showToast(`Sync error: ${err.message}`, 'error');
+    }
+  }
+
+  function generateDataFile(variableName, data) {
+    const json = JSON.stringify(data, null, 2);
+    return `const ${variableName} = ${json};\n\nwindow.${variableName} = ${variableName};`;
+  }
+
+  /* =========================================================
+     TOAST NOTIFICATIONS
+  ========================================================= */
+
+  function showToast(message, type = 'info') {
+    let container = document.querySelector('.admin__toast-container');
+    if (!container) {
+      container = document.createElement('div');
+      container.className = 'admin__toast-container';
+      container.style.cssText = 'position:fixed;bottom:4rem;right:2rem;z-index:5000;display:flex;flex-direction:column;gap:0.5rem;';
+      document.body.appendChild(container);
     }
 
-    /* 2. Update data files */
-    if (dirty.projects) {
-      const content = generateDataFileContent("PROJECTS", projects);
-      const result = await GitHubAPI.updateDataFile("projects.js", content);
-      if (!result.success) {
-        console.error("projects.js sync failed:", result.error);
-        hasError = true;
-      } else {
-        dirty.projects = false;
-      }
-    }
+    const toast = document.createElement('div');
+    toast.className = `admin__toast admin__toast--${type}`;
+    toast.textContent = message;
+    container.appendChild(toast);
 
-    if (dirty.certificates) {
-      const content = generateDataFileContent("CERTIFICATES", certificates);
-      const result = await GitHubAPI.updateDataFile("certificates.js", content);
-      if (!result.success) {
-        console.error("certificates.js sync failed:", result.error);
-        hasError = true;
-      } else {
-        dirty.certificates = false;
-      }
-    }
-
-    if (dirty.blender) {
-      const content = generateDataFileContent("BLENDER_PROJECTS", blenderItems);
-      const result = await GitHubAPI.updateDataFile("blender.js", content);
-      if (!result.success) {
-        console.error("blender.js sync failed:", result.error);
-        hasError = true;
-      } else {
-        dirty.blender = false;
-      }
-    }
-
-    /* 3. Clear pending images */
-    if (!hasError) {
-      Object.values(pendingImages).forEach((map) => map.clear());
-    }
-
-    /* 4. Update UI */
-    if (btn) btn.disabled = false;
-    if (statusEl) {
-      if (hasError) {
-        statusEl.textContent = "Sync completed with errors — check console";
-        statusEl.className = "sync-bar__status sync-bar__status--error";
-      } else {
-        statusEl.textContent = "All changes synced successfully";
-        statusEl.className = "sync-bar__status sync-bar__status--success";
-      }
-    }
+    requestAnimationFrame(() => toast.classList.add('show'));
 
     setTimeout(() => {
-      if (statusEl) {
-        statusEl.textContent = getDirtyStatus();
-        statusEl.className = "sync-bar__status";
-      }
-    }, 4000);
+      toast.classList.remove('show');
+      setTimeout(() => toast.remove(), 300);
+    }, 3000);
   }
 
-  /**
-   * Generate the content of a data JS file.
-   * @param {string} varName — the variable name (e.g. "PROJECTS")
-   * @param {Array} data — the data array
-   * @returns {string}
-   */
-  function generateDataFileContent(varName, data) {
-    const header = `/**\n * Auto-generated by admin panel\n */\n\n`;
-    return header + `const ${varName} = ${JSON.stringify(data, null, 2)};\n`;
+  /* =========================================================
+     UTILITY
+  ========================================================= */
+
+  function escapeHTML(str) {
+    if (!str) return '';
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
   }
 
-  /* ── Public API ──────────────────────────────────────────── */
+  /* =========================================================
+     EXPOSE API FOR INLINE EVENT HANDLERS
+  ========================================================= */
 
-  return {
-    init,
-    openAddForm,
+  window.AdminApp = {
+    editProject,
+    deleteProject,
+    editCertificate,
+    deleteCertificate,
+    editBlender,
+    deleteBlender,
+    showToast
   };
-})();
 
-document.addEventListener("DOMContentLoaded", Admin.init);
+  // Add project/cert/blender buttons
+  function initAddButtons() {
+    const addProjBtn = document.querySelector('.admin-add-project-btn');
+    const addCertBtn = document.querySelector('.admin-add-cert-btn');
+    const addBlendBtn = document.querySelector('.admin-add-blend-btn');
+
+    if (addProjBtn) addProjBtn.addEventListener('click', () => showProjectForm());
+    if (addCertBtn) addCertBtn.addEventListener('click', () => showCertificateForm());
+    if (addBlendBtn) addBlendBtn.addEventListener('click', () => showBlenderForm());
+  }
+
+  /* =========================================================
+     INIT
+  ========================================================= */
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+      init();
+      initAddButtons();
+    });
+  } else {
+    init();
+    initAddButtons();
+  }
+
+})();

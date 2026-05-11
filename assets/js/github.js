@@ -1,244 +1,311 @@
 /**
  * github.js — GitHub Contents API integration
- *
- * Handles all interactions with the GitHub REST API for:
- *   - Uploading images to the repository
- *   - Updating JavaScript data files
- *   - Managing PAT-based authentication per session
- *
- * The PAT is NEVER persisted. It is held in memory only
- * for the duration of the admin session.
- *
- * Repository target: rishitc17/rishitc17.github.io
- *
- * IMPORTANT: GitHub Contents API paths must preserve slashes.
- * Using encodeURIComponent() on the full path breaks the API
- * because it encodes "/" as "%2F". Instead, we only encode
- * individual path segments or use the raw path directly.
+ * 
+ * Handles:
+ * - Uploading images to GitHub repository
+ * - Updating JS data files
+ * - PAT session management (never persisted)
+ * - Safe overwrites
+ * - Error handling
+ * 
+ * Target repository: rishitc17/rishitc17.github.io
+ * Uses GitHub Contents API: PUT /repos/{owner}/{repo}/contents/{path}
  */
 
-const GitHubAPI = (() => {
-    let _pat = '';
+(function () {
+  'use strict';
 
-    const REPO_OWNER = SITE.repo.owner;
-    const REPO_NAME = SITE.repo.name;
-    const BRANCH = SITE.repo.branch;
+  const REPO_OWNER = 'rishitc17';
+  const REPO_NAME = 'rishitc17.github.io';
+  const API_BASE = 'https://api.github.com';
 
-    function baseUrl() {
-        return `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents`;
-    }
+  // Image path mapping
+  const IMAGE_PATHS = {
+    projects: 'assets/images/projects',
+    certificates: 'assets/images/certificates',
+    blender: 'assets/images/blender'
+  };
 
-    function headers() {
-        return {
-            Authorization: `token ${_pat}`,
-            Accept: 'application/vnd.github.v3+json',
-            'Content-Type': 'application/json',
-        };
-    }
+  // Data file path mapping
+  const DATA_PATHS = {
+    projects: 'assets/js/data/projects.js',
+    certificates: 'assets/js/data/certificates.js',
+    blender: 'assets/js/data/blender.js',
+    site: 'assets/js/data/site.js'
+  };
 
-    /**
-     * Set the PAT for the current session.
-     * @param {string} token
-     */
-    function setPAT(token) {
-        _pat = token;
-    }
+  /**
+   * GitHub API client
+   */
+  const GitHub = {
+    _pat: null,
 
-    /**
-     * Get the current PAT (for display purposes — masked).
-     * @returns {string}
-     */
-    function getPATMasked() {
-        if (!_pat) return '';
-        if (_pat.length <= 8) return '****';
-        return _pat.slice(0, 4) + '****' + _pat.slice(-4);
-    }
+    /** Set PAT for current session only */
+    setPAT(pat) {
+      this._pat = pat;
+    },
 
-    /**
-     * Check if a PAT is currently set.
-     * @returns {boolean}
-     */
-    function hasPAT() {
-        return _pat.length > 0;
-    }
+    /** Get current PAT */
+    getPAT() {
+      return this._pat;
+    },
 
-    /**
-     * Clear the PAT (end session).
-     */
-    function clearPAT() {
-        _pat = '';
-    }
+    /** Clear PAT */
+    clearPAT() {
+      this._pat = null;
+    },
 
-    /**
-     * Validate the current PAT by attempting an API call.
-     * @returns {Promise<{valid: boolean, username?: string}>}
-     */
-    async function validatePAT() {
-        try {
-            const res = await fetch('https://api.github.com/user', {
-                headers: headers(),
-            });
-            if (!res.ok) return { valid: false };
-            const data = await res.json();
-            return { valid: true, username: data.login };
-        } catch {
-            return { valid: false };
-        }
-    }
+    /** Check if PAT is set */
+    hasPAT() {
+      return !!this._pat;
+    },
 
-    /**
-     * Encode a repo path for the GitHub API.
-     * Preserves "/" separators — only encodes special chars
-     * within each segment, not the slashes themselves.
-     * @param {string} path
-     * @returns {string}
-     */
-    function encodePath(path) {
-        return path
-            .split('/')
-            .map((segment) => encodeURIComponent(segment))
-            .join('/');
-    }
+    /** Validate PAT by fetching user info */
+    async validatePAT() {
+      if (!this._pat) return { valid: false, error: 'No PAT provided' };
 
-    /**
-     * Get the SHA of an existing file (needed for updates).
-     * @param {string} path — repository-relative path
-     * @returns {Promise<string|null>}
-     */
-    async function getFileSHA(path) {
-        try {
-            const encoded = encodePath(path);
-            const res = await fetch(`${baseUrl()}/${encoded}?ref=${BRANCH}`, {
-                headers: headers(),
-            });
-            if (res.status === 404) return null;
-            if (!res.ok) {
-                const errBody = await res.text().catch(() => '');
-                console.warn(`getFileSHA: ${res.status} for ${path}`, errBody);
-                return null;
-            }
-            const data = await res.json();
-            return data.sha;
-        } catch (err) {
-            console.error('getFileSHA failed:', err);
-            return null;
-        }
-    }
-
-    /**
-     * Upload or update a file in the repository.
-     * @param {string} path — repository-relative path (e.g. "assets/images/projects/foo.png")
-     * @param {string} content — base64-encoded file content
-     * @param {string} message — commit message
-     * @returns {Promise<{success: boolean, error?: string}>}
-     */
-    async function uploadFile(path, content, message) {
-        try {
-            /* Check if file already exists (need SHA for update) */
-            const existingSHA = await getFileSHA(path);
-
-            const body = {
-                message: message || `Update ${path}`,
-                content: content,
-                branch: BRANCH,
-            };
-
-            if (existingSHA) {
-                body.sha = existingSHA;
-            }
-
-            const encoded = encodePath(path);
-            const res = await fetch(`${baseUrl()}/${encoded}`, {
-                method: 'PUT',
-                headers: headers(),
-                body: JSON.stringify(body),
-            });
-
-            if (!res.ok) {
-                const errData = await res.json().catch(() => ({}));
-                const errMsg = errData.message || `Upload failed with status ${res.status}`;
-                console.error('uploadFile error:', errMsg, errData);
-                throw new Error(errMsg);
-            }
-
-            return { success: true };
-        } catch (err) {
-            console.error('uploadFile failed:', err);
-            return { success: false, error: err.message };
-        }
-    }
-
-    /**
-     * Convert a File object to a base64 string.
-     * @param {File} file
-     * @returns {Promise<string>}
-     */
-    function fileToBase64(file) {
-        return new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.onload = () => {
-                /* Strip the data URL prefix */
-                const base64 = reader.result.split(',')[1];
-                resolve(base64);
-            };
-            reader.onerror = reject;
-            reader.readAsDataURL(file);
+      try {
+        const response = await fetch(`${API_BASE}/user`, {
+          headers: {
+            'Authorization': `token ${this._pat}`,
+            'Accept': 'application/vnd.github.v3+json'
+          }
         });
-    }
 
-    /**
-     * Upload an image to the appropriate directory.
-     * @param {File} file — the image File object
-     * @param {"projects"|"certificates"|"blender"} category
-     * @returns {Promise<{success: boolean, path?: string, error?: string}>}
-     */
-    async function uploadImage(file, category) {
-        const dirMap = {
-            projects: SITE.paths.projectImages,
-            certificates: SITE.paths.certificateImages,
-            blender: SITE.paths.blenderImages,
-        };
-
-        const dir = dirMap[category];
-        if (!dir) return { success: false, error: 'Invalid category' };
-
-        /* Sanitise filename */
-        const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
-        const repoPath = `${dir}${safeName}`.replace(/^\//, '');
-
-        try {
-            const base64 = await fileToBase64(file);
-            const result = await uploadFile(repoPath, base64, `Upload image: ${safeName}`);
-
-            if (result.success) {
-                return { success: true, path: `/${repoPath}` };
-            }
-            return result;
-        } catch (err) {
-            return { success: false, error: err.message };
+        if (response.ok) {
+          const user = await response.json();
+          return { valid: true, username: user.login };
+        } else {
+          const error = await response.json();
+          return { valid: false, error: error.message || 'Invalid PAT' };
         }
-    }
+      } catch (err) {
+        return { valid: false, error: err.message };
+      }
+    },
 
     /**
-     * Update a JavaScript data file in the repository.
-     * @param {string} fileName — e.g. "projects.js"
-     * @param {string} content — the full file content as a string
-     * @returns {Promise<{success: boolean, error?: string}>}
+     * Upload or update a file in the repository
+     * @param {string} path - File path in the repo
+     * @param {string} content - Base64 encoded content
+     * @param {string} message - Commit message
+     * @param {string} [sha] - File SHA for overwriting (optional for new files)
      */
-    async function updateDataFile(fileName, content) {
-        const path = `assets/js/data/${fileName}`;
-        /* Base64-encode the string content (handles Unicode) */
-        const base64 = btoa(unescape(encodeURIComponent(content)));
-        return uploadFile(path, base64, `Update data: ${fileName}`);
-    }
+    async uploadFile(path, content, message, sha) {
+      if (!this._pat) throw new Error('No PAT set');
 
-    return {
-        setPAT,
-        getPATMasked,
-        hasPAT,
-        clearPAT,
-        validatePAT,
-        uploadImage,
-        updateDataFile,
-    };
+      const url = `${API_BASE}/repos/${REPO_OWNER}/${REPO_NAME}/contents/${path}`;
+      const body = {
+        message: message || `Update ${path}`,
+        content: content,
+        branch: 'main'
+      };
+
+      if (sha) {
+        body.sha = sha;
+      }
+
+      const response = await fetch(url, {
+        method: 'PUT',
+        headers: {
+          'Authorization': `token ${this._pat}`,
+          'Accept': 'application/vnd.github.v3+json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(body)
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || `Failed to upload ${path}`);
+      }
+
+      return await response.json();
+    },
+
+    /**
+     * Get file info (including SHA) from the repository
+     * @param {string} path - File path in the repo
+     */
+    async getFileInfo(path) {
+      if (!this._pat) throw new Error('No PAT set');
+
+      const url = `${API_BASE}/repos/${REPO_OWNER}/${REPO_NAME}/contents/${path}`;
+      const response = await fetch(url, {
+        headers: {
+          'Authorization': `token ${this._pat}`,
+          'Accept': 'application/vnd.github.v3+json'
+        }
+      });
+
+      if (response.status === 404) {
+        return null; // File doesn't exist yet
+      }
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || `Failed to get file info for ${path}`);
+      }
+
+      return await response.json();
+    },
+
+    /**
+     * Delete a file from the repository
+     * @param {string} path - File path in the repo
+     * @param {string} message - Commit message
+     * @param {string} sha - File SHA (required for deletion)
+     */
+    async deleteFile(path, message, sha) {
+      if (!this._pat) throw new Error('No PAT set');
+      if (!sha) throw new Error('SHA required for deletion');
+
+      const url = `${API_BASE}/repos/${REPO_OWNER}/${REPO_NAME}/contents/${path}`;
+      const response = await fetch(url, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `token ${this._pat}`,
+          'Accept': 'application/vnd.github.v3+json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          message: message || `Delete ${path}`,
+          sha: sha,
+          branch: 'main'
+        })
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || `Failed to delete ${path}`);
+      }
+
+      return await response.json();
+    },
+
+    /**
+     * Upload an image to the repository
+     * @param {string} category - 'projects', 'certificates', or 'blender'
+     * @param {File} file - Image file
+     * @param {string} [customName] - Optional custom filename
+     */
+    async uploadImage(category, file, customName) {
+      const dir = IMAGE_PATHS[category];
+      if (!dir) throw new Error(`Unknown category: ${category}`);
+
+      const filename = customName || this.sanitizeFilename(file.name);
+      const path = `${dir}/${filename}`;
+
+      // Convert file to base64
+      const content = await this.fileToBase64(file);
+
+      // Check if file exists (for overwrite)
+      let sha;
+      try {
+        const existing = await this.getFileInfo(path);
+        if (existing) sha = existing.sha;
+      } catch (e) {
+        // File doesn't exist, that's fine
+      }
+
+      return await this.uploadFile(
+        path,
+        content,
+        `${sha ? 'Update' : 'Upload'} image: ${filename}`,
+        sha
+      );
+    },
+
+    /**
+     * Update a data file in the repository
+     * @param {string} type - 'projects', 'certificates', 'blender', or 'site'
+     * @param {string} content - File content (not base64)
+     */
+    async updateDataFile(type, content) {
+      const path = DATA_PATHS[type];
+      if (!path) throw new Error(`Unknown data type: ${type}`);
+
+      // Get current SHA
+      let sha;
+      try {
+        const existing = await this.getFileInfo(path);
+        if (existing) sha = existing.sha;
+      } catch (e) {
+        // Doesn't exist yet
+      }
+
+      // Base64 encode content
+      const encoded = btoa(unescape(encodeURIComponent(content)));
+
+      return await this.uploadFile(
+        path,
+        encoded,
+        `Update ${type} data`,
+        sha
+      );
+    },
+
+    /**
+     * Delete an image from the repository
+     * @param {string} imagePath - Full path of the image
+     */
+    async deleteImage(imagePath) {
+      if (!imagePath) return;
+
+      // Get SHA
+      let sha;
+      try {
+        const existing = await this.getFileInfo(imagePath);
+        if (existing) sha = existing.sha;
+      } catch (e) {
+        return; // File doesn't exist, nothing to delete
+      }
+
+      return await this.deleteFile(
+        imagePath,
+        `Delete image: ${imagePath.split('/').pop()}`,
+        sha
+      );
+    },
+
+    /**
+     * Convert File to base64 string
+     */
+    fileToBase64(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => {
+          // Remove data URL prefix
+          const base64 = reader.result.split(',')[1];
+          resolve(base64);
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+    },
+
+    /**
+     * Sanitize filename for safe upload
+     */
+    sanitizeFilename(name) {
+      return name
+        .toLowerCase()
+        .replace(/[^a-z0-9._-]/g, '-')
+        .replace(/-+/g, '-')
+        .replace(/^-|-$/g, '');
+    },
+
+    /**
+     * Get the full image URL for use in data files
+     * @param {string} category - 'projects', 'certificates', or 'blender'
+     * @param {string} filename - Image filename
+     */
+    getImageUrl(category, filename) {
+      return `/${IMAGE_PATHS[category]}/${filename}`;
+    }
+  };
+
+  // Expose
+  window.GitHub = GitHub;
+
 })();

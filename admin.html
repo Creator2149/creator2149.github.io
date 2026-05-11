@@ -1,227 +1,94 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Admin — Portfolio CMS</title>
-        <meta name="description" content="Admin panel for managing portfolio content." />
-        <meta name="robots" content="noindex, nofollow" />
-        <link rel="icon" href="assets/favicon/favicon.svg" type="image/svg+xml" />
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-        <link
-            href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
-            rel="stylesheet"
-        />
-        <link rel="stylesheet" href="assets/css/main.css" />
-        <link rel="stylesheet" href="assets/css/admin.css" />
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-        <script>
-            document.addEventListener('DOMContentLoaded', () => {
-                // SHA-256 hash function
-                async function sha256(message) {
-                    const msgBuffer = new TextEncoder().encode(message);
-                    const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
-                    const hashArray = Array.from(new Uint8Array(hashBuffer));
-                    return hashArray.map((b) => b.toString(16).padStart(2, '0')).join('');
-                }
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin — Rishit Portfolio</title>
+    <link rel="stylesheet" href="assets/css/main.css">
+    <link rel="stylesheet" href="assets/css/admin.css">
+    <link rel="icon" href="assets/favicon/favicon.ico" type="image/x-icon">
+</head>
+<body class="admin">
+    <!-- Header -->
+    <header class="admin__header">
+        <h1>Portfolio Admin</h1>
+        <div class="admin__header-actions">
+            <a href="/index.html" class="btn btn--secondary btn--small">View Site</a>
+        </div>
+    </header>
 
-                // Admin hash from main.js
-                const ADMIN_HASH = 'c2102ea6340446722128b1db3b9ac26e59ed820b8898c4a69cbaf90b72012b72';
+    <!-- PAT Section -->
+    <div class="admin__pat-section">
+        <div class="admin__pat-label">GITHUB PAT</div>
+        <input type="text" class="admin__pat-input" placeholder="Enter your GitHub Personal Access Token" autocomplete="off">
+        <button class="btn btn--primary btn--small admin__pat-btn">Connect</button>
+        <div class="admin__pat-status"></div>
+    </div>
 
-                // Handle authentication
-                const authForm = document.getElementById('auth-form');
-                const adminContent = document.getElementById('admin-content');
-                const passwordInput = document.getElementById('auth-password');
-                const submitBtn = document.getElementById('auth-submit');
+    <!-- Tabs -->
+    <div class="admin__tabs">
+        <button class="admin__tab active" data-tab="projects">
+            Projects <span class="admin__tab-count">0</span>
+        </button>
+        <button class="admin__tab" data-tab="certificates">
+            Certificates <span class="admin__tab-count">0</span>
+        </button>
+        <button class="admin__tab" data-tab="blender">
+            Blender <span class="admin__tab-count">0</span>
+        </button>
+    </div>
 
-                submitBtn.addEventListener('click', async () => {
-                    const password = passwordInput.value;
-                    if (!password) return;
-                    const hash = await sha256(password);
-                    if (hash === ADMIN_HASH) {
-                        authForm.style.display = 'none';
-                        adminContent.style.display = 'block';
-                        sessionStorage.setItem('adminAuth', 'true');
-                        if (window.Admin && typeof Admin.init === 'function') {
-                            Admin.init();
-                        }
-                    } else {
-                        passwordInput.value = '';
-                        passwordInput.style.borderColor = '#c47070';
-                        setTimeout(() => {
-                            passwordInput.style.borderColor = '';
-                        }, 1500);
-                    }
-                });
+    <!-- Content -->
+    <div class="admin__content">
 
-                passwordInput.addEventListener('keydown', (e) => {
-                    if (e.key === 'Enter') submitBtn.click();
-                });
-
-                if (sessionStorage.getItem('adminAuth')) {
-                    authForm.style.display = 'none';
-                    adminContent.style.display = 'block';
-                    if (window.Admin && typeof Admin.init === 'function') {
-                        Admin.init();
-                    }
-                }
-            });
-        </script>
-    </head>
-    <body class="page-admin">
-        <!-- Password authentication form -->
-        <div
-            id="auth-form"
-            style="
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                min-height: 100vh;
-                background: var(--bg-base);
-            "
-        >
-            <div
-                style="
-                    background: var(--glass-bg-strong);
-                    backdrop-filter: blur(var(--blur-lg));
-                    border: 1px solid var(--glass-border-hover);
-                    border-radius: var(--radius-xl);
-                    padding: var(--space-2xl);
-                    max-width: 400px;
-                    width: 100%;
-                    text-align: center;
-                "
-            >
-                <h1 style="font-size: var(--text-xl); color: var(--text-heading); margin-bottom: var(--space-lg)">
-                    Admin Access
-                </h1>
-                <input
-                    id="auth-password"
-                    type="password"
-                    placeholder="Enter password"
-                    style="
-                        width: 100%;
-                        padding: var(--space-md);
-                        background: rgba(10, 15, 26, 0.6);
-                        border: 1px solid var(--glass-border);
-                        border-radius: var(--radius-md);
-                        color: var(--text-primary);
-                        font-family: var(--font-mono);
-                        outline: none;
-                        margin-bottom: var(--space-lg);
-                    "
-                    autocomplete="off"
-                />
-                <button
-                    id="auth-submit"
-                    style="
-                        width: 100%;
-                        padding: var(--space-md);
-                        background: var(--accent);
-                        color: var(--bg-base);
-                        border: none;
-                        border-radius: var(--radius-md);
-                        font-family: var(--font-mono);
-                        font-weight: 500;
-                        cursor: pointer;
-                        transition: background var(--transition-fast);
-                    "
-                >
-                    Enter
-                </button>
+        <!-- Projects Panel -->
+        <div class="admin__panel active" data-panel="projects">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;">
+                <h2 style="font-family:'JetBrains Mono',monospace;font-size:0.85rem;color:var(--text-secondary);letter-spacing:0.05em;">MANAGE PROJECTS</h2>
+                <button class="btn btn--primary btn--small admin-add-project-btn">+ Add Project</button>
             </div>
+            <div class="admin-projects-list"></div>
+            <div class="admin-project-form" style="margin-top:1.5rem;"></div>
         </div>
 
-        <!-- Admin content -->
-        <div id="admin-content" style="display: none">
-            <div class="bg-grid" aria-hidden="true"></div>
-
-            <header class="navbar">
-                <div class="navbar__inner"></div>
-            </header>
-
-            <main class="admin-layout">
-                <div class="container">
-                    <div class="admin-header">
-                        <h1 class="admin-header__title">Admin Panel</h1>
-                        <p class="admin-header__subtitle">
-                            Manage projects, certificates, and Blender work. Changes sync to GitHub on push.
-                        </p>
-                    </div>
-
-                    <div id="pat-banner"></div>
-
-                    <section class="admin-section">
-                        <div class="admin-section__header">
-                            <h2 class="admin-section__title">
-                                Projects
-                                <span class="admin-section__count" id="projects-count"></span>
-                            </h2>
-                            <button class="btn btn--primary" onclick="Admin.openAddForm('projects')">
-                                Add Project
-                            </button>
-                        </div>
-                        <div id="projects-list"></div>
-                    </section>
-
-                    <section class="admin-section">
-                        <div class="admin-section__header">
-                            <h2 class="admin-section__title">
-                                Certificates
-                                <span class="admin-section__count" id="certificates-count"></span>
-                            </h2>
-                            <button class="btn btn--primary" onclick="Admin.openAddForm('certificates')">
-                                Add Certificate
-                            </button>
-                        </div>
-                        <div id="certificates-list"></div>
-                    </section>
-
-                    <section class="admin-section">
-                        <div class="admin-section__header">
-                            <h2 class="admin-section__title">
-                                Blender
-                                <span class="admin-section__count" id="blender-count"></span>
-                            </h2>
-                            <button class="btn btn--primary" onclick="Admin.openAddForm('blender')">
-                                Add Blender Project
-                            </button>
-                        </div>
-                        <div id="blender-list"></div>
-                    </section>
-
-                    <div id="form-container"></div>
-
-                    <div id="sync-bar"></div>
-                </div>
-            </main>
+        <!-- Certificates Panel -->
+        <div class="admin__panel" data-panel="certificates">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;">
+                <h2 style="font-family:'JetBrains Mono',monospace;font-size:0.85rem;color:var(--text-secondary);letter-spacing:0.05em;">MANAGE CERTIFICATES</h2>
+                <button class="btn btn--primary btn--small admin-add-cert-btn">+ Add Certificate</button>
+            </div>
+            <div class="admin-certificates-list"></div>
+            <div class="admin-certificate-form" style="margin-top:1.5rem;"></div>
         </div>
 
-        <script src="assets/js/data/site.js"></script>
-        <script src="assets/js/data/projects.js"></script>
-        <script src="assets/js/data/certificates.js"></script>
-        <script src="assets/js/data/blender.js"></script>
-        <script src="assets/js/github.js"></script>
-        <script src="assets/js/main.js"></script>
-        <script src="assets/js/admin.js"></script>
+        <!-- Blender Panel -->
+        <div class="admin__panel" data-panel="blender">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;">
+                <h2 style="font-family:'JetBrains Mono',monospace;font-size:0.85rem;color:var(--text-secondary);letter-spacing:0.05em;">MANAGE BLENDER RENDERS</h2>
+                <button class="btn btn--primary btn--small admin-add-blend-btn">+ Add Render</button>
+            </div>
+            <div class="admin-blender-list"></div>
+            <div class="admin-blender-form" style="margin-top:1.5rem;"></div>
+        </div>
 
-        <script>
-            document.addEventListener('DOMContentLoaded', () => {
-                function updateCounts() {
-                    const pc = document.getElementById('projects-count');
-                    const cc = document.getElementById('certificates-count');
-                    const bc = document.getElementById('blender-count');
-                    if (pc) pc.textContent = `(${PROJECTS.length})`;
-                    if (cc) cc.textContent = `(${CERTIFICATES.length})`;
-                    if (bc) bc.textContent = `(${BLENDER_PROJECTS.length})`;
-                }
-                updateCounts();
+    </div>
 
-                const observer = new MutationObserver(updateCounts);
-                const lists = document.querySelectorAll('#projects-list, #certificates-list, #blender-list');
-                lists.forEach((el) => observer.observe(el, { childList: true, subtree: true }));
-            });
-        </script>
-    </body>
+    <!-- Sync Status Bar -->
+    <div class="admin__sync-bar">
+        <div class="admin__sync-status">Not synced</div>
+        <div class="admin__sync-actions">
+            <button class="btn btn--primary btn--small admin__sync-btn">Sync to GitHub</button>
+        </div>
+    </div>
+
+    <!-- Data Files -->
+    <script src="assets/js/data/site.js"></script>
+    <script src="assets/js/data/projects.js"></script>
+    <script src="assets/js/data/certificates.js"></script>
+    <script src="assets/js/data/blender.js"></script>
+
+    <!-- JS Modules -->
+    <script src="assets/js/github.js"></script>
+    <script src="assets/js/admin.js"></script>
+</body>
 </html>

@@ -1,334 +1,158 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Rishit Choudhary — Portfolio</title>
-        <meta name="description" content="Personal portfolio and project archive for Rishit Choudhary." />
-        <link rel="icon" href="assets/favicon/favicon.svg" type="image/svg+xml" />
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-        <link
-            href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
-            rel="stylesheet"
-        />
-        <link rel="stylesheet" href="assets/css/main.css" />
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-        <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
-    </head>
-    <body class="page-index">
-        <!-- Ambient background layer -->
-        <div class="bg-grid" aria-hidden="true"></div>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rishit — Systems, Computation, Visual Thinking</title>
+    <meta name="description" content="Personal computational workspace. Systems programming, mathematical experimentation, and visual computation.">
+    <link rel="stylesheet" href="assets/css/main.css">
+    <!-- Favicon placeholder -->
+    <link rel="icon" href="assets/favicon/favicon.ico" type="image/x-icon">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar" role="navigation" aria-label="Main navigation">
+        <div class="navbar__inner">
+            <a href="/index.html" class="navbar__brand">R.</a>
+            <ul class="navbar__links">
+                <!-- Dynamically rendered by main.js -->
+            </ul>
+            <button class="navbar__toggle" aria-label="Toggle menu" aria-expanded="false">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+        <div class="navbar__mobile-menu">
+            <div class="navbar__mobile-menu-links">
+                <!-- Dynamically rendered -->
+            </div>
+        </div>
+    </nav>
 
-        <!-- Navbar -->
-        <header class="navbar">
-            <div class="navbar__inner"></div>
-        </header>
+    <!-- Hero Section -->
+    <section class="hero" id="hero">
+        <div class="hero__canvas-container" id="donut-canvas"></div>
+        <div class="hero__content container">
+            <div class="hero__greeting"></div>
+            <h1 class="hero__title"></h1>
+            <p class="hero__subtitle"></p>
+        </div>
+        <div class="hero__scroll-indicator" aria-hidden="true">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <path d="M12 5v14M5 12l7 7 7-7"/>
+            </svg>
+        </div>
+        <div class="hero__system-label"></div>
+    </section>
 
-        <!-- Main Content -->
-        <main class="page-content">
-            <div class="container">
-                <!-- Hero -->
-                <section class="hero" id="hero"></section>
-
-                <!-- About -->
-                <section class="about" id="about"></section>
-
-                <!-- Featured Projects Carousel -->
-                <section class="section" id="featured-projects">
-                    <div class="section__header">
-                        <h2 class="section__title">Featured Projects</h2>
-                        <a href="projects.html" class="section__link">View all <i class="fas fa-arrow-right"></i></a>
+    <!-- Philosophy Section -->
+    <section class="section philosophy" id="philosophy">
+        <div class="container">
+            <div class="section__header reveal">
+                <div class="section__label">About</div>
+                <h2 class="section__title"></h2>
+            </div>
+            <div class="philosophy__content">
+                <div class="philosophy__text reveal reveal-delay-1"></div>
+                <div class="reveal reveal-delay-2">
+                    <div class="philosophy__interests"></div>
+                    <div class="philosophy__focus">
+                        <div class="philosophy__focus-label">CURRENT FOCUS</div>
+                        <div class="philosophy__focus-text"></div>
                     </div>
-                    <div class="carousel" id="projects-carousel"></div>
-                </section>
-
-                <!-- Featured Certificates Carousel -->
-                <section class="section" id="featured-certificates">
-                    <div class="section__header">
-                        <h2 class="section__title">Featured Certificates</h2>
-                        <a href="certificates.html" class="section__link"
-                            >View all <i class="fas fa-arrow-right"></i
-                        ></a>
-                    </div>
-                    <div class="carousel" id="certificates-carousel"></div>
-                </section>
-
-                <!-- Featured Blender Carousel -->
-                <section class="section" id="featured-blender">
-                    <div class="section__header">
-                        <h2 class="section__title">Featured Blender Work</h2>
-                        <a href="blender.html" class="section__link">View all <i class="fas fa-arrow-right"></i></a>
-                    </div>
-                    <div class="carousel" id="blender-carousel"></div>
-                </section>
-
-                <!-- Contact -->
-                <section class="contact" id="contact"></section>
+                </div>
             </div>
-        </main>
+        </div>
+    </section>
 
-        <!-- Footer -->
-        <footer class="footer"></footer>
+    <!-- Section Divider -->
+    <div class="container">
+        <div class="section__divider"></div>
+    </div>
 
-        <!-- Scripts: data first, then modules, then page logic -->
-        <script src="assets/js/data/site.js"></script>
-        <script src="assets/js/data/projects.js"></script>
-        <script src="assets/js/data/certificates.js"></script>
-        <script src="assets/js/data/blender.js"></script>
-        <script src="assets/js/modal.js"></script>
-        <script src="assets/js/carousel.js"></script>
-        <script src="assets/js/main.js"></script>
-
-        <!-- Homepage initialisation -->
-        <script>
-            function initTorus() {
-                const container = document.getElementById('torus-container');
-                if (!container) return;
-
-                /* =========================
-   SCENE
-========================= */
-
-                const scene = new THREE.Scene();
-
-                const camera = new THREE.PerspectiveCamera(
-                    70,
-                    container.clientWidth / container.clientHeight,
-                    0.1,
-                    100,
-                );
-
-                const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-                renderer.setSize(container.clientWidth, container.clientHeight);
-                renderer.setClearColor(0x000000, 0); // Transparent background
-                container.appendChild(renderer.domElement);
-
-                /* =========================
-   FIXED CAMERA (NO MOUSE)
-========================= */
-
-                let theta = 0.6;
-                let phi = 0.75;
-
-                function updateCamera() {
-                    const r = 4;
-
-                    camera.position.x = r * Math.cos(phi) * Math.sin(theta);
-                    camera.position.y = r * Math.sin(phi);
-                    camera.position.z = r * Math.cos(phi) * Math.cos(theta);
-
-                    camera.lookAt(0, 0, 0);
-                }
-
-                updateCamera();
-
-                /* =========================
-   TORUS MATH
-========================= */
-
-                const R = 1.3;
-                const r = 0.5;
-
-                function torus(u, v) {
-                    const t = u * Math.PI * 2;
-                    const p = v * Math.PI * 2;
-
-                    return new THREE.Vector3(
-                        (R + r * Math.cos(p)) * Math.cos(t),
-                        r * Math.sin(p),
-                        (R + r * Math.cos(p)) * Math.sin(t),
-                    );
-                }
-
-                /* =========================
-   GLYPHS
-========================= */
-
-                const glyphs = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%&*+=-<>?/漢字アイウエオ';
-
-                const canvas = document.createElement('canvas');
-                canvas.width = 64;
-                canvas.height = 64;
-                const ctx = canvas.getContext('2d');
-
-                function randGlyph() {
-                    return glyphs[Math.floor(Math.random() * glyphs.length)];
-                }
-
-                function makeTexture(char) {
-                    ctx.clearRect(0, 0, 64, 64);
-
-                    ctx.fillStyle = '#5b9bd5';
-                    ctx.font = 'bold 42px monospace';
-                    ctx.textAlign = 'center';
-                    ctx.textBaseline = 'middle';
-                    ctx.fillText(char, 32, 32);
-
-                    return new THREE.CanvasTexture(canvas);
-                }
-
-                /* =========================
-   TORUS OBJECTS
-========================= */
-
-                const objects = [];
-
-                const U = 24;
-                const V = 12;
-
-                for (let i = 0; i < U; i++) {
-                    for (let j = 0; j < V; j++) {
-                        const mesh = new THREE.Mesh(
-                            new THREE.PlaneGeometry(0.18, 0.18),
-                            new THREE.MeshBasicMaterial({
-                                map: makeTexture(randGlyph()),
-                                transparent: true,
-                            }),
-                        );
-
-                        mesh.userData = {
-                            u: Math.random(),
-                            v: j / V,
-                            speed: 0.001 + Math.random() * 0.0015,
-                        };
-
-                        mesh.position.copy(torus(mesh.userData.u, mesh.userData.v));
-
-                        scene.add(mesh);
-                        objects.push(mesh);
-                    }
-                }
-
-                /* =========================
-   ANIMATION LOOP
-========================= */
-
-                function animate() {
-                    requestAnimationFrame(animate);
-
-                    for (let o of objects) {
-                        o.userData.u =
-                            (o.userData.u + o.userData.speed * (1 + 0.4 * Math.sin(o.userData.v * Math.PI * 2))) % 1;
-
-                        o.position.copy(torus(o.userData.u, o.userData.v));
-
-                        if (Math.random() < 0.005) {
-                            o.material.map = makeTexture(randGlyph());
-                        }
-
-                        o.lookAt(camera.position);
-                    }
-
-                    updateCamera();
-                    renderer.render(scene, camera);
-                }
-
-                animate();
-
-                /* =========================
-   RESIZE
-========================= */
-
-                function onResize() {
-                    camera.aspect = container.clientWidth / container.clientHeight;
-                    camera.updateProjectionMatrix();
-                    renderer.setSize(container.clientWidth, container.clientHeight);
-                }
-
-                window.addEventListener('resize', onResize);
-            }
-
-            document.addEventListener('DOMContentLoaded', () => {
-                /* ── Hero ──────────────────────────────── */
-                const hero = document.getElementById('hero');
-                if (hero) {
-                    hero.innerHTML = `
-          <div class="hero__content">
-            <div class="hero__tag">// portfolio</div>
-            <h1 class="hero__name">${SITE.owner.name}</h1>
-            <p class="hero__philosophy">${SITE.owner.philosophy}</p>
-            <p class="hero__motto">${SITE.owner.motto}</p>
-          </div>
-          <div class="hero__torus" id="torus-container"></div>
-        `;
-                }
-
-                /* ── About ─────────────────────────────── */
-                const about = document.getElementById('about');
-                if (about) {
-                    const a = SITE.owner.about;
-                    about.innerHTML = `
-          <h2 class="about__heading">About</h2>
-          <p class="about__intro">${a.intro}</p>
-          <div class="about__grid">
-            <div class="about__card">
-              <h3>Interests</h3>
-              <ul class="about__list">
-                ${a.interests.map((i) => `<li>${i}</li>`).join('')}
-              </ul>
+    <!-- Featured Project (Cinematic Centerpiece) -->
+    <section class="section" id="featured">
+        <div class="container">
+            <div class="section__header reveal">
+                <div class="section__label">Featured Work</div>
+                <h2 class="section__title">Computational Geometry Engine</h2>
             </div>
-            <div class="about__card">
-              <h3>Explored Fields</h3>
-              <ul class="about__list">
-                ${a.exploredFields.map((f) => `<li>${f}</li>`).join('')}
-              </ul>
+        </div>
+        <div class="featured-project reveal"></div>
+    </section>
+
+    <!-- Section Divider -->
+    <div class="container">
+        <div class="section__divider"></div>
+    </div>
+
+    <!-- Curated Projects -->
+    <section class="section" id="projects">
+        <div class="container">
+            <div class="section__header reveal">
+                <div class="section__label">Selected Work</div>
+                <h2 class="section__title">Projects</h2>
+                <p class="section__subtitle">A curated selection of systems, tools, and experiments. Each project represents a different facet of computational thinking.</p>
             </div>
-            <div class="about__card">
-              <h3>Mindset</h3>
-              <p>${a.mindset}</p>
+            <div class="home-projects__grid reveal">
+                <!-- Dynamically rendered by main.js -->
             </div>
-            <div class="about__card">
-              <h3>Current Focus</h3>
-              <p>${a.currentFocus}</p>
+            <div style="text-align:center;margin-top:var(--space-2xl);" class="reveal">
+                <a href="/projects.html" class="featured-project__link" style="font-size:0.875rem;">View all projects &rarr;</a>
             </div>
-          </div>
-        `;
-                }
+        </div>
+    </section>
 
-                /* ── Contact ───────────────────────────── */
-                const contact = document.getElementById('contact');
-                if (contact) {
-                    const c = SITE.owner.contact;
-                    contact.innerHTML = `
-          <h2 class="contact__title">Get in Touch</h2>
-          <div class="contact__links">
-            <a class="contact__link" href="${c.github}" target="_blank" rel="noopener noreferrer">
-              <i class="fab fa-github contact__link-icon"></i> GitHub
-            </a>
-            <a class="contact__link" href="mailto:${c.email}">
-              <i class="fas fa-envelope contact__link-icon"></i> Email
-            </a>
-          </div>
-        `;
-                }
+    <!-- Section Divider -->
+    <div class="container">
+        <div class="section__divider"></div>
+    </div>
 
-                /* ── Featured Carousels ────────────────── */
-                const featuredProjects = sortByNewest(
-                    PROJECTS.filter((p) => p.featured),
-                    'year',
-                );
-                initCarousel('#projects-carousel', featuredProjects, (project) =>
-                    createProjectCard(project, openProjectModal),
-                );
+    <!-- Blender Showcase -->
+    <section class="section" id="blender">
+        <div class="container">
+            <div class="section__header reveal">
+                <div class="section__label">Visual Work</div>
+                <h2 class="section__title">Blender Renders</h2>
+                <p class="section__subtitle">Where mathematical structure meets visual form. Each render is an exploration of light, geometry, and procedural systems.</p>
+            </div>
+            <div class="home-blender__grid reveal" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:var(--space-xl);">
+                <!-- Dynamically rendered by main.js -->
+            </div>
+            <div style="text-align:center;margin-top:var(--space-2xl);" class="reveal">
+                <a href="/blender.html" class="featured-project__link" style="font-size:0.875rem;">View all renders &rarr;</a>
+            </div>
+        </div>
+    </section>
 
-                const featuredCerts = sortByNewest(
-                    CERTIFICATES.filter((c) => c.featured),
-                    'year',
-                );
-                initCarousel('#certificates-carousel', featuredCerts, (cert) =>
-                    createCertificateCard(cert, openCertificateModal),
-                );
+    <!-- Contact Section -->
+    <section class="section contact" id="contact">
+        <div class="contact__inner container">
+            <h2 class="contact__heading reveal"></h2>
+            <p class="contact__statement reveal reveal-delay-1"></p>
+            <div class="contact__links reveal reveal-delay-2"></div>
+        </div>
+    </section>
 
-                const featuredBlender = sortByNewest(
-                    BLENDER_PROJECTS.filter((b) => b.featured),
-                    'date',
-                );
-                initCarousel('#blender-carousel', featuredBlender, (item) => createBlenderCard(item, openBlenderModal));
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer__inner">
+            <div class="footer__copyright"></div>
+            <div class="footer__built"></div>
+        </div>
+    </footer>
 
-                // Initialize torus after hero is rendered
-                initTorus();
-            });
-        </script>
-    </body>
+    <!-- Data Files (loaded first) -->
+    <script src="assets/js/data/site.js"></script>
+    <script src="assets/js/data/projects.js"></script>
+    <script src="assets/js/data/certificates.js"></script>
+    <script src="assets/js/data/blender.js"></script>
+
+    <!-- JS Modules -->
+    <script src="assets/js/modal.js"></script>
+    <script src="assets/js/carousel.js"></script>
+    <script src="assets/js/filters.js"></script>
+    <script src="assets/js/main.js"></script>
+</body>
 </html>

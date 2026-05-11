@@ -1,183 +1,180 @@
 /**
- * carousel.js — Infinite carousel with symmetric peeks and deep buffer
- * Prevents blank slides by maintaining a 2-item clone buffer and
- * enforcing eager image rendering.
+ * carousel.js — Lightweight carousel system
+ * 
+ * Features:
+ * - Touch/swipe support
+ * - Keyboard navigation
+ * - Dot indicators
+ * - Responsive
+ * - Smooth transitions
  */
 
-function initCarousel(containerSelector, items, cardFactory) {
-    const container = document.querySelector(containerSelector);
-    if (!container || !items || items.length === 0) {
-        if (container) container.innerHTML = '<p class="empty-state">No featured items yet.</p>';
-        return;
+(function () {
+  'use strict';
+
+  class Carousel {
+    constructor(container, options = {}) {
+      this.container = container;
+      this.track = container.querySelector('.carousel__track');
+      this.slides = container.querySelectorAll('.carousel__slide');
+      this.prevBtn = container.querySelector('.carousel__btn--prev');
+      this.nextBtn = container.querySelector('.carousel__btn--next');
+      this.dotsContainer = container.querySelector('.carousel__dots');
+
+      this.currentIndex = 0;
+      this.totalSlides = this.slides.length;
+      this.isAnimating = false;
+      this.autoPlay = options.autoPlay || false;
+      this.autoPlayInterval = options.autoPlayInterval || 5000;
+      this.autoPlayTimer = null;
+
+      // Touch support
+      this.touchStartX = 0;
+      this.touchEndX = 0;
+      this.minSwipeDistance = 50;
+
+      if (this.totalSlides === 0) return;
+
+      this.init();
     }
 
-    const totalItems = items.length;
-    const pauseDuration = 4000;
-    const transitionSpeed = '0.5s';
-    const transitionEasing = 'cubic-bezier(0.4, 0, 0.2, 1)';
+    init() {
+      // Create dots if container exists
+      if (this.dotsContainer) {
+        this.createDots();
+      }
 
-    // Deep buffer: 2 clones at each end to prevent browser un-rendering off-screen items
-    const extendedItems = [items[totalItems - 2], items[totalItems - 1], ...items, items[0], items[1]];
+      // Button listeners
+      if (this.prevBtn) {
+        this.prevBtn.addEventListener('click', () => this.prev());
+      }
+      if (this.nextBtn) {
+        this.nextBtn.addEventListener('click', () => this.next());
+      }
 
-    let currentIndex = 2; // Start at the first real item
-    let isTransitioning = false;
-    let autoScrollTimer = null;
-    let isPaused = false;
+      // Touch listeners
+      this.container.addEventListener('touchstart', (e) => {
+        this.touchStartX = e.changedTouches[0].screenX;
+      }, { passive: true });
 
-    const track = document.createElement('div');
-    track.className = 'carousel__track';
+      this.container.addEventListener('touchend', (e) => {
+        this.touchEndX = e.changedTouches[0].screenX;
+        this.handleSwipe();
+      }, { passive: true });
 
-    extendedItems.forEach((item) => {
-        const slide = document.createElement('div');
-        slide.className = 'carousel__slide';
-        const card = cardFactory(item);
+      // Keyboard navigation
+      this.container.setAttribute('tabindex', '0');
+      this.container.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowLeft') this.prev();
+        else if (e.key === 'ArrowRight') this.next();
+      });
 
-        // CRITICAL FIX: The cardFactory generates images with loading="lazy".
-        // Browsers refuse to paint lazy-loaded images inside translate3d off-screen.
-        // We must remove 'lazy' and enforce 'eager' to fix the blank carousel issue.
-        card.querySelectorAll('img').forEach((img) => {
-            img.removeAttribute('loading');
-            img.loading = 'eager';
-            img.style.opacity = '1';
+      // Auto play
+      if (this.autoPlay) {
+        this.startAutoPlay();
+        this.container.addEventListener('mouseenter', () => this.stopAutoPlay());
+        this.container.addEventListener('mouseleave', () => this.startAutoPlay());
+      }
+
+      // Initial state
+      this.goTo(0, false);
+    }
+
+    createDots() {
+      this.dotsContainer.innerHTML = '';
+      for (let i = 0; i < this.totalSlides; i++) {
+        const dot = document.createElement('button');
+        dot.className = 'carousel__dot' + (i === 0 ? ' active' : '');
+        dot.setAttribute('aria-label', `Go to slide ${i + 1}`);
+        dot.addEventListener('click', () => this.goTo(i));
+        this.dotsContainer.appendChild(dot);
+      }
+    }
+
+    goTo(index, animate = true) {
+      if (this.isAnimating || index === this.currentIndex) return;
+      if (index < 0) index = this.totalSlides - 1;
+      if (index >= this.totalSlides) index = 0;
+
+      this.isAnimating = true;
+      this.currentIndex = index;
+
+      if (this.track) {
+        this.track.style.transition = animate ? 'transform 0.4s ease' : 'none';
+        this.track.style.transform = `translateX(-${index * 100}%)`;
+      }
+
+      // Update dots
+      if (this.dotsContainer) {
+        const dots = this.dotsContainer.querySelectorAll('.carousel__dot');
+        dots.forEach((dot, i) => {
+          dot.classList.toggle('active', i === index);
         });
+      }
 
-        slide.appendChild(card);
-        track.appendChild(slide);
-    });
+      // Update buttons
+      if (this.prevBtn) this.prevBtn.disabled = index === 0;
+      if (this.nextBtn) this.nextBtn.disabled = index === this.totalSlides - 1;
 
-    container.appendChild(track);
-
-    // Controls
-    const controls = document.createElement('div');
-    controls.className = 'carousel__controls';
-
-    const prevBtn = document.createElement('button');
-    prevBtn.className = 'carousel__btn carousel__btn--prev';
-    prevBtn.setAttribute('aria-label', 'Previous');
-    prevBtn.innerHTML = '<i class="fas fa-chevron-left"></i>';
-
-    const nextBtn = document.createElement('button');
-    nextBtn.className = 'carousel__btn carousel__btn--next';
-    nextBtn.setAttribute('aria-label', 'Next');
-    nextBtn.innerHTML = '<i class="fas fa-chevron-right"></i>';
-
-    controls.appendChild(prevBtn);
-    controls.appendChild(nextBtn);
-    container.appendChild(controls);
-
-    // Symmetric peek logic
-    function getCarouselLayout() {
-        const width = window.innerWidth;
-        // Subtract horizontal padding of the container (56px * 2 on desktop, 30px * 2 on mobile)
-        const containerPadding = width >= 768 ? 112 : 60;
-        const trackWidth = container.clientWidth - containerPadding;
-
-        if (width >= 1024) {
-            // Desktop: 3 full cards + 2 peeks
-            const peek = 40;
-            const slideWidth = (trackWidth - 2 * peek) / 3;
-            return { fullCards: 3, peek, slideWidth };
-        } else if (width >= 768) {
-            // Tablet: 1 full card + 2 peeks
-            const peek = 30;
-            const slideWidth = (trackWidth - 2 * peek) / 1;
-            return { fullCards: 1, peek, slideWidth };
-        } else {
-            // Mobile: 1 full card + 2 small peeks
-            const peek = 16;
-            const slideWidth = (trackWidth - 2 * peek) / 1;
-            return { fullCards: 1, peek, slideWidth };
-        }
+      setTimeout(() => {
+        this.isAnimating = false;
+      }, animate ? 400 : 0);
     }
 
-    function updateTrackPosition(animate = true) {
-        const { fullCards, peek, slideWidth } = getCarouselLayout();
-
-        const slides = track.querySelectorAll('.carousel__slide');
-        slides.forEach((s) => {
-            s.style.flex = `0 0 ${slideWidth}px`;
-            s.style.padding = '0 8px'; // Gap
-            s.style.boxSizing = 'border-box';
-        });
-
-        // General formula to center the currentIndex card symmetrically
-        // offset = (currentIndex - (fullCards - 1) / 2) * slideWidth - peek
-        const offset = (currentIndex - (fullCards - 1) / 2) * slideWidth - peek;
-
-        if (animate) {
-            track.style.transition = `transform ${transitionSpeed} ${transitionEasing}`;
-        } else {
-            track.style.transition = 'none';
-        }
-        track.style.transform = `translate3d(-${offset}px, 0, 0)`;
+    next() {
+      this.goTo(this.currentIndex + 1);
     }
 
-    function nextSlide() {
-        if (isTransitioning) return;
-        isTransitioning = true;
-        currentIndex++;
-        updateTrackPosition(true);
+    prev() {
+      this.goTo(this.currentIndex - 1);
     }
 
-    function prevSlide() {
-        if (isTransitioning) return;
-        isTransitioning = true;
-        currentIndex--;
-        updateTrackPosition(true);
+    handleSwipe() {
+      const distance = this.touchStartX - this.touchEndX;
+      if (Math.abs(distance) > this.minSwipeDistance) {
+        if (distance > 0) this.next();
+        else this.prev();
+      }
     }
 
-    track.addEventListener('transitionend', () => {
-        isTransitioning = false;
-        // Snap logic for 2-item buffer
-        if (currentIndex >= totalItems + 2) {
-            currentIndex -= totalItems;
-            updateTrackPosition(false);
-        }
-        if (currentIndex <= 1) {
-            currentIndex += totalItems;
-            updateTrackPosition(false);
-        }
-    });
-
-    function startAutoScroll() {
-        clearTimeout(autoScrollTimer);
-        if (!isPaused) {
-            autoScrollTimer = setTimeout(() => {
-                nextSlide();
-                setTimeout(startAutoScroll, 500);
-            }, pauseDuration);
-        }
+    startAutoPlay() {
+      this.stopAutoPlay();
+      this.autoPlayTimer = setInterval(() => this.next(), this.autoPlayInterval);
     }
 
-    function resetAutoScroll() {
-        clearTimeout(autoScrollTimer);
-        startAutoScroll();
+    stopAutoPlay() {
+      if (this.autoPlayTimer) {
+        clearInterval(this.autoPlayTimer);
+        this.autoPlayTimer = null;
+      }
     }
 
-    prevBtn.addEventListener('click', () => {
-        prevSlide();
-        resetAutoScroll();
-    });
-    nextBtn.addEventListener('click', () => {
-        nextSlide();
-        resetAutoScroll();
+    destroy() {
+      this.stopAutoPlay();
+    }
+  }
+
+  // Auto-initialize carousels
+  function initCarousels() {
+    const carousels = document.querySelectorAll('.carousel');
+    const instances = [];
+
+    carousels.forEach(container => {
+      instances.push(new Carousel(container));
     });
 
-    container.addEventListener('mouseenter', () => {
-        isPaused = true;
-        clearTimeout(autoScrollTimer);
-    });
-    container.addEventListener('mouseleave', () => {
-        isPaused = false;
-        startAutoScroll();
-    });
+    return instances;
+  }
 
-    let resizeTimeout;
-    window.addEventListener('resize', () => {
-        clearTimeout(resizeTimeout);
-        resizeTimeout = setTimeout(() => updateTrackPosition(false), 150);
-    });
+  // Expose
+  window.Carousel = Carousel;
+  window.initCarousels = initCarousels;
 
-    updateTrackPosition(false);
-    startAutoScroll();
-}
+  // Initialize on DOM ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initCarousels);
+  } else {
+    initCarousels();
+  }
+
+})();

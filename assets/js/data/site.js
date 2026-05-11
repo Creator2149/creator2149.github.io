@@ -1,75 +1,55 @@
-/**
- * site.js — Global site configuration and metadata
- *
- * This file centralises all site-wide settings, owner information,
- * and navigation structure. Edit these values to personalise the
- * portfolio without touching any HTML.
- */
+const SITE_DATA = {
+  name: "Rishit",
+  domain: "rishitc17.github.io",
+  tagline: "Systems, computation, and visual thinking.",
 
-const SITE = Object.freeze({
-    owner: {
-        name: 'Rishit Choudhary',
-        philosophy:
-            'I build systems that are deliberate, structured, and built to last. Every project is an exercise in clarity — of thought, of architecture, of intent.',
-        motto: 'Statuo. Persevero. Perficio.',
-        about: {
-            intro: 'I am a developer and 3D artist who works at the intersection of engineering rigour and creative exploration. My practice revolves around building tools, studying systems, and producing visual work that is as functional as it is considered.',
-            interests: [
-                'Systems architecture & design patterns',
-                'Computational geometry & procedural generation',
-                '3D modelling, rendering & visual storytelling',
-                'Open-source tooling & developer experience',
-                'Low-level systems programming',
-            ],
-            mindset:
-                'I approach problems by first understanding the structure beneath them. Premature optimisation is avoided; premature understanding is not. I value clarity over cleverness, and I prefer tools that disappear into the workflow rather than demand attention.',
-            currentFocus:
-                'Currently deepening my work in systems-level programming and expanding my Blender rendering pipeline with custom procedural tools.',
-            exploredFields: [
-                'Full-stack web development',
-                'Algorithm design & competitive programming',
-                'Blender 3D — modelling, sculpting, procedural nodes',
-                'Cloud infrastructure & deployment',
-                'Database design & optimisation',
-            ],
-        },
-        contact: {
-            github: 'https://github.com/rishitc17',
-            email: 'rishit@example.com',
-        },
-        copyright: 'Rishit Choudhary',
-    },
+  hero: {
+    greeting: "Hello.",
+    mainStatement: "I build systems at the intersection of engineering, mathematics, and visual computation.",
+    subStatement: "This is a workspace — not a showcase. An archive of things built, explored, and thought through.",
+  },
 
-    /**
-     * Navigation links.
-     * Using relative paths so they work on:
-     *   - GitHub Pages (root domain)
-     *   - Local file:// protocol
-     *   - Any subdirectory deployment
-     */
-    navigation: [
-        { label: 'Home', href: 'index.html' },
-        { label: 'Projects', href: 'projects.html' },
-        { label: 'Certificates', href: 'certificates.html' },
-        { label: 'Blender', href: 'blender.html' },
+  philosophy: {
+    heading: "How I Think",
+    paragraphs: [
+      "I work across systems programming, computational mathematics, and visual design — not because I can't choose, but because the interesting problems live between disciplines. A simulation is only as useful as its visualization. A tool is only as powerful as the thinking behind its architecture.",
+      "My approach is structural: decompose the problem, understand the constraints, engineer the system, then refine until the solution feels inevitable. I'm drawn to problems where elegance and efficiency converge — where the right abstraction makes complexity tractable.",
+      "Currently focused on computational geometry, real-time rendering systems, and the mathematics of visual form. Always reading. Always building. The best work happens when theoretical understanding and practical implementation inform each other."
     ],
+    interests: [
+      "Computational Geometry",
+      "Systems Programming",
+      "Rendering Architecture",
+      "Mathematical Visualization",
+      "Procedural Generation",
+      "Type Systems & Language Design",
+      "Blender & 3D Pipeline",
+      "Simulation Engines"
+    ],
+    currentFocus: "Building a computational geometry library that bridges mathematical formalism with real-time rendering — making it possible to go from theorem to visualization without losing the structure of either."
+  },
 
-    /* GitHub repository used by the admin sync system */
-    repo: {
-        owner: 'rishitc17',
-        name: 'rishitc17.github.io',
-        branch: 'main',
-    },
+  nav: [
+    { label: "Home", href: "/index.html" },
+    { label: "Projects", href: "/projects.html" },
+    { label: "Certificates", href: "/certificates.html" },
+    { label: "Blender", href: "/blender.html" }
+  ],
 
-    /* Image base paths — relative, no leading slash */
-    paths: {
-        projectImages: 'assets/images/projects/',
-        certificateImages: 'assets/images/certificates/',
-        blenderImages: 'assets/images/blender/',
-    },
+  contact: {
+    heading: "Get in Touch",
+    statement: "Open to conversations about systems, computation, geometry, rendering, or interesting problems in general.",
+    email: "rishit@example.com",
+    github: "https://github.com/rishitc17",
+    linkedin: "https://linkedin.com/in/rishitc17"
+  },
 
-    /* Design tokens exposed to JS if needed */
-    theme: {
-        accentColor: '#5b9bd5',
-    },
-});
+  footer: {
+    copyright: "Rishit",
+    year: new Date().getFullYear(),
+    built: "Built with vanilla HTML, CSS, and JS.",
+    repo: "rishitc17/rishitc17.github.io"
+  }
+};
+
+window.SITE_DATA = SITE_DATA;
