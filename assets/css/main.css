@@ -431,6 +431,20 @@ body::before {
     height: 100%;
 }
 
+/* Dark overlay to ensure hero text readability over the donut */
+.hero__canvas-container::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(
+        ellipse 70% 60% at 50% 50%,
+        rgba(10, 14, 23, 0.55) 0%,
+        rgba(10, 14, 23, 0.35) 50%,
+        rgba(10, 14, 23, 0.1) 100%
+    );
+    pointer-events: none;
+}
+
 .hero__content {
     position: relative;
     z-index: 2;
