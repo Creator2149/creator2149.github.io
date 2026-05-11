@@ -882,6 +882,7 @@ body::before {
 .project-card:hover {
     border-color: var(--border-accent);
     transform: translateY(-2px);
+    cursor: pointer;
 }
 
 .project-card__visual {
@@ -1149,6 +1150,7 @@ body::before {
 
 .certificate-card:hover {
     border-color: var(--border-accent);
+    cursor: pointer;
 }
 
 .certificate-card__year {
@@ -1222,6 +1224,7 @@ body::before {
 
 .blender-card:hover {
     border-color: var(--border-accent);
+    cursor: pointer;
 }
 
 .blender-card__visual {
