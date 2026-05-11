@@ -1,7 +1,6 @@
 const BLENDER_DATA = [
     {
         id: 'the-donut',
-        featured: true,
         featuredOnHome: true,
         title: 'The Donut',
         date: '2026-02',
@@ -17,7 +16,6 @@ const BLENDER_DATA = [
 
     {
         id: 'desk-scene',
-        featured: true,
         featuredOnHome: true,
         title: 'Desk Scene',
         date: '2026-02',
@@ -33,7 +31,6 @@ const BLENDER_DATA = [
 
     {
         id: 'industrial-corner',
-        featured: true,
         featuredOnHome: true,
         title: 'Industrial Corner',
         date: '2026-02',

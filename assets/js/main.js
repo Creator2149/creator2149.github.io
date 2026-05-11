@@ -434,9 +434,12 @@
         const project = PROJECTS_DATA.find((p) => p.featured && p.featuredOnHome);
         if (!project) return;
 
+        // Update the section title dynamically
+        const featuredSectionTitle = document.querySelector('#featured .section__title');
+        if (featuredSectionTitle) featuredSectionTitle.textContent = project.title;
+
         container.innerHTML = '';
-        const featuredTitle = document.querySelector('#featured .section__title');
-        if (featuredTitle) featuredTitle.textContent = project.title;
+
         const inner = createElement('div', { className: 'featured-project__inner container' });
 
         // Visual side

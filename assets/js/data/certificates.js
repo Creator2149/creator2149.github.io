@@ -76,6 +76,7 @@ const CERTIFICATES_DATA = [
         description:
             'Achieved Rank 2 in the NOF International Mathematics Olympiad, demonstrating strong mathematical problem-solving and analytical reasoning skills.',
     },
+
     {
         id: 'istse-international-rank-110',
         featured: false,

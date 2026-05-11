@@ -1,5 +1,41 @@
 const PROJECTS_DATA = [
     {
+        id: 'nullary',
+        featured: true,
+        featuredOnHome: true,
+        title: 'Nullary',
+        status: 'In Progress',
+        statusDetails: 'Axiomatic framework and formalization under development',
+        year: '2026',
+        tech: ['Mathematics', 'Research', 'LaTeX'],
+        image: 'assets/images/projects/Nullary.png',
+
+        shortDescription: 'A mathematical research project exploring an axiomatic treatment of division by zero.',
+
+        longDescription:
+            'Nullary investigates whether expressions involving division by zero can be treated consistently within an alternative axiomatic framework. The project combines mathematical formalization, symbolic reasoning, and theoretical exploration while documenting the implications and contradictions that emerge from extending conventional arithmetic structures.',
+
+        featuredQuote:
+            "The interesting part of mathematics isn't where rules work — it's where extending them forces you to rethink the foundations themselves.",
+
+        challenges: [
+            'Avoiding contradictions while extending arithmetic operations',
+            'Defining algebraic behavior for undefined expressions',
+            'Balancing formal rigor with exploratory theoretical work',
+        ],
+
+        technicalHighlights: [
+            'Axiomatic framework experimentation',
+            'Formal mathematical notation and proof structuring',
+            'Research-oriented LaTeX documentation pipeline',
+        ],
+
+        tags: ['Mathematics', 'Research', 'Theoretical Exploration'],
+
+        link: '',
+    },
+
+    {
         id: 'jr-water-ambassadors',
         featured: true,
         featuredOnHome: true,
@@ -109,64 +145,6 @@ const PROJECTS_DATA = [
     },
 
     {
-        id: 'nullary',
-        featured: true,
-        featuredOnHome: true,
-        title: 'Nullary',
-        status: 'In Progress',
-        statusDetails: 'Axiomatic framework and formalization under development',
-        year: '2026',
-        tech: ['Mathematics', 'Research', 'LaTeX'],
-        image: 'assets/images/projects/Nullary.png',
-
-        shortDescription: 'A mathematical research project exploring an axiomatic treatment of division by zero.',
-
-        longDescription:
-            'Nullary investigates whether expressions involving division by zero can be treated consistently within an alternative axiomatic framework. The project combines mathematical formalization, symbolic reasoning, and theoretical exploration while documenting the implications and contradictions that emerge from extending conventional arithmetic structures.',
-
-        featuredQuote:
-            "The interesting part of mathematics isn't where rules work — it's where extending them forces you to rethink the foundations themselves.",
-
-        challenges: [
-            'Avoiding contradictions while extending arithmetic operations',
-            'Defining algebraic behavior for undefined expressions',
-            'Balancing formal rigor with exploratory theoretical work',
-        ],
-
-        technicalHighlights: [
-            'Axiomatic framework experimentation',
-            'Formal mathematical notation and proof structuring',
-            'Research-oriented LaTeX documentation pipeline',
-        ],
-
-        tags: ['Mathematics', 'Research', 'Theoretical Exploration'],
-
-        link: '',
-    },
-
-    {
-        id: 'rawcrypt',
-        featured: false,
-        featuredOnHome: false,
-        title: 'RawCrypt',
-        status: 'Planned',
-        statusDetails: 'Conceptual design and curriculum planning stage',
-        year: '2026',
-        tech: ['Python', 'FastAPI', 'Cryptography'],
-        image: '',
-
-        shortDescription:
-            'An educational platform designed to teach cryptography through intuitive mathematical explanations.',
-
-        longDescription:
-            'RawCrypt is planned as an educational platform introducing students to cryptographic systems ranging from classical ciphers to RSA and modern encryption schemes. The goal is to make cryptography understandable from first principles instead of treating algorithms as black boxes.',
-
-        tags: ['Cryptography', 'Education', 'Backend Development'],
-
-        link: '',
-    },
-
-    {
         id: 'raksha',
         featured: true,
         featuredOnHome: true,
@@ -197,28 +175,6 @@ const PROJECTS_DATA = [
         tags: ['AI Applications', 'Computer Vision', 'EdTech'],
 
         link: 'https://rakshaapp.github.io',
-    },
-
-    {
-        id: 'cybersecurity-for-elderly',
-        featured: false,
-        featuredOnHome: false,
-        title: 'Cybersecurity for Elderly',
-        status: 'In Progress',
-        statusDetails: 'Awareness content and outreach sessions in development',
-        year: '2026',
-        tech: ['Education', 'Public Speaking', 'Community'],
-        image: '',
-
-        shortDescription:
-            'A cybersecurity awareness initiative focused on helping elderly individuals navigate online safety.',
-
-        longDescription:
-            'This initiative aims to educate elderly individuals about online scams, phishing attempts, misinformation, and digital safety practices through relatable examples and simplified explanations. The project emphasizes accessibility and practical real-world understanding over technical jargon.',
-
-        tags: ['Community', 'Cybersecurity', 'Education'],
-
-        link: '',
     },
 
     {
@@ -355,6 +311,50 @@ const PROJECTS_DATA = [
         tags: ['Simulation', 'Python', 'Mathematics'],
 
         link: 'https://github.com/rishitc17/DiseaseSpreadSimulation',
+    },
+
+    {
+        id: 'rawcrypt',
+        featured: false,
+        featuredOnHome: false,
+        title: 'RawCrypt',
+        status: 'Planned',
+        statusDetails: 'Conceptual design and curriculum planning stage',
+        year: '2026',
+        tech: ['Python', 'FastAPI', 'Cryptography'],
+        image: '',
+
+        shortDescription:
+            'An educational platform designed to teach cryptography through intuitive mathematical explanations.',
+
+        longDescription:
+            'RawCrypt is planned as an educational platform introducing students to cryptographic systems ranging from classical ciphers to RSA and modern encryption schemes. The goal is to make cryptography understandable from first principles instead of treating algorithms as black boxes.',
+
+        tags: ['Cryptography', 'Education', 'Backend Development'],
+
+        link: '',
+    },
+
+    {
+        id: 'cybersecurity-for-elderly',
+        featured: false,
+        featuredOnHome: false,
+        title: 'Cybersecurity for Elderly',
+        status: 'In Progress',
+        statusDetails: 'Awareness content and outreach sessions in development',
+        year: '2026',
+        tech: ['Education', 'Public Speaking', 'Community'],
+        image: '',
+
+        shortDescription:
+            'A cybersecurity awareness initiative focused on helping elderly individuals navigate online safety.',
+
+        longDescription:
+            'This initiative aims to educate elderly individuals about online scams, phishing attempts, misinformation, and digital safety practices through relatable examples and simplified explanations. The project emphasizes accessibility and practical real-world understanding over technical jargon.',
+
+        tags: ['Community', 'Cybersecurity', 'Education'],
+
+        link: '',
     },
 ];
 

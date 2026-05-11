@@ -1,13 +1,13 @@
 const SITE_DATA = {
-    name: 'Rishit',
+    name: 'Rishit Choudhary',
     domain: 'rishitc17.github.io',
     tagline: 'Systems, computation, and visual thinking.',
 
     hero: {
-        greeting: 'Rishit Choudhary',
-        mainStatement: 'I build systems at the intersection of engineering, mathematics, and visual computation.',
+        greeting: "Hello, I'm",
+        mainStatement: 'Rishit.',
         subStatement:
-            'This is a workspace — not a showcase. An archive of things built, explored, and thought through.',
+            'I build systems at the intersection of engineering, mathematics, and visual computation. This is a workspace — not a showcase. An archive of things built, explored, and thought through.',
     },
 
     philosophy: {

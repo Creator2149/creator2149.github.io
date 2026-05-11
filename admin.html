@@ -1,94 +1,122 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin — Rishit Portfolio</title>
-    <link rel="stylesheet" href="assets/css/main.css">
-    <link rel="stylesheet" href="assets/css/admin.css">
-    <link rel="icon" href="assets/favicon/favicon.ico" type="image/x-icon">
-</head>
-<body class="admin">
-    <!-- Header -->
-    <header class="admin__header">
-        <h1>Portfolio Admin</h1>
-        <div class="admin__header-actions">
-            <a href="/index.html" class="btn btn--secondary btn--small">View Site</a>
-        </div>
-    </header>
-
-    <!-- PAT Section -->
-    <div class="admin__pat-section">
-        <div class="admin__pat-label">GITHUB PAT</div>
-        <input type="text" class="admin__pat-input" placeholder="Enter your GitHub Personal Access Token" autocomplete="off">
-        <button class="btn btn--primary btn--small admin__pat-btn">Connect</button>
-        <div class="admin__pat-status"></div>
-    </div>
-
-    <!-- Tabs -->
-    <div class="admin__tabs">
-        <button class="admin__tab active" data-tab="projects">
-            Projects <span class="admin__tab-count">0</span>
-        </button>
-        <button class="admin__tab" data-tab="certificates">
-            Certificates <span class="admin__tab-count">0</span>
-        </button>
-        <button class="admin__tab" data-tab="blender">
-            Blender <span class="admin__tab-count">0</span>
-        </button>
-    </div>
-
-    <!-- Content -->
-    <div class="admin__content">
-
-        <!-- Projects Panel -->
-        <div class="admin__panel active" data-panel="projects">
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;">
-                <h2 style="font-family:'JetBrains Mono',monospace;font-size:0.85rem;color:var(--text-secondary);letter-spacing:0.05em;">MANAGE PROJECTS</h2>
-                <button class="btn btn--primary btn--small admin-add-project-btn">+ Add Project</button>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Admin — Rishit Portfolio</title>
+        <link rel="stylesheet" href="assets/css/main.css" />
+        <link rel="stylesheet" href="assets/css/admin.css" />
+        <link rel="icon" href="assets/favicon/favicon.ico" type="image/x-icon" />
+    </head>
+    <body class="admin">
+        <!-- Header -->
+        <header class="admin__header">
+            <h1>Portfolio Admin</h1>
+            <div class="admin__header-actions">
+                <a href="/index.html" class="btn btn--secondary btn--small">View Site</a>
             </div>
-            <div class="admin-projects-list"></div>
-            <div class="admin-project-form" style="margin-top:1.5rem;"></div>
+        </header>
+
+        <!-- PAT Section -->
+        <div class="admin__pat-section">
+            <div class="admin__pat-label">GITHUB PAT</div>
+            <input
+                type="text"
+                class="admin__pat-input"
+                placeholder="Enter your GitHub Personal Access Token"
+                autocomplete="off"
+            />
+            <button class="btn btn--primary btn--small admin__pat-btn">Connect</button>
+            <div class="admin__pat-status"></div>
         </div>
 
-        <!-- Certificates Panel -->
-        <div class="admin__panel" data-panel="certificates">
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;">
-                <h2 style="font-family:'JetBrains Mono',monospace;font-size:0.85rem;color:var(--text-secondary);letter-spacing:0.05em;">MANAGE CERTIFICATES</h2>
-                <button class="btn btn--primary btn--small admin-add-cert-btn">+ Add Certificate</button>
+        <!-- Tabs -->
+        <div class="admin__tabs">
+            <button class="admin__tab active" data-tab="projects">
+                Projects <span class="admin__tab-count">0</span>
+            </button>
+            <button class="admin__tab" data-tab="certificates">
+                Certificates <span class="admin__tab-count">0</span>
+            </button>
+            <button class="admin__tab" data-tab="blender">Blender <span class="admin__tab-count">0</span></button>
+        </div>
+
+        <!-- Content -->
+        <div class="admin__content">
+            <!-- Projects Panel -->
+            <div class="admin__panel active" data-panel="projects">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem">
+                    <h2
+                        style="
+                            font-family: 'JetBrains Mono', monospace;
+                            font-size: 0.85rem;
+                            color: var(--text-secondary);
+                            letter-spacing: 0.05em;
+                        "
+                    >
+                        MANAGE PROJECTS
+                    </h2>
+                    <button class="btn btn--primary btn--small admin-add-project-btn">+ Add Project</button>
+                </div>
+                <div class="admin-projects-list"></div>
+                <div class="admin-project-form" style="margin-top: 1.5rem"></div>
             </div>
-            <div class="admin-certificates-list"></div>
-            <div class="admin-certificate-form" style="margin-top:1.5rem;"></div>
-        </div>
 
-        <!-- Blender Panel -->
-        <div class="admin__panel" data-panel="blender">
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;">
-                <h2 style="font-family:'JetBrains Mono',monospace;font-size:0.85rem;color:var(--text-secondary);letter-spacing:0.05em;">MANAGE BLENDER RENDERS</h2>
-                <button class="btn btn--primary btn--small admin-add-blend-btn">+ Add Render</button>
+            <!-- Certificates Panel -->
+            <div class="admin__panel" data-panel="certificates">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem">
+                    <h2
+                        style="
+                            font-family: 'JetBrains Mono', monospace;
+                            font-size: 0.85rem;
+                            color: var(--text-secondary);
+                            letter-spacing: 0.05em;
+                        "
+                    >
+                        MANAGE CERTIFICATES
+                    </h2>
+                    <button class="btn btn--primary btn--small admin-add-cert-btn">+ Add Certificate</button>
+                </div>
+                <div class="admin-certificates-list"></div>
+                <div class="admin-certificate-form" style="margin-top: 1.5rem"></div>
             </div>
-            <div class="admin-blender-list"></div>
-            <div class="admin-blender-form" style="margin-top:1.5rem;"></div>
+
+            <!-- Blender Panel -->
+            <div class="admin__panel" data-panel="blender">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem">
+                    <h2
+                        style="
+                            font-family: 'JetBrains Mono', monospace;
+                            font-size: 0.85rem;
+                            color: var(--text-secondary);
+                            letter-spacing: 0.05em;
+                        "
+                    >
+                        MANAGE BLENDER RENDERS
+                    </h2>
+                    <button class="btn btn--primary btn--small admin-add-blend-btn">+ Add Render</button>
+                </div>
+                <div class="admin-blender-list"></div>
+                <div class="admin-blender-form" style="margin-top: 1.5rem"></div>
+            </div>
         </div>
 
-    </div>
-
-    <!-- Sync Status Bar -->
-    <div class="admin__sync-bar">
-        <div class="admin__sync-status">Not synced</div>
-        <div class="admin__sync-actions">
-            <button class="btn btn--primary btn--small admin__sync-btn">Sync to GitHub</button>
+        <!-- Sync Status Bar -->
+        <div class="admin__sync-bar">
+            <div class="admin__sync-status">Not synced</div>
+            <div class="admin__sync-actions">
+                <button class="btn btn--primary btn--small admin__sync-btn">Sync to GitHub</button>
+            </div>
         </div>
-    </div>
 
-    <!-- Data Files -->
-    <script src="assets/js/data/site.js"></script>
-    <script src="assets/js/data/projects.js"></script>
-    <script src="assets/js/data/certificates.js"></script>
-    <script src="assets/js/data/blender.js"></script>
+        <!-- Data Files -->
+        <script src="assets/js/data/site.js"></script>
+        <script src="assets/js/data/projects.js"></script>
+        <script src="assets/js/data/certificates.js"></script>
+        <script src="assets/js/data/blender.js"></script>
 
-    <!-- JS Modules -->
-    <script src="assets/js/github.js"></script>
-    <script src="assets/js/admin.js"></script>
-</body>
+        <!-- JS Modules -->
+        <script src="assets/js/github.js"></script>
+        <script src="assets/js/admin.js"></script>
+    </body>
 </html>
