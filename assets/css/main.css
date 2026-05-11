@@ -1427,6 +1427,49 @@ body::before {
     background: var(--accent-blue-dim);
 }
 
+/* Status filter pills */
+.filter-btn--completed {
+    color: #4ade80;
+    border-color: rgba(74, 222, 128, 0.3);
+}
+.filter-btn--completed:hover {
+    color: #86efac;
+    border-color: rgba(74, 222, 128, 0.5);
+}
+.filter-btn--completed.active {
+    color: #4ade80;
+    border-color: #4ade80;
+    background: rgba(74, 222, 128, 0.1);
+}
+
+.filter-btn--in-progress {
+    color: #facc15;
+    border-color: rgba(250, 204, 21, 0.3);
+}
+.filter-btn--in-progress:hover {
+    color: #fde047;
+    border-color: rgba(250, 204, 21, 0.5);
+}
+.filter-btn--in-progress.active {
+    color: #facc15;
+    border-color: #facc15;
+    background: rgba(250, 204, 21, 0.1);
+}
+
+.filter-btn--planned {
+    color: #94a3b8;
+    border-color: rgba(148, 163, 184, 0.3);
+}
+.filter-btn--planned:hover {
+    color: #cbd5e1;
+    border-color: rgba(148, 163, 184, 0.5);
+}
+.filter-btn--planned.active {
+    color: #94a3b8;
+    border-color: #94a3b8;
+    background: rgba(148, 163, 184, 0.1);
+}
+
 /* ------------------------------------------------------------
    16. CAROUSEL
    ------------------------------------------------------------ */
