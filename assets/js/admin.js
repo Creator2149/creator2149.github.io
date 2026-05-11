@@ -33,7 +33,7 @@
      3. Replace REPLACE_THIS_HASH below with the hash
   ========================================================= */
 
-    const ADMIN_HASH = 'REPLACE_THIS_HASH';
+    const ADMIN_HASH = 'c2102ea6340446722128b1db3b9ac26e59ed820b8898c4a69cbaf90b72012b72';
 
     // Local state (deep copies of data, modified through admin)
     let localProjects = [];
@@ -51,13 +51,77 @@
      INITIALIZATION
   ========================================================= */
 
+    /* =========================================================
+     LOGIN GATE
+     =========================================================
+     The admin page is locked behind a password prompt on
+     every load. The SHA-256 hash is compared — same hash
+     that was previously in main.js.
+  ========================================================= */
+
+    let isAuthenticated = false;
+
+    async function verifyLogin(password) {
+        if (!password) return false;
+        const encoder = new TextEncoder();
+        const data = encoder.encode(password);
+        const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+        const hashArray = Array.from(new Uint8Array(hashBuffer));
+        const hashHex = hashArray.map((b) => b.toString(16).padStart(2, '0')).join('');
+        return hashHex === ADMIN_HASH;
+    }
+
+    function initLoginGate() {
+        const overlay = document.getElementById('admin-login-overlay');
+        const input = document.getElementById('admin-login-input');
+        const submitBtn = document.getElementById('admin-login-submit');
+        const errorEl = document.getElementById('admin-login-error');
+
+        if (!overlay || !input || !submitBtn) return;
+
+        // Focus the input
+        input.focus();
+
+        async function attemptLogin() {
+            const password = input.value;
+            if (!password) return;
+
+            submitBtn.textContent = 'Verifying...';
+            submitBtn.disabled = true;
+
+            const valid = await verifyLogin(password);
+
+            if (valid) {
+                isAuthenticated = true;
+                overlay.classList.add('admin__login-overlay--dismissed');
+                // Remove overlay from DOM after animation
+                setTimeout(() => overlay.remove(), 400);
+                // Now initialize the admin panel
+                initAdminPanel();
+            } else {
+                errorEl.textContent = 'Incorrect password.';
+                input.value = '';
+                input.focus();
+                submitBtn.textContent = 'Verify';
+                submitBtn.disabled = false;
+            }
+        }
+
+        submitBtn.addEventListener('click', attemptLogin);
+        input.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') attemptLogin();
+        });
+    }
+
     function init() {
         // Check if we're on the admin page
         if (!document.querySelector('.admin')) return;
 
-        // Verify admin access
-        // (In production, you'd verify the hash here)
+        // Initialize login gate first — blocks everything else
+        initLoginGate();
+    }
 
+    function initAdminPanel() {
         // Deep copy data
         localProjects = JSON.parse(JSON.stringify(window.PROJECTS_DATA || []));
         localCertificates = JSON.parse(JSON.stringify(window.CERTIFICATES_DATA || []));
@@ -76,6 +140,9 @@
 
         // Initialize sync bar
         initSyncBar();
+
+        // Initialize add buttons
+        initAddButtons();
     }
 
     /* =========================================================
@@ -255,6 +322,11 @@
         </div>
 
         <div class="admin__form-group">
+          <label class="admin__form-label">Status Details</label>
+          <input class="admin__form-input" type="text" id="proj-status-details" value="${isEdit ? escapeHTML(project.statusDetails || '') : ''}">
+        </div>
+
+        <div class="admin__form-group">
           <label class="admin__form-label">Tech Stack (comma-separated)</label>
           <input class="admin__form-input" type="text" id="proj-tech" value="${isEdit ? escapeHTML((project.tech || []).join(', ')) : ''}" placeholder="C++, Python, OpenGL">
         </div>
@@ -366,6 +438,7 @@
             title: title,
             year: document.getElementById('proj-year').value.trim() || String(new Date().getFullYear()),
             status: document.getElementById('proj-status').value.trim() || '',
+            statusDetails: document.getElementById('proj-status-details').value.trim() || '',
             tech: techStr
                 ? techStr
                       .split(',')
@@ -448,7 +521,7 @@
           <div class="admin__list-item-title">${escapeHTML(cert.title)}</div>
           <div class="admin__list-item-meta">
             ${escapeHTML(String(cert.year))} · ${escapeHTML(cert.field || 'No field')}
-            ${cert.featuredOnHome ? ' · ON HOME' : ''}
+
           </div>
         </div>
         <div class="admin__list-item-actions">
@@ -499,13 +572,6 @@
         <div class="admin__form-group">
           <label class="admin__form-label">Description</label>
           <textarea class="admin__form-textarea" id="cert-desc" rows="2">${isEdit ? escapeHTML(cert.description || '') : ''}</textarea>
-        </div>
-
-        <div class="admin__form-group">
-          <label class="admin__form-toggle">
-            <input type="checkbox" id="cert-home" ${isEdit && cert.featuredOnHome ? 'checked' : ''}>
-            <span class="admin__form-toggle-label">Show on Homepage</span>
-          </label>
         </div>
 
         <div class="admin__form-group">
@@ -566,7 +632,6 @@
             field: document.getElementById('cert-field').value.trim() || '',
             issuer: document.getElementById('cert-issuer').value.trim() || '',
             description: document.getElementById('cert-desc').value.trim() || '',
-            featuredOnHome: document.getElementById('cert-home').checked,
             image: index >= 0 && localCertificates[index] ? localCertificates[index].image : '',
         };
 
@@ -939,12 +1004,8 @@
   ========================================================= */
 
     if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', () => {
-            init();
-            initAddButtons();
-        });
+        document.addEventListener('DOMContentLoaded', init);
     } else {
         init();
-        initAddButtons();
     }
 })();

@@ -469,7 +469,7 @@
             status.appendChild(createElement('span', { className: 'featured-project__status-dot' }));
             status.appendChild(
                 createElement('span', {
-                    textContent: project.status,
+                    textContent: project.status + (project.statusDetails ? ' — ' + project.statusDetails : ''),
                 }),
             );
             content.appendChild(status);
@@ -906,6 +906,8 @@
 
     /* =========================================================
      ADMIN ACCESS — Triple-click footer copyright
+     Navigates directly to admin.html; the admin page
+     itself handles password verification on load.
   ========================================================= */
 
     function initAdminAccess() {
@@ -921,106 +923,13 @@
 
             if (clickCount >= 3) {
                 clickCount = 0;
-                showAdminPasswordModal();
+                window.location.href = '/admin.html';
                 return;
             }
 
             clickTimer = setTimeout(() => {
                 clickCount = 0;
             }, 500);
-        });
-    }
-
-    function showAdminPasswordModal() {
-        // Create overlay if not exists
-        let overlay = $('.admin-modal-overlay');
-        if (overlay) {
-            overlay.classList.add('active');
-            return;
-        }
-
-        overlay = createElement('div', { className: 'admin-modal-overlay' });
-        const modal = createElement('div', { className: 'admin-modal' });
-        modal.appendChild(
-            createElement('h3', {
-                style: 'font-family: "JetBrains Mono", monospace; font-size: 0.85rem; color: var(--accent-blue); margin-bottom: 1rem; letter-spacing: 0.1em;',
-                textContent: 'ADMIN ACCESS',
-            }),
-        );
-
-        const input = createElement('input', {
-            type: 'password',
-            className: 'admin-modal-input',
-            placeholder: 'Enter password',
-            style: 'width: 100%; padding: 0.6rem 0.75rem; background: var(--bg-tertiary); border: 1px solid var(--border); color: var(--text-primary); font-family: "JetBrains Mono", monospace; font-size: 0.85rem; margin-bottom: 0.5rem;',
-        });
-
-        const error = createElement('div', {
-            style: 'font-size: 0.75rem; color: #ef4444; min-height: 1.2em; margin-bottom: 0.5rem;',
-            textContent: '',
-        });
-
-        const submitBtn = createElement('button', {
-            className: 'btn btn--primary',
-            textContent: 'Verify',
-            style: 'width: 100%;',
-        });
-
-        const form = createElement('div');
-        form.appendChild(input);
-        form.appendChild(error);
-        form.appendChild(submitBtn);
-        modal.appendChild(form);
-        overlay.appendChild(modal);
-        document.body.appendChild(overlay);
-
-        // Animate in
-        requestAnimationFrame(() => overlay.classList.add('active'));
-        input.focus();
-
-        // Close on overlay click
-        overlay.addEventListener('click', (e) => {
-            if (e.target === overlay) {
-                overlay.classList.remove('active');
-            }
-        });
-
-        // Verify password
-        async function verify() {
-            const password = input.value;
-            if (!password) return;
-
-            // Hash the password
-            const encoder = new TextEncoder();
-            const data = encoder.encode(password);
-            const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-            const hashArray = Array.from(new Uint8Array(hashBuffer));
-            const hashHex = hashArray.map((b) => b.toString(16).padStart(2, '0')).join('');
-
-            // Compare with stored hash
-            // ADMIN_HASH should be set in the page or a config
-            const ADMIN_HASH = window.ADMIN_HASH || 'c2102ea6340446722128b1db3b9ac26e59ed820b8898c4a69cbaf90b72012b72';
-
-            if (hashHex === ADMIN_HASH) {
-                window.location.href = '/admin.html';
-            } else {
-                error.textContent = 'Incorrect password.';
-                input.value = '';
-                input.focus();
-            }
-        }
-
-        submitBtn.addEventListener('click', verify);
-        input.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') verify();
-        });
-
-        // Escape to close
-        document.addEventListener('keydown', function handler(e) {
-            if (e.key === 'Escape' && overlay.classList.contains('active')) {
-                overlay.classList.remove('active');
-                document.removeEventListener('keydown', handler);
-            }
         });
     }
 

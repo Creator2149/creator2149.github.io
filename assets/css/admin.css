@@ -109,6 +109,7 @@
     padding: 1rem 1.5rem;
     background: var(--accent-blue-dim);
     border: 1px solid rgba(91, 143, 185, 0.2);
+    border-radius: 0.75rem;
     margin-bottom: 2rem;
     display: flex;
     align-items: center;
@@ -127,6 +128,7 @@
     padding: 0.5rem 0.75rem;
     background: var(--bg-tertiary);
     border: 1px solid var(--border);
+    border-radius: 0.5rem;
     color: var(--text-primary);
     font-family: 'JetBrains Mono', monospace;
     font-size: 0.8rem;
@@ -151,6 +153,7 @@
     gap: 1rem;
     padding: 1rem 1.5rem;
     border: 1px solid var(--border);
+    border-radius: 0.5rem;
     background: var(--bg-surface);
     margin-bottom: 0.5rem;
     transition: border-color 0.2s;
@@ -195,6 +198,7 @@
     transition: all 0.2s;
     letter-spacing: 0.03em;
     border: 1px solid;
+    border-radius: 0.5rem;
 }
 
 .btn--primary {
@@ -277,6 +281,7 @@
     padding: 0.6rem 0.75rem;
     background: var(--bg-tertiary);
     border: 1px solid var(--border);
+    border-radius: 0.5rem;
     color: var(--text-primary);
     font-family: 'Inter', sans-serif;
     font-size: 0.9rem;
@@ -293,6 +298,7 @@
     padding: 0.6rem 0.75rem;
     background: var(--bg-tertiary);
     border: 1px solid var(--border);
+    border-radius: 0.5rem;
     color: var(--text-primary);
     font-family: 'Inter', sans-serif;
     font-size: 0.9rem;
@@ -369,6 +375,7 @@
     transition: all 0.2s;
     letter-spacing: 0.03em;
     border: 1px solid var(--border);
+    border-radius: 0.5rem;
     background: transparent;
     color: var(--text-secondary);
 }
@@ -388,6 +395,7 @@
     max-width: 200px;
     margin-top: 0.5rem;
     border: 1px solid var(--border);
+    border-radius: 0.5rem;
 }
 
 .admin__form-actions {
@@ -407,6 +415,7 @@
     padding: 0.75rem 1.25rem;
     background: var(--bg-surface);
     border: 1px solid var(--border);
+    border-radius: 0.75rem;
     color: var(--text-primary);
     font-size: 0.85rem;
     z-index: 5000;
@@ -463,6 +472,7 @@
 
 .admin__image-drop {
     border: 2px dashed var(--border);
+    border-radius: 0.75rem;
     padding: 2rem;
     text-align: center;
     cursor: pointer;
@@ -478,4 +488,74 @@
     font-family: 'JetBrains Mono', monospace;
     font-size: 0.75rem;
     color: var(--text-tertiary);
+}
+
+/* ===== Login Gate Overlay ===== */
+
+.admin__login-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: rgba(10, 14, 23, 0.97);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition:
+        opacity 0.3s ease,
+        visibility 0.3s ease;
+}
+
+.admin__login-overlay--dismissed {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+.admin__login-box {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: 1rem;
+    padding: 2.5rem 2rem;
+    width: 100%;
+    max-width: 360px;
+    text-align: center;
+}
+
+.admin__login-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    color: var(--accent-blue);
+    letter-spacing: 0.1em;
+    margin-bottom: 0.5rem;
+}
+
+.admin__login-subtitle {
+    font-size: 0.8rem;
+    color: var(--text-tertiary);
+    margin-bottom: 1.5rem;
+}
+
+.admin__login-input {
+    width: 100%;
+    padding: 0.6rem 0.75rem;
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border);
+    border-radius: 0.5rem;
+    color: var(--text-primary);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    margin-bottom: 0.5rem;
+    transition: border-color 0.2s;
+}
+
+.admin__login-input:focus {
+    outline: none;
+    border-color: var(--accent-blue);
+}
+
+.admin__login-error {
+    font-size: 0.75rem;
+    color: #ef4444;
+    min-height: 1.2em;
+    margin-bottom: 0.75rem;
 }

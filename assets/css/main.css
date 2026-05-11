@@ -1700,79 +1700,9 @@ body::before {
     color: var(--text-tertiary);
 }
 
-/* ------------------------------------------------------------
-   20. ADMIN PASSWORD MODAL
-   ------------------------------------------------------------ */
-.admin-modal-overlay {
-    position: fixed;
-    inset: 0;
-    background: var(--overlay);
-    z-index: 3000;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.3s ease;
-    padding: var(--space-xl);
-}
-
-.admin-modal-overlay.active {
-    opacity: 1;
-    pointer-events: auto;
-}
-
-.admin-modal {
-    max-width: 24rem;
-    width: 100%;
-    background: var(--bg-secondary);
-    border: 1px solid var(--border);
-    border-radius: 1rem;
-    padding: var(--space-xl);
-    transform: translateY(20px);
-    transition: transform 0.3s ease;
-}
-
-.admin-modal-overlay.active .admin-modal {
-    transform: translateY(0);
-}
-
-.admin-modal input {
-    width: 100%;
-    padding: var(--space-sm) var(--space-md);
-    background: var(--bg-tertiary);
-    border: 1px solid var(--border);
-    border-radius: 0.5rem;
-    color: var(--text-primary);
-    font-family: 'JetBrains Mono', 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
-    font-size: var(--small-size);
-    outline: none;
-    transition: border-color 0.2s ease;
-}
-
-.admin-modal input:focus {
-    border-color: var(--accent-blue);
-}
-
-.admin-modal button {
-    margin-top: var(--space-md);
-    padding: var(--space-sm) var(--space-xl);
-    background: var(--accent-blue-dim);
-    border: 1px solid rgba(91, 143, 185, 0.3);
-    border-radius: 0.5rem;
-    color: var(--accent-blue);
-    font-family: 'JetBrains Mono', 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-.admin-modal button:hover {
-    background: rgba(91, 143, 185, 0.2);
-    border-color: var(--accent-blue);
-}
 
 /* ------------------------------------------------------------
-   21. ANIMATIONS
+   20. ANIMATIONS
    ------------------------------------------------------------ */
 @keyframes pulse {
     0%,
@@ -1817,7 +1747,7 @@ body::before {
 }
 
 /* ------------------------------------------------------------
-   22. REDUCED MOTION
+   21. REDUCED MOTION
    ------------------------------------------------------------ */
 @media (prefers-reduced-motion: reduce) {
     *,
@@ -1834,7 +1764,7 @@ body::before {
 }
 
 /* ------------------------------------------------------------
-   23. FOCUS STYLES (Accessibility)
+   22. FOCUS STYLES (Accessibility)
    ------------------------------------------------------------ */
 a:focus-visible,
 button:focus-visible,
@@ -1855,7 +1785,7 @@ textarea:focus-visible,
 }
 
 /* ------------------------------------------------------------
-   24. RESPONSIVE — Tablet (768px – 1024px)
+   23. RESPONSIVE — Tablet (768px – 1024px)
    ------------------------------------------------------------ */
 @media (max-width: 1024px) {
     /* Projects Grid: 2 columns */
@@ -1885,7 +1815,7 @@ textarea:focus-visible,
 }
 
 /* ------------------------------------------------------------
-   25. RESPONSIVE — Mobile (<768px)
+   24. RESPONSIVE — Mobile (<768px)
    ------------------------------------------------------------ */
 @media (max-width: 767px) {
     /* Navbar */
