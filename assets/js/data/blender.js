@@ -9,7 +9,7 @@ const BLENDER_DATA = [
         description:
             'A foundational Blender study exploring procedural shading, lighting, and physically based rendering through the iconic donut workflow. The project focused less on the object itself and more on understanding the rendering pipeline — materials, displacement, compositing, and scene composition.',
 
-        renderEngine: 'Cycles',
+        renderEngine: 'EEVEE',
 
         techniques: ['Procedural Shading', 'Subdivision Modeling', 'Lighting Setup', 'Compositor Nodes'],
     },
@@ -24,7 +24,7 @@ const BLENDER_DATA = [
         description:
             'A stylized desk environment study focused on composition, material variation, and believable object placement. The project explored how lighting and clutter distribution affect the perceived realism and atmosphere of interior scenes.',
 
-        renderEngine: 'Cycles',
+        renderEngine: 'EEVEE',
 
         techniques: ['Hard Surface Modeling', 'PBR Materials', 'Scene Composition', 'Global Illumination'],
     },
@@ -39,7 +39,7 @@ const BLENDER_DATA = [
         description:
             'An industrial environment render emphasizing atmospheric lighting, surface wear, and environmental storytelling. The scene experiments with rough concrete textures, metallic reflections, and constrained lighting to create visual depth and mood.',
 
-        renderEngine: 'Cycles',
+        renderEngine: 'EEVEE',
 
         techniques: [
             'Industrial Environment Modeling',

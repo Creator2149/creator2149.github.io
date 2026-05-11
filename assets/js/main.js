@@ -964,7 +964,7 @@
 
             // Compare with stored hash
             // ADMIN_HASH should be set in the page or a config
-            const ADMIN_HASH = window.ADMIN_HASH || 'REPLACE_THIS_HASH';
+            const ADMIN_HASH = window.ADMIN_HASH || 'c2102ea6340446722128b1db3b9ac26e59ed820b8898c4a69cbaf90b72012b72';
 
             if (hashHex === ADMIN_HASH) {
                 window.location.href = '/admin.html';

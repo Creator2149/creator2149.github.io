@@ -38,7 +38,7 @@ const PROJECTS_DATA = [
     {
         id: 'jr-water-ambassadors',
         featured: true,
-        featuredOnHome: true,
+        featuredOnHome: false,
         title: 'Jr. Water Ambassadors',
         status: 'Completed',
         statusDetails: 'Official showcase platform launched and deployed',
@@ -75,7 +75,7 @@ const PROJECTS_DATA = [
     {
         id: 'school-menu-voting-system',
         featured: true,
-        featuredOnHome: true,
+        featuredOnHome: false,
         title: 'School Menu Voting System',
         status: 'Completed',
         statusDetails: 'Deployed with Supabase-backed voting workflow',
@@ -111,7 +111,7 @@ const PROJECTS_DATA = [
     {
         id: 'mealflow',
         featured: true,
-        featuredOnHome: true,
+        featuredOnHome: false,
         title: 'MealFlow',
         status: 'Completed',
         statusDetails: 'AI-powered planning pipeline operational',
@@ -146,8 +146,8 @@ const PROJECTS_DATA = [
 
     {
         id: 'raksha',
-        featured: true,
-        featuredOnHome: true,
+        featured: false,
+        featuredOnHome: false,
         title: 'Raksha',
         status: 'In Progress',
         statusDetails: 'Motion tracking and AI feedback systems under development',
@@ -179,8 +179,8 @@ const PROJECTS_DATA = [
 
     {
         id: 'socra',
-        featured: true,
-        featuredOnHome: true,
+        featured: false,
+        featuredOnHome: false,
         title: 'Socra',
         status: 'Planned',
         statusDetails: 'Research and proof-of-concept phase',
@@ -211,7 +211,7 @@ const PROJECTS_DATA = [
     {
         id: 'the-celestis-conclave',
         featured: true,
-        featuredOnHome: true,
+        featuredOnHome: false,
         title: 'The Celestis Conclave',
         status: 'In Progress',
         statusDetails: 'Regional STEM community expanding',
@@ -231,8 +231,8 @@ const PROJECTS_DATA = [
 
     {
         id: 'nomad',
-        featured: true,
-        featuredOnHome: true,
+        featured: false,
+        featuredOnHome: false,
         title: 'NOMAD — Neural Observation and Model Analysis of Digits',
         status: 'Planned',
         statusDetails: 'Research and benchmarking architecture in planning phase',
@@ -259,8 +259,8 @@ const PROJECTS_DATA = [
 
     {
         id: 'echoes-of-etheryn',
-        featured: true,
-        featuredOnHome: true,
+        featured: false,
+        featuredOnHome: false,
         title: 'Echoes of Etheryn',
         status: 'In Progress',
         statusDetails: 'Multi-book narrative and worldbuilding development ongoing',
@@ -282,8 +282,8 @@ const PROJECTS_DATA = [
 
     {
         id: 'disease-spread-simulation',
-        featured: true,
-        featuredOnHome: true,
+        featured: false,
+        featuredOnHome: false,
         title: 'Disease Spread Simulation',
         status: 'Completed',
         statusDetails: 'Simulation engine and visualization complete',
