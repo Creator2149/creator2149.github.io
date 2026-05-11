@@ -152,8 +152,8 @@
                 });
             },
             {
-                threshold: 0.1,
-                rootMargin: '0px 0px -50px 0px',
+                threshold: 0.05,
+                rootMargin: '100px 0px 0px 0px',
             },
         );
 
@@ -923,7 +923,11 @@
         card.appendChild(visual);
         card.appendChild(content);
 
-        // No modal — lighthouse style on blender page provides sufficient detail
+        // Click image/card to open near-fullscreen image lightbox
+        card.addEventListener('click', () => {
+            if (item.image && window.ImageLightbox) window.ImageLightbox.open(item.image, item.title);
+        });
+        card.style.cursor = 'zoom-in';
 
         return card;
     }
@@ -1129,7 +1133,10 @@
         itemEl.appendChild(visual);
         itemEl.appendChild(content);
 
-        // No modal — lighthouse layout provides sufficient detail
+        // Click visual to open near-fullscreen image lightbox
+        visual.addEventListener('click', () => {
+            if (item.image && window.ImageLightbox) window.ImageLightbox.open(item.image, item.title);
+        });
 
         return itemEl;
     }
@@ -1241,10 +1248,81 @@
     }
 
     /* =========================================================
+     IMAGE LIGHTBOX — Near-fullscreen image viewer
+     Used for Blender render images (homepage cards + lighthouse)
+  ========================================================= */
+
+    let lightboxEl = null;
+
+    function initImageLightbox() {
+        if (lightboxEl) return;
+
+        lightboxEl = document.createElement('div');
+        lightboxEl.className = 'image-lightbox';
+        lightboxEl.setAttribute('role', 'dialog');
+        lightboxEl.setAttribute('aria-modal', 'true');
+        lightboxEl.setAttribute('aria-label', 'Image viewer');
+
+        const closeBtn = document.createElement('button');
+        closeBtn.className = 'image-lightbox__close';
+        closeBtn.setAttribute('aria-label', 'Close image viewer');
+        closeBtn.innerHTML = '&times;';
+        closeBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            closeImageLightbox();
+        });
+
+        const img = document.createElement('img');
+        img.className = 'image-lightbox__img';
+        img.alt = '';
+
+        const title = document.createElement('div');
+        title.className = 'image-lightbox__title';
+
+        lightboxEl.appendChild(closeBtn);
+        lightboxEl.appendChild(img);
+        lightboxEl.appendChild(title);
+        document.body.appendChild(lightboxEl);
+
+        // Close on background click
+        lightboxEl.addEventListener('click', (e) => {
+            if (e.target === lightboxEl) closeImageLightbox();
+        });
+
+        // Close on Escape
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && lightboxEl.classList.contains('active')) {
+                closeImageLightbox();
+            }
+        });
+    }
+
+    function openImageLightbox(src, titleText) {
+        if (!lightboxEl) initImageLightbox();
+        const img = lightboxEl.querySelector('.image-lightbox__img');
+        const title = lightboxEl.querySelector('.image-lightbox__title');
+        img.src = src;
+        img.alt = titleText || '';
+        title.textContent = titleText || '';
+        lightboxEl.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeImageLightbox() {
+        if (!lightboxEl) return;
+        lightboxEl.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+
+    // Expose globally
+    window.ImageLightbox = { open: openImageLightbox, close: closeImageLightbox };
+
+    /* =========================================================
      INITIALIZATION
   ========================================================= */
 
     function init() {
+        initImageLightbox();
         renderNavbar();
         initNavbar();
         renderFooter();
