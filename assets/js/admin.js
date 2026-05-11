@@ -255,11 +255,6 @@
         </div>
 
         <div class="admin__form-group">
-          <label class="admin__form-label">Status Details</label>
-          <input class="admin__form-input" type="text" id="proj-status-details" value="${isEdit ? escapeHTML(project.statusDetails || '') : ''}">
-        </div>
-
-        <div class="admin__form-group">
           <label class="admin__form-label">Tech Stack (comma-separated)</label>
           <input class="admin__form-input" type="text" id="proj-tech" value="${isEdit ? escapeHTML((project.tech || []).join(', ')) : ''}" placeholder="C++, Python, OpenGL">
         </div>
@@ -371,7 +366,6 @@
             title: title,
             year: document.getElementById('proj-year').value.trim() || String(new Date().getFullYear()),
             status: document.getElementById('proj-status').value.trim() || '',
-            statusDetails: document.getElementById('proj-status-details').value.trim() || '',
             tech: techStr
                 ? techStr
                       .split(',')
