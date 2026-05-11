@@ -207,16 +207,49 @@ body::before {
 }
 
 .navbar__brand {
-    font-family: 'Instrument Serif', Georgia, 'Times New Roman', serif;
-    font-size: 1.25rem;
     color: var(--text-primary);
     text-decoration: none;
-    letter-spacing: -0.02em;
     transition: opacity 0.2s ease;
+    display: flex;
+    align-items: center;
 }
 
 .navbar__brand:hover {
     opacity: 0.85;
+}
+
+.navbar__monogram {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    position: relative;
+}
+
+.navbar__monogram svg {
+    width: 100%;
+    height: 100%;
+}
+
+.navbar__monogram-frame {
+    fill: none;
+    stroke: var(--accent-blue);
+    stroke-width: 1.2;
+    transition: stroke 0.3s ease;
+}
+
+.navbar__brand:hover .navbar__monogram-frame {
+    stroke: var(--accent-amber);
+}
+
+.navbar__monogram-text {
+    font-family: 'Instrument Serif', Georgia, 'Times New Roman', serif;
+    fill: var(--text-primary);
+    font-size: 14px;
+    letter-spacing: 0.5px;
+    dominant-baseline: central;
+    text-anchor: middle;
 }
 
 .navbar__links {
@@ -1099,8 +1132,8 @@ body::before {
    ------------------------------------------------------------ */
 .home-projects__grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-    gap: var(--space-xl);
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: var(--space-3xl);
 }
 
 .home-projects__grid .project-card--featured {
@@ -1226,7 +1259,6 @@ body::before {
 
 .blender-card:hover {
     border-color: var(--border-accent);
-    cursor: pointer;
 }
 
 .blender-card__visual {
@@ -1306,7 +1338,6 @@ body::before {
     align-items: center;
     padding: var(--space-4xl) 0;
     border-bottom: 1px solid var(--border);
-    cursor: pointer;
     transition: opacity 0.3s ease;
 }
 
@@ -1315,7 +1346,7 @@ body::before {
 }
 
 .blender-lighthouse__item:hover {
-    opacity: 0.92;
+    opacity: 0.95;
 }
 
 /* Alternate: image on right, content on left */

@@ -923,18 +923,7 @@
         card.appendChild(visual);
         card.appendChild(content);
 
-        // Click to open modal
-        card.addEventListener('click', () => {
-            if (window.ModalSystem) window.ModalSystem.openBlenderModal(item);
-        });
-        card.setAttribute('role', 'button');
-        card.setAttribute('tabindex', '0');
-        card.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter' || e.key === ' ') {
-                e.preventDefault();
-                if (window.ModalSystem) window.ModalSystem.openBlenderModal(item);
-            }
-        });
+        // No modal — lighthouse style on blender page provides sufficient detail
 
         return card;
     }
@@ -1140,10 +1129,7 @@
         itemEl.appendChild(visual);
         itemEl.appendChild(content);
 
-        // Click to open modal
-        itemEl.addEventListener('click', () => {
-            if (window.ModalSystem) window.ModalSystem.openBlenderModal(item);
-        });
+        // No modal — lighthouse layout provides sufficient detail
 
         return itemEl;
     }
