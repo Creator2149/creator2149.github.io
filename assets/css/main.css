@@ -638,7 +638,8 @@ body::before {
 }
 
 .featured-project__visual {
-    position: relative;
+    position: sticky;
+    top: 5rem;
     aspect-ratio: 16 / 10;
     background: var(--bg-tertiary);
     border: 1px solid var(--border);
@@ -1285,6 +1286,138 @@ body::before {
     font-family: 'JetBrains Mono', 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
     font-size: var(--tiny-size);
     color: var(--accent-amber);
+}
+
+/* ------------------------------------------------------------
+   12b. BLENDER LIGHTHOUSE — Spotlight Layout
+   Each render gets its own cinematic showcase section.
+   Alternating image/content sides for visual rhythm.
+   ------------------------------------------------------------ */
+.blender-lighthouse {
+    max-width: var(--content-max-wide);
+    margin: 0 auto;
+    padding: 0 var(--content-padding);
+}
+
+.blender-lighthouse__item {
+    display: grid;
+    grid-template-columns: 1.3fr 1fr;
+    gap: var(--space-3xl);
+    align-items: center;
+    padding: var(--space-4xl) 0;
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+    transition: opacity 0.3s ease;
+}
+
+.blender-lighthouse__item:last-child {
+    border-bottom: none;
+}
+
+.blender-lighthouse__item:hover {
+    opacity: 0.92;
+}
+
+/* Alternate: image on right, content on left */
+.blender-lighthouse__item--reverse {
+    grid-template-columns: 1fr 1.3fr;
+}
+
+.blender-lighthouse__item--reverse .blender-lighthouse__visual {
+    order: 2;
+}
+
+.blender-lighthouse__item--reverse .blender-lighthouse__content {
+    order: 1;
+}
+
+.blender-lighthouse__visual {
+    position: relative;
+    border-radius: 0.75rem;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    background: var(--bg-tertiary);
+}
+
+.blender-lighthouse__visual::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+        repeating-linear-gradient(
+            0deg,
+            transparent,
+            transparent 39px,
+            rgba(91, 143, 185, 0.04) 39px,
+            rgba(91, 143, 185, 0.04) 40px
+        ),
+        repeating-linear-gradient(
+            90deg,
+            transparent,
+            transparent 39px,
+            rgba(91, 143, 185, 0.04) 39px,
+            rgba(91, 143, 185, 0.04) 40px
+        );
+    pointer-events: none;
+    z-index: 1;
+}
+
+.blender-lighthouse__visual img {
+    width: 100%;
+    display: block;
+    position: relative;
+    z-index: 0;
+}
+
+.blender-lighthouse__content {
+    padding: var(--space-lg) 0;
+}
+
+.blender-lighthouse__number {
+    font-family: 'JetBrains Mono', 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+    font-size: var(--tiny-size);
+    color: var(--accent-blue);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: var(--space-md);
+}
+
+.blender-lighthouse__title {
+    font-family: 'Instrument Serif', Georgia, 'Times New Roman', serif;
+    font-size: var(--h2-size);
+    line-height: var(--lh-heading);
+    color: var(--text-primary);
+    margin-bottom: var(--space-lg);
+    letter-spacing: 0.01em;
+}
+
+.blender-lighthouse__description {
+    font-size: var(--body-size);
+    color: var(--text-secondary);
+    line-height: var(--lh-body);
+    margin-bottom: var(--space-xl);
+}
+
+.blender-lighthouse__meta {
+    font-family: 'JetBrains Mono', 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+    font-size: var(--tiny-size);
+    color: var(--text-tertiary);
+    margin-bottom: var(--space-lg);
+}
+
+.blender-lighthouse__techniques {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-xs);
+}
+
+.blender-lighthouse__technique {
+    font-family: 'JetBrains Mono', 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+    font-size: var(--tiny-size);
+    color: var(--accent-blue);
+    padding: 0.15em 0.5em;
+    border-radius: 999px;
+    background: var(--accent-blue-dim);
 }
 
 /* ------------------------------------------------------------
@@ -1945,6 +2078,7 @@ textarea:focus-visible,
 .project-card:focus-visible,
 .certificate-card:focus-visible,
 .blender-card:focus-visible,
+.blender-lighthouse__item:focus-visible,
 .filter-btn:focus-visible {
     outline: 2px solid var(--accent-blue);
     outline-offset: 2px;
@@ -1969,6 +2103,22 @@ textarea:focus-visible,
         column-count: 1;
     }
 
+    /* Blender Lighthouse: stack on tablet */
+    .blender-lighthouse__item,
+    .blender-lighthouse__item--reverse {
+        grid-template-columns: 1fr;
+        gap: var(--space-xl);
+        padding: var(--space-3xl) 0;
+    }
+
+    .blender-lighthouse__item--reverse .blender-lighthouse__visual {
+        order: 0;
+    }
+
+    .blender-lighthouse__item--reverse .blender-lighthouse__content {
+        order: 0;
+    }
+
     /* Featured Project */
     .featured-project__inner {
         grid-template-columns: 1fr;
@@ -1977,6 +2127,11 @@ textarea:focus-visible,
 
     .featured-project__content {
         padding-top: 0;
+    }
+
+    .featured-project__visual {
+        position: relative;
+        top: auto;
     }
 
     /* Philosophy */
@@ -2054,6 +2209,12 @@ textarea:focus-visible,
     /* Blender Grid */
     .blender-grid {
         column-count: 1;
+    }
+
+    /* Blender Lighthouse: already stacked from tablet breakpoint */
+    .blender-lighthouse__item,
+    .blender-lighthouse__item--reverse {
+        padding: var(--space-2xl) 0;
     }
 
     /* Project Card Featured: stack on mobile */

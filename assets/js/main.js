@@ -560,7 +560,7 @@
             if (heroGreeting) heroGreeting.textContent = SITE_DATA.hero.greeting;
             if (heroTitle) heroTitle.textContent = SITE_DATA.hero.mainStatement;
             if (heroSubtitle) heroSubtitle.textContent = SITE_DATA.hero.subStatement;
-            if (heroSystemLabel) heroSystemLabel.textContent = '';
+            if (heroSystemLabel) heroSystemLabel.textContent = SITE_DATA.tagline || '';
         }
 
         // Render philosophy section
@@ -1072,13 +1072,80 @@
         if (!$('.page--blender')) return;
         if (!window.BLENDER_DATA) return;
 
-        const grid = $('.blender-grid');
-        if (!grid) return;
+        const container = $('.blender-lighthouse');
+        if (!container) return;
 
-        grid.innerHTML = '';
-        BLENDER_DATA.forEach((item) => {
-            grid.appendChild(createBlenderCard(item));
+        container.innerHTML = '';
+        BLENDER_DATA.forEach((item, index) => {
+            container.appendChild(createLighthouseItem(item, index));
         });
+    }
+
+    function createLighthouseItem(item, index) {
+        const isReversed = index % 2 === 1;
+        const itemEl = createElement('div', {
+            className: `blender-lighthouse__item${isReversed ? ' blender-lighthouse__item--reverse' : ''}`,
+            dataset: { id: item.id },
+        });
+
+        // Visual
+        const visual = createElement('div', { className: 'blender-lighthouse__visual' });
+        visual.appendChild(createImage(item.image, item.title, 'RENDER'));
+
+        // Content
+        const content = createElement('div', { className: 'blender-lighthouse__content' });
+
+        // Render number
+        content.appendChild(
+            createElement('div', {
+                className: 'blender-lighthouse__number',
+                textContent: `RENDER ${String(index + 1).padStart(2, '0')}`,
+            }),
+        );
+
+        // Title
+        content.appendChild(
+            createElement('h2', {
+                className: 'blender-lighthouse__title',
+                textContent: item.title,
+            }),
+        );
+
+        // Description
+        if (item.description) {
+            content.appendChild(
+                createElement('p', {
+                    className: 'blender-lighthouse__description',
+                    textContent: item.description,
+                }),
+            );
+        }
+
+        // Meta (date + engine)
+        const meta = createElement('div', { className: 'blender-lighthouse__meta' });
+        meta.appendChild(
+            document.createTextNode(formatDate(item.date) + (item.renderEngine ? ' \u00B7 ' + item.renderEngine : '')),
+        );
+        content.appendChild(meta);
+
+        // Techniques
+        if (item.techniques && item.techniques.length) {
+            const techniques = createElement('div', { className: 'blender-lighthouse__techniques' });
+            item.techniques.forEach((t) =>
+                techniques.appendChild(createElement('span', { className: 'blender-lighthouse__technique' }, [t])),
+            );
+            content.appendChild(techniques);
+        }
+
+        itemEl.appendChild(visual);
+        itemEl.appendChild(content);
+
+        // Click to open modal
+        itemEl.addEventListener('click', () => {
+            if (window.ModalSystem) window.ModalSystem.openBlenderModal(item);
+        });
+
+        return itemEl;
     }
 
     /* =========================================================
