@@ -40,6 +40,11 @@
     let localCertificates = [];
     let localBlender = [];
 
+    // Track which data sections have been modified
+    let hasProjectChanges = false;
+    let hasCertificateChanges = false;
+    let hasBlenderChanges = false;
+
     // Pending image uploads (stored as File objects)
     let pendingImages = {};
 
@@ -424,6 +429,8 @@
             return;
         }
 
+        hasProjectChanges = true;
+
         const techStr = document.getElementById('proj-tech').value.trim();
         const tagsStr = document.getElementById('proj-tags').value.trim();
 
@@ -487,6 +494,7 @@
         if (!confirm(`Delete "${project.title}"? This cannot be undone.`)) return;
 
         localProjects.splice(index, 1);
+        hasProjectChanges = true;
         renderProjectsList();
         showToast(`Deleted: ${project.title}`, 'info');
     }
@@ -619,6 +627,8 @@
             return;
         }
 
+        hasCertificateChanges = true;
+
         const cert = {
             id:
                 index >= 0 && localCertificates[index]
@@ -652,6 +662,7 @@
         if (!confirm(`Delete "${cert.title}"?`)) return;
 
         localCertificates.splice(index, 1);
+        hasCertificateChanges = true;
         renderCertificatesList();
         showToast(`Deleted: ${cert.title}`, 'info');
     }
@@ -791,6 +802,8 @@
             return;
         }
 
+        hasBlenderChanges = true;
+
         const techStr = document.getElementById('blend-techniques').value.trim();
 
         const item = {
@@ -832,6 +845,7 @@
         if (!confirm(`Delete "${item.title}"?`)) return;
 
         localBlender.splice(index, 1);
+        hasBlenderChanges = true;
         renderBlenderList();
         showToast(`Deleted: ${item.title}`, 'info');
     }
@@ -899,20 +913,33 @@
             // Clear pending images
             pendingImages = {};
 
-            // Generate and upload data files
-            const projectsContent = generateDataFile('PROJECTS_DATA', localProjects);
-            const certificatesContent = generateDataFile('CERTIFICATES_DATA', localCertificates);
-            const blenderContent = generateDataFile('BLENDER_DATA', localBlender);
+            // Generate and upload only modified data files
+            if (hasProjectChanges) {
+                const projectsContent = generateDataFile('PROJECTS_DATA', localProjects);
+                await window.GitHub.updateDataFile('projects', projectsContent);
+            }
 
-            await window.GitHub.updateDataFile('projects', projectsContent);
-            await window.GitHub.updateDataFile('certificates', certificatesContent);
-            await window.GitHub.updateDataFile('blender', blenderContent);
+            if (hasCertificateChanges) {
+                const certificatesContent = generateDataFile('CERTIFICATES_DATA', localCertificates);
+                await window.GitHub.updateDataFile('certificates', certificatesContent);
+            }
+
+            if (hasBlenderChanges) {
+                const blenderContent = generateDataFile('BLENDER_DATA', localBlender);
+                await window.GitHub.updateDataFile('blender', blenderContent);
+            }
+
+            // Reset modification flags after successful sync
+            hasProjectChanges = false;
+            hasCertificateChanges = false;
+            hasBlenderChanges = false;
 
             if (syncStatus) syncStatus.textContent = 'Last synced: ' + new Date().toLocaleTimeString();
             showToast('All changes synced to GitHub', 'success');
         } catch (err) {
             if (syncStatus) syncStatus.textContent = 'Sync failed';
             showToast(`Sync error: ${err.message}`, 'error');
+            // Don't reset flags on failure so user can retry
         }
     }
 
