@@ -291,7 +291,7 @@ const PROJECTS_DATA = [
     ],
     "flagship": false,
     "featuredOnHome": false,
-    "image": "",
+    "image": "/assets/images/projects/diseasespreadsimulation.png",
     "challenges": [
       "Balancing simulation realism with computational simplicity",
       "Visualizing infection states clearly in real time",
@@ -347,7 +347,7 @@ const PROJECTS_DATA = [
     ],
     "flagship": false,
     "featuredOnHome": false,
-    "image": ""
+    "image": "/assets/images/projects/cybersurakshaabhiyan.png"
   }
 ];
 
