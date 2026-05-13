@@ -45,12 +45,13 @@
     let hasCertificateChanges = false;
     let hasBlenderChanges = false;
 
-    // Pending image uploads (stored as File objects)
+    // Pending image uploads: { 'projects-0': { file, index }, 'certificates-1': { file, index } }
     let pendingImages = {};
 
     // Current editing state
     let editingItem = null;
     let editingType = null;
+    let editingIndex = -1;
 
     /* =========================================================
      INITIALIZATION
@@ -303,6 +304,7 @@
         const isEdit = project !== null;
         editingItem = project;
         editingType = isEdit ? 'project' : null;
+        editingIndex = index;
 
         formContainer.innerHTML = `
       <div class="admin__form">
@@ -405,7 +407,8 @@
         imageInput.addEventListener('change', (e) => {
             if (e.target.files[0]) {
                 imageName.textContent = e.target.files[0].name;
-                pendingImages.projects = e.target.files[0];
+                const key = index >= 0 ? `projects-${index}` : 'projects-new';
+                pendingImages[key] = { file: e.target.files[0], index: index, category: 'projects' };
             }
         });
 
@@ -419,6 +422,7 @@
             formContainer.innerHTML = '';
             editingItem = null;
             editingType = null;
+            editingIndex = -1;
         });
     }
 
@@ -430,6 +434,7 @@
         }
 
         hasProjectChanges = true;
+        editingIndex = -1;
 
         const techStr = document.getElementById('proj-tech').value.trim();
         const tagsStr = document.getElementById('proj-tags').value.trim();
@@ -484,6 +489,9 @@
 
         renderProjectsList();
         document.querySelector('.admin-project-form').innerHTML = '';
+        editingItem = null;
+        editingType = null;
+        editingIndex = -1;
         showToast(`Project ${index >= 0 ? 'updated' : 'added'}: ${title}`, 'success');
     }
 
@@ -549,6 +557,9 @@
         if (!formContainer) return;
 
         const isEdit = cert !== null;
+        editingItem = cert;
+        editingType = isEdit ? 'certificate' : null;
+        editingIndex = index;
 
         formContainer.innerHTML = `
       <div class="admin__form">
@@ -607,7 +618,10 @@
         imageInput.addEventListener('change', (e) => {
             if (e.target.files[0]) {
                 imageName.textContent = e.target.files[0].name;
-                pendingImages.certificates = e.target.files[0];
+                const key = index >= 0 ? `certificates-${index}` : 'certificates-new';
+                pendingImages[key] = { file: e.target.files[0], index: index, category: 'certificates' };
+            }
+        });
             }
         });
 
@@ -653,6 +667,9 @@
 
         renderCertificatesList();
         document.querySelector('.admin-certificate-form').innerHTML = '';
+        editingItem = null;
+        editingType = null;
+        editingIndex = -1;
         showToast(`Certificate ${index >= 0 ? 'updated' : 'added'}: ${title}`, 'success');
     }
 
@@ -717,6 +734,9 @@
         if (!formContainer) return;
 
         const isEdit = item !== null;
+        editingItem = item;
+        editingType = isEdit ? 'blender' : null;
+        editingIndex = index;
 
         formContainer.innerHTML = `
       <div class="admin__form">
@@ -782,7 +802,8 @@
         imageInput.addEventListener('change', (e) => {
             if (e.target.files[0]) {
                 imageName.textContent = e.target.files[0].name;
-                pendingImages.blender = e.target.files[0];
+                const key = index >= 0 ? `blender-${index}` : 'blender-new';
+                pendingImages[key] = { file: e.target.files[0], index: index, category: 'blender' };
             }
         });
 
@@ -836,6 +857,9 @@
 
         renderBlenderList();
         document.querySelector('.admin-blender-form').innerHTML = '';
+        editingItem = null;
+        editingType = null;
+        editingIndex = -1;
         showToast(`Render ${index >= 0 ? 'updated' : 'added'}: ${title}`, 'success');
     }
 
@@ -889,24 +913,30 @@
         if (syncStatus) syncStatus.textContent = 'Syncing...';
 
         try {
-            // Upload pending images
-            for (const [category, file] of Object.entries(pendingImages)) {
+            // Upload pending images and update item image paths
+            for (const [key, imageData] of Object.entries(pendingImages)) {
                 try {
+                    const { file, index, category } = imageData;
                     const result = await window.GitHub.uploadImage(category, file);
-                    // Update the image path in local data
-                    const filename = window.GitHub.sanitizeFilename(file.name);
-                    const imagePath = window.GitHub.getImageUrl(category, filename);
-
-                    // Find the item that was being edited and update its image path
-                    if (category === 'projects') {
-                        // Update last edited project
-                    } else if (category === 'certificates') {
-                        // Update last edited cert
-                    } else if (category === 'blender') {
-                        // Update last edited blender item
+                    
+                    // Get the actual uploaded path from the GitHub API response
+                    const uploadedPath = result.content.path; // e.g., 'assets/images/projects/filename.png'
+                    const imagePath = `/${uploadedPath}`; // Convert to relative path
+                    
+                    // Update the corresponding item's image field
+                    if (category === 'projects' && index >= 0 && localProjects[index]) {
+                        localProjects[index].image = imagePath;
+                        showToast(`Image uploaded for: ${localProjects[index].title}`, 'success');
+                    } else if (category === 'certificates' && index >= 0 && localCertificates[index]) {
+                        localCertificates[index].image = imagePath;
+                        showToast(`Image uploaded for: ${localCertificates[index].title}`, 'success');
+                    } else if (category === 'blender' && index >= 0 && localBlender[index]) {
+                        localBlender[index].image = imagePath;
+                        showToast(`Image uploaded for: ${localBlender[index].title}`, 'success');
                     }
                 } catch (err) {
                     showToast(`Image upload failed: ${err.message}`, 'error');
+                    console.error('Image upload error:', err);
                 }
             }
 
@@ -939,6 +969,7 @@
         } catch (err) {
             if (syncStatus) syncStatus.textContent = 'Sync failed';
             showToast(`Sync error: ${err.message}`, 'error');
+            console.error('Sync error:', err);
             // Don't reset flags on failure so user can retry
         }
     }
