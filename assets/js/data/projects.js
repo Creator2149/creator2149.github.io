@@ -273,6 +273,7 @@ const PROJECTS_DATA = [
     "title": "Disease Spread Simulation",
     "year": "2025",
     "status": "Completed",
+    "statusDetails": "",
     "tech": [
       "Python",
       "Pygame",
@@ -325,24 +326,28 @@ const PROJECTS_DATA = [
   },
   {
     "id": "cybersecurity-for-elderly",
-    "featuredOnHome": false,
-    "title": "Cybersecurity for Elderly",
-    "status": "In Progress",
+    "title": "Cybersecurity for Support Staff",
     "year": "2026",
+    "status": "In Progress",
+    "statusDetails": "",
     "tech": [
       "Education",
       "Public Speaking",
       "Community"
     ],
-    "image": "",
-    "shortDescription": "A cybersecurity awareness initiative focused on helping elderly individuals navigate online safety.",
-    "longDescription": "This initiative aims to educate elderly individuals about online scams, phishing attempts, misinformation, and digital safety practices through relatable examples and simplified explanations. The project emphasizes accessibility and practical real-world understanding over technical jargon.",
+    "shortDescription": "A cybersecurity awareness initiative focused on helping school support staff navigate the online world safely.",
+    "longDescription": "This initiative aims to educate school support staff about online scams, phishing attempts, misinformation, and digital safety practices through relatable examples and simplified explanations. The project emphasizes accessibility and practical real-world understanding over technical jargon.",
+    "featuredQuote": "",
+    "architectureNotes": "",
+    "link": "",
     "tags": [
       "Community",
       "Cybersecurity",
       "Education"
     ],
-    "link": ""
+    "flagship": false,
+    "featuredOnHome": false,
+    "image": ""
   }
 ];
 
