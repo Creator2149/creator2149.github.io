@@ -400,7 +400,7 @@
         imageInput.addEventListener('change', (e) => {
             if (e.target.files[0]) {
                 imageName.textContent = e.target.files[0].name;
-                pendingImages.project = e.target.files[0];
+                pendingImages.projects = e.target.files[0];
             }
         });
 
@@ -599,7 +599,7 @@
         imageInput.addEventListener('change', (e) => {
             if (e.target.files[0]) {
                 imageName.textContent = e.target.files[0].name;
-                pendingImages.certificate = e.target.files[0];
+                pendingImages.certificates = e.target.files[0];
             }
         });
 
@@ -884,9 +884,9 @@
                     const imagePath = window.GitHub.getImageUrl(category, filename);
 
                     // Find the item that was being edited and update its image path
-                    if (category === 'project') {
+                    if (category === 'projects') {
                         // Update last edited project
-                    } else if (category === 'certificate') {
+                    } else if (category === 'certificates') {
                         // Update last edited cert
                     } else if (category === 'blender') {
                         // Update last edited blender item
