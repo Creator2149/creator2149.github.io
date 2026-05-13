@@ -622,8 +622,6 @@
                 pendingImages[key] = { file: e.target.files[0], index: index, category: 'certificates' };
             }
         });
-            }
-        });
 
         document.getElementById('cert-save').addEventListener('click', () => {
             saveCertificate(isEdit ? index : -1);
@@ -918,11 +916,11 @@
                 try {
                     const { file, index, category } = imageData;
                     const result = await window.GitHub.uploadImage(category, file);
-                    
+
                     // Get the actual uploaded path from the GitHub API response
                     const uploadedPath = result.content.path; // e.g., 'assets/images/projects/filename.png'
                     const imagePath = `/${uploadedPath}`; // Convert to relative path
-                    
+
                     // Update the corresponding item's image field
                     if (category === 'projects' && index >= 0 && localProjects[index]) {
                         localProjects[index].image = imagePath;
