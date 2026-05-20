@@ -231,7 +231,7 @@ const CERTIFICATES_DATA = [
     "field": "Entrepreneurship",
     "issuer": "Blue Ocean Student Entrepreneurs Corporation",
     "description": "",
-    "image": ""
+    "image": "assets/images/certificates/blue_ocean_entrepreneurship_competition_2026.png"
   }
 ];
 
