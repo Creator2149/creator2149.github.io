@@ -919,7 +919,7 @@
         const container = $('.home-blender__grid');
         if (!container || !window.BLENDER_DATA) return;
 
-        const featured = sortByYear(BLENDER_DATA.filter((b) => b.featuredOnHome), 'date');
+        const featured = [...BLENDER_DATA.filter((b) => b.featuredOnHome)].reverse();
         container.innerHTML = '';
         featured.forEach((item) => {
             container.appendChild(createBlenderCard(item));
@@ -1103,7 +1103,7 @@
         if (!container) return;
 
         container.innerHTML = '';
-        sortByYear(BLENDER_DATA, 'date').forEach((item, index) => {
+        [...BLENDER_DATA].reverse().forEach((item, index) => {
             container.appendChild(createLighthouseItem(item, index));
         });
     }

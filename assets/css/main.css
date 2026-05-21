@@ -505,6 +505,7 @@ body::before {
     letter-spacing: 0.15em;
     text-transform: uppercase;
     margin-bottom: var(--space-lg);
+    font-weight: bold;
 }
 
 .hero__title {
@@ -531,14 +532,36 @@ body::before {
 }
 
 .hero__system-label {
-    font-family: 'JetBrains Mono', 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
-    font-size: var(--tiny-size);
-    color: var(--text-tertiary);
-    letter-spacing: 0.1em;
-    position: absolute;
-    bottom: 2rem;
-    right: var(--content-padding);
+    font-family: 'Instrument Serif', Georgia, 'Times New Roman', serif;
+    font-size: clamp(1.5rem, 4vw, 2.5rem);
+    color: var(--accent-amber);
+    letter-spacing: 0.08em;
+    font-style: italic;
+    position: relative;
+    bottom: auto;
+    right: auto;
+    margin-top: var(--space-3xl);
+    text-align: center;
+    width: 100%;
     z-index: 2;
+}
+
+.hero__system-label::before,
+.hero__system-label::after {
+    content: '';
+    display: block;
+    width: 60px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--accent-amber), transparent);
+    margin: 0 auto;
+}
+
+.hero__system-label::before {
+    margin-bottom: var(--space-lg);
+}
+
+.hero__system-label::after {
+    margin-top: var(--space-lg);
 }
 
 /* ------------------------------------------------------------
@@ -2261,10 +2284,7 @@ textarea:focus-visible,
     }
 
     .hero__system-label {
-        position: relative;
-        bottom: auto;
-        right: auto;
-        margin-top: var(--space-xl);
+        font-size: clamp(1.25rem, 6vw, 2rem);
     }
 
     /* Philosophy */
