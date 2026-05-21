@@ -12,28 +12,11 @@
  *
  * Security:
  * - PAT never persisted (session only, stored in GitHub module)
- * - Admin password uses SHA-256 hash verification
- * - ADMIN_HASH placeholder for deployment
+ * - Admin access requires a valid GitHub PAT to make changes
  */
 
 (function () {
     'use strict';
-
-    /* =========================================================
-     ADMIN PASSWORD HASH
-     =========================================================
-     To set the admin password:
-     1. Open browser console and run:
-        const encoder = new TextEncoder();
-        crypto.subtle.digest('SHA-256', encoder.encode('YOUR_PASSWORD'))
-          .then(buf => Array.from(new Uint8Array(buf))
-            .map(b => b.toString(16).padStart(2, '0')).join(''))
-          .then(hash => console.log(hash));
-     2. Copy the resulting hash string
-     3. Replace REPLACE_THIS_HASH below with the hash
-  ========================================================= */
-
-    const ADMIN_HASH = 'c2102ea6340446722128b1db3b9ac26e59ed820b8898c4a69cbaf90b72012b72';
 
     // Local state (deep copies of data, modified through admin)
     let localProjects = [];
@@ -65,66 +48,9 @@
      that was previously in main.js.
   ========================================================= */
 
-    let isAuthenticated = false;
-
-    async function verifyLogin(password) {
-        if (!password) return false;
-        const encoder = new TextEncoder();
-        const data = encoder.encode(password);
-        const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-        const hashArray = Array.from(new Uint8Array(hashBuffer));
-        const hashHex = hashArray.map((b) => b.toString(16).padStart(2, '0')).join('');
-        return hashHex === ADMIN_HASH;
-    }
-
-    function initLoginGate() {
-        const overlay = document.getElementById('admin-login-overlay');
-        const input = document.getElementById('admin-login-input');
-        const submitBtn = document.getElementById('admin-login-submit');
-        const errorEl = document.getElementById('admin-login-error');
-
-        if (!overlay || !input || !submitBtn) return;
-
-        // Focus the input
-        input.focus();
-
-        async function attemptLogin() {
-            const password = input.value;
-            if (!password) return;
-
-            submitBtn.textContent = 'Verifying...';
-            submitBtn.disabled = true;
-
-            const valid = await verifyLogin(password);
-
-            if (valid) {
-                isAuthenticated = true;
-                overlay.classList.add('admin__login-overlay--dismissed');
-                // Remove overlay from DOM after animation
-                setTimeout(() => overlay.remove(), 400);
-                // Now initialize the admin panel
-                initAdminPanel();
-            } else {
-                errorEl.textContent = 'Incorrect password.';
-                input.value = '';
-                input.focus();
-                submitBtn.textContent = 'Verify';
-                submitBtn.disabled = false;
-            }
-        }
-
-        submitBtn.addEventListener('click', attemptLogin);
-        input.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') attemptLogin();
-        });
-    }
-
     function init() {
-        // Check if we're on the admin page
         if (!document.querySelector('.admin')) return;
-
-        // Initialize login gate first — blocks everything else
-        initLoginGate();
+        initAdminPanel();
     }
 
     function initAdminPanel() {

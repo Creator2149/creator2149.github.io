@@ -570,6 +570,15 @@
         }
     }
 
+    /** Sort items by year descending (newest first) */
+    function sortByYear(items, yearKey = 'year') {
+        return [...items].sort((a, b) => {
+            const yearA = parseInt(a[yearKey], 10) || 0;
+            const yearB = parseInt(b[yearKey], 10) || 0;
+            return yearB - yearA;
+        });
+    }
+
     /* =========================================================
      DYNAMIC CONTENT RENDERING — HOMEPAGE
   ========================================================= */
@@ -764,9 +773,8 @@
         const container = $('.home-projects__grid');
         if (!container || !window.PROJECTS_DATA) return;
 
-        // Get featuredOnHome projects (excluding the flagship one)
         const flagship = PROJECTS_DATA.find((p) => p.flagship);
-        const curated = PROJECTS_DATA.filter((p) => p.featuredOnHome && !p.flagship);
+        const curated = sortByYear(PROJECTS_DATA.filter((p) => p.featuredOnHome && !p.flagship));
 
         container.innerHTML = '';
         curated.forEach((project) => {
@@ -911,7 +919,7 @@
         const container = $('.home-blender__grid');
         if (!container || !window.BLENDER_DATA) return;
 
-        const featured = BLENDER_DATA.filter((b) => b.featuredOnHome);
+        const featured = sortByYear(BLENDER_DATA.filter((b) => b.featuredOnHome), 'date');
         container.innerHTML = '';
         featured.forEach((item) => {
             container.appendChild(createBlenderCard(item));
@@ -1018,11 +1026,10 @@
         const grid = $('.projects-grid');
         if (!grid) return;
 
-        const projects = PROJECTS_DATA;
+        const projects = sortByYear(PROJECTS_DATA);
         grid.innerHTML = '';
 
         projects.forEach((project) => {
-            // All cards use standard variant for consistent styling
             grid.appendChild(createProjectCard(project, 'standard'));
         });
     }
@@ -1039,7 +1046,7 @@
         if (!grid) return;
 
         grid.innerHTML = '';
-        CERTIFICATES_DATA.forEach((cert) => {
+        sortByYear(CERTIFICATES_DATA).forEach((cert) => {
             grid.appendChild(createCertificateCard(cert));
         });
     }
@@ -1096,7 +1103,7 @@
         if (!container) return;
 
         container.innerHTML = '';
-        BLENDER_DATA.forEach((item, index) => {
+        sortByYear(BLENDER_DATA, 'date').forEach((item, index) => {
             container.appendChild(createLighthouseItem(item, index));
         });
     }
