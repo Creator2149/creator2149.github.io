@@ -223,15 +223,6 @@ const CERTIFICATES_DATA = [
     "image": "assets/images/certificates/John_Locke_Essay_2025.png",
     "issuer": "John Locke Institute",
     "description": "Participated in and was shortlisted for the John Locke Essay Competition, engaging with analytical and argumentative writing on complex intellectual topics."
-  },
-  {
-    "id": "blue-ocean-entrepreneurship-competition",
-    "title": "Blue Ocean Entrepreneurship Competition",
-    "year": "2026",
-    "field": "Entrepreneurship",
-    "issuer": "Blue Ocean Student Entrepreneurs Corporation",
-    "description": "",
-    "image": "assets/images/certificates/blue_ocean_entrepreneurship_competition_2026.png"
   }
 ];
 

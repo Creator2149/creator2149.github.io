@@ -423,6 +423,7 @@
             editingItem = null;
             editingType = null;
             editingIndex = -1;
+            delete pendingImages['projects-new'];
         });
     }
 
@@ -485,6 +486,7 @@
             localProjects[index] = project;
         } else {
             localProjects.push(project);
+            assignPendingImageToNewItem('projects', localProjects.length - 1);
         }
 
         renderProjectsList();
@@ -629,6 +631,7 @@
 
         document.getElementById('cert-cancel').addEventListener('click', () => {
             formContainer.innerHTML = '';
+            delete pendingImages['certificates-new'];
         });
     }
 
@@ -661,6 +664,7 @@
             localCertificates[index] = cert;
         } else {
             localCertificates.push(cert);
+            assignPendingImageToNewItem('certificates', localCertificates.length - 1);
         }
 
         renderCertificatesList();
@@ -811,6 +815,7 @@
 
         document.getElementById('blend-cancel').addEventListener('click', () => {
             formContainer.innerHTML = '';
+            delete pendingImages['blender-new'];
         });
     }
 
@@ -851,6 +856,7 @@
             localBlender[index] = item;
         } else {
             localBlender.push(item);
+            assignPendingImageToNewItem('blender', localBlender.length - 1);
         }
 
         renderBlenderList();
@@ -859,6 +865,17 @@
         editingType = null;
         editingIndex = -1;
         showToast(`Render ${index >= 0 ? 'updated' : 'added'}: ${title}`, 'success');
+    }
+
+    function assignPendingImageToNewItem(category, newIndex) {
+        const pendingKey = `${category}-new`;
+        if (pendingImages[pendingKey]) {
+            pendingImages[`${category}-${newIndex}`] = {
+                ...pendingImages[pendingKey],
+                index: newIndex,
+            };
+            delete pendingImages[pendingKey];
+        }
     }
 
     function deleteBlender(index) {
