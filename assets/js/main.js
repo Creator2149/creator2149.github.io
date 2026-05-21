@@ -134,6 +134,25 @@
         });
     }
 
+    function adjustLogoUnderline() {
+        const monograms = $$('.navbar__monogram');
+        monograms.forEach((mono) => {
+            const svg = mono.querySelector('svg');
+            const text = svg?.querySelector('.navbar__monogram-letter');
+            const line = svg?.querySelector('.navbar__monogram-accent');
+            if (!text || !line) return;
+
+            const bbox = text.getBBox();
+            const padding = 6;
+            const svgWidth = svg.viewBox.baseVal.width || svg.clientWidth || svg.getBoundingClientRect().width || 80;
+            const x1 = Math.max(0, bbox.x - padding);
+            const x2 = Math.min(svgWidth, bbox.x + bbox.width + padding);
+
+            line.setAttribute('x1', x1.toString());
+            line.setAttribute('x2', x2.toString());
+        });
+    }
+
     /* =========================================================
      SCROLL REVEAL
   ========================================================= */
@@ -157,7 +176,15 @@
             },
         );
 
-        reveals.forEach((el) => observer.observe(el));
+        reveals.forEach((el) => {
+            const rect = el.getBoundingClientRect();
+            const viewportHeight = window.innerHeight || document.documentElement.clientHeight;
+            if (rect.top < viewportHeight && rect.bottom > 0) {
+                el.classList.add('visible');
+            } else {
+                observer.observe(el);
+            }
+        });
     }
 
     /* =========================================================
@@ -1327,6 +1354,7 @@
         initImageLightbox();
         renderNavbar();
         initNavbar();
+        adjustLogoUnderline();
         renderFooter();
         initAdminAccess();
 
