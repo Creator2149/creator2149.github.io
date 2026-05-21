@@ -1122,14 +1122,6 @@
         // Content
         const content = createElement('div', { className: 'blender-lighthouse__content' });
 
-        // Render number
-        content.appendChild(
-            createElement('div', {
-                className: 'blender-lighthouse__number',
-                textContent: `RENDER ${String(index + 1).padStart(2, '0')}`,
-            }),
-        );
-
         // Title
         content.appendChild(
             createElement('h2', {
