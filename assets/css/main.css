@@ -529,12 +529,13 @@ body::before {
     color: var(--text-secondary);
     max-width: 36rem;
     line-height: var(--lh-body);
+    font-weight: bold;
 }
 
 .hero__system-label {
     font-family: 'Instrument Serif', Georgia, 'Times New Roman', serif;
     font-size: clamp(1.5rem, 4vw, 2.5rem);
-    color: var(--accent-amber);
+    color: white;
     letter-spacing: 0.08em;
     font-style: italic;
     position: relative;
@@ -544,6 +545,7 @@ body::before {
     text-align: center;
     width: 100%;
     z-index: 2;
+    font-weight: bold;
 }
 
 .hero__system-label::before,
