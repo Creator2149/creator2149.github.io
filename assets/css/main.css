@@ -554,7 +554,7 @@ body::before {
     display: block;
     width: 60px;
     height: 1px;
-    background: linear-gradient(90deg, transparent, var(--accent-amber), transparent);
+    background: linear-gradient(90deg, transparent, white, transparent);
     margin: 0 auto;
 }
 
