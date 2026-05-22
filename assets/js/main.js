@@ -591,12 +591,10 @@
             const heroGreeting = $('.hero__greeting');
             const heroTitle = $('.hero__title');
             const heroSubtitle = $('.hero__subtitle');
-            const heroSystemLabel = $('.hero__system-label');
 
             if (heroGreeting) heroGreeting.textContent = SITE_DATA.hero.greeting;
             if (heroTitle) heroTitle.textContent = SITE_DATA.hero.mainStatement;
             if (heroSubtitle) heroSubtitle.textContent = SITE_DATA.hero.subStatement;
-            if (heroSystemLabel) heroSystemLabel.textContent = SITE_DATA.tagline || '';
         }
 
         // Render philosophy section

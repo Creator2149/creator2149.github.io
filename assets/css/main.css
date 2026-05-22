@@ -518,52 +518,14 @@ body::before {
 }
 
 .hero__subtitle {
-    font-family:
-        'Inter',
-        -apple-system,
-        BlinkMacSystemFont,
-        'Segoe UI',
-        system-ui,
-        sans-serif;
-    font-size: clamp(1rem, 2vw, 1.25rem);
-    color: var(--text-secondary);
-    max-width: 36rem;
-    line-height: var(--lh-body);
-    font-weight: bold;
-}
-
-.hero__system-label {
     font-family: 'Instrument Serif', Georgia, 'Times New Roman', serif;
-    font-size: clamp(1.5rem, 4vw, 2.5rem);
-    color: white;
-    letter-spacing: 0.08em;
+    font-size: clamp(1.25rem, 3vw, 2rem);
+    color: rgba(255, 255, 255, 0.92);
+    letter-spacing: 0.12em;
+    line-height: var(--lh-body);
     font-style: italic;
-    position: relative;
-    bottom: auto;
-    right: auto;
-    margin-top: var(--space-3xl);
-    text-align: center;
-    width: 100%;
-    z-index: 2;
     font-weight: bold;
-}
-
-.hero__system-label::before,
-.hero__system-label::after {
-    content: '';
-    display: block;
-    width: 60px;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, white, transparent);
-    margin: 0 auto;
-}
-
-.hero__system-label::before {
-    margin-bottom: var(--space-lg);
-}
-
-.hero__system-label::after {
-    margin-top: var(--space-lg);
+    text-shadow: 0 0 60px rgba(255, 255, 255, 0.08);
 }
 
 /* ------------------------------------------------------------
@@ -2283,10 +2245,6 @@ textarea:focus-visible,
 
     .hero__title {
         font-size: clamp(2.5rem, 10vw, 4rem);
-    }
-
-    .hero__system-label {
-        font-size: clamp(1.25rem, 6vw, 2rem);
     }
 
     /* Philosophy */

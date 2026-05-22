@@ -1,13 +1,10 @@
 const SITE_DATA = {
     name: 'Rishit Choudhary',
     domain: 'rishitc17.github.io',
-    tagline: 'Statuo. Persevero. Perficio.',
-
     hero: {
         greeting: "Hello, I'm",
         mainStatement: 'Rishit Choudhary.',
-        subStatement:
-            'I build systems at the intersection of engineering, mathematics, and visual computation. This is a workspace — not a showcase. An archive of things built, explored, and thought through.',
+        subStatement: 'Statuo. Persevero. Perficio.',
     },
 
     philosophy: {
