@@ -480,12 +480,20 @@ body::before {
     content: '';
     position: absolute;
     inset: 0;
-    background: radial-gradient(
-        ellipse 70% 60% at 50% 50%,
-        rgba(10, 14, 23, 0.55) 0%,
-        rgba(10, 14, 23, 0.35) 50%,
-        rgba(10, 14, 23, 0.1) 100%
-    );
+    background:
+        radial-gradient(
+            ellipse 80% 70% at 50% 45%,
+            rgba(5, 8, 15, 0.78) 0%,
+            rgba(5, 8, 15, 0.5) 55%,
+            rgba(5, 8, 15, 0.15) 100%
+        ),
+        linear-gradient(
+            180deg,
+            rgba(5, 8, 15, 0.35) 0%,
+            transparent 20%,
+            transparent 80%,
+            rgba(5, 8, 15, 0.35) 100%
+        );
     pointer-events: none;
 }
 
@@ -506,6 +514,7 @@ body::before {
     text-transform: uppercase;
     margin-bottom: var(--space-lg);
     font-weight: bold;
+    text-shadow: 0 2px 12px rgba(0, 0, 0, 0.6);
 }
 
 .hero__title {
@@ -515,17 +524,53 @@ body::before {
     color: var(--text-primary);
     letter-spacing: 0.01em;
     margin-bottom: var(--space-xl);
+    text-shadow: 0 2px 20px rgba(0, 0, 0, 0.5);
 }
 
 .hero__subtitle {
     font-family: 'Instrument Serif', Georgia, 'Times New Roman', serif;
-    font-size: clamp(1.25rem, 3vw, 2rem);
-    color: rgba(255, 255, 255, 0.92);
-    letter-spacing: 0.12em;
-    line-height: var(--lh-body);
+    font-size: clamp(1.05rem, 1.8vw, 1.35rem);
+    color: rgba(255, 255, 255, 0.9);
+    letter-spacing: 0.08em;
+    line-height: 1.7;
     font-style: italic;
-    font-weight: bold;
-    text-shadow: 0 0 60px rgba(255, 255, 255, 0.08);
+    font-weight: normal;
+    display: inline-block;
+    padding: var(--space-lg) var(--space-2xl);
+    position: relative;
+    background: rgba(5, 8, 15, 0.45);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-top: 2px solid rgba(255, 255, 255, 0.2);
+    border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+    text-shadow: 0 2px 16px rgba(0, 0, 0, 0.5);
+}
+
+.hero__subtitle::before {
+    content: '\201C';
+    position: absolute;
+    top: -0.1em;
+    left: 0.08em;
+    font-size: 3.5em;
+    color: rgba(255, 255, 255, 0.1);
+    font-family: 'Instrument Serif', Georgia, serif;
+    font-style: normal;
+    line-height: 1;
+    pointer-events: none;
+}
+
+.hero__subtitle::after {
+    content: '\201D';
+    position: absolute;
+    bottom: -0.45em;
+    right: 0.08em;
+    font-size: 3.5em;
+    color: rgba(255, 255, 255, 0.1);
+    font-family: 'Instrument Serif', Georgia, serif;
+    font-style: normal;
+    line-height: 1;
+    pointer-events: none;
 }
 
 /* ------------------------------------------------------------
