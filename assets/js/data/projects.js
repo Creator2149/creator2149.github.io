@@ -305,24 +305,28 @@ const PROJECTS_DATA = [
   },
   {
     "id": "rawcrypt",
-    "featuredOnHome": false,
     "title": "RawCrypt",
-    "status": "Planned",
     "year": "2026",
+    "status": "In Progress",
+    "statusDetails": "",
     "tech": [
       "Python",
       "FastAPI",
       "Cryptography"
     ],
-    "image": "",
     "shortDescription": "An educational platform designed to teach cryptography through intuitive mathematical explanations.",
     "longDescription": "RawCrypt is planned as an educational platform introducing students to cryptographic systems ranging from classical ciphers to RSA and modern encryption schemes. The goal is to make cryptography understandable from first principles instead of treating algorithms as black boxes.",
+    "featuredQuote": "",
+    "architectureNotes": "",
+    "link": "",
     "tags": [
       "Cryptography",
       "Education",
       "Backend Development"
     ],
-    "link": ""
+    "flagship": false,
+    "featuredOnHome": false,
+    "image": ""
   },
   {
     "id": "cybersecurity-for-elderly",
