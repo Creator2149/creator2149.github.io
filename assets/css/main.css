@@ -536,7 +536,7 @@ body::before {
     font-style: italic;
     font-weight: normal;
     display: inline-block;
-    padding: var(--space-lg) var(--space-2xl);
+    padding: var(--space-xl) var(--space-2xl);
     position: relative;
     background: rgba(5, 8, 15, 0.45);
     backdrop-filter: blur(6px);
@@ -545,14 +545,16 @@ body::before {
     border-top: 2px solid rgba(255, 255, 255, 0.2);
     border-bottom: 2px solid rgba(255, 255, 255, 0.2);
     text-shadow: 0 2px 16px rgba(0, 0, 0, 0.5);
+    max-width: 100%;
+    box-sizing: border-box;
 }
 
 .hero__subtitle::before {
     content: '\201C';
     position: absolute;
-    top: -0.1em;
-    left: 0.08em;
-    font-size: 3.5em;
+    top: 0.1em;
+    left: 0.25em;
+    font-size: 2em;
     color: rgba(255, 255, 255, 0.1);
     font-family: 'Instrument Serif', Georgia, serif;
     font-style: normal;
@@ -563,9 +565,9 @@ body::before {
 .hero__subtitle::after {
     content: '\201D';
     position: absolute;
-    bottom: -0.45em;
-    right: 0.08em;
-    font-size: 3.5em;
+    bottom: 0.1em;
+    right: 0.25em;
+    font-size: 2em;
     color: rgba(255, 255, 255, 0.1);
     font-family: 'Instrument Serif', Georgia, serif;
     font-style: normal;
@@ -2290,6 +2292,26 @@ textarea:focus-visible,
 
     .hero__title {
         font-size: clamp(2.5rem, 10vw, 4rem);
+    }
+
+    .hero__subtitle {
+        padding: var(--space-lg) var(--space-xl);
+        font-size: clamp(0.95rem, 3vw, 1.1rem);
+    }
+
+    .hero__subtitle::before,
+    .hero__subtitle::after {
+        font-size: 1.6em;
+    }
+
+    .hero__subtitle::before {
+        top: 0.05em;
+        left: 0.2em;
+    }
+
+    .hero__subtitle::after {
+        bottom: 0.05em;
+        right: 0.2em;
     }
 
     /* Philosophy */
