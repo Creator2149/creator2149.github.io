@@ -28,8 +28,9 @@
     let hasCertificateChanges = false;
     let hasBlenderChanges = false;
 
-    // Pending image uploads: { 'projects-0': { file, index }, 'certificates-1': { file, index } }
+    // Pending file uploads: images and markdown files
     let pendingImages = {};
+    let pendingMarkdowns = {};
 
     // Current editing state
     let editingItem = null;
@@ -269,29 +270,11 @@
           <textarea class="admin__form-textarea" id="proj-short-desc" rows="2">${isEdit ? escapeHTML(project.shortDescription || '') : ''}</textarea>
         </div>
 
-        <div class="admin__form-group">
-          <label class="admin__form-label">Long Description</label>
-          <textarea class="admin__form-textarea" id="proj-long-desc" rows="4">${isEdit ? escapeHTML(project.longDescription || '') : ''}</textarea>
-        </div>
-
-        <div class="admin__form-group">
-          <label class="admin__form-label">Featured Quote</label>
-          <textarea class="admin__form-textarea" id="proj-quote" rows="2">${isEdit ? escapeHTML(project.featuredQuote || '') : ''}</textarea>
-        </div>
-
-        <div class="admin__form-group">
-          <label class="admin__form-label">Architecture Notes</label>
-          <textarea class="admin__form-textarea" id="proj-arch" rows="3">${isEdit ? escapeHTML(project.architectureNotes || '') : ''}</textarea>
-        </div>
+        
 
         <div class="admin__form-group">
           <label class="admin__form-label">Link (GitHub/Live)</label>
           <input class="admin__form-input" type="url" id="proj-link" value="${isEdit ? escapeHTML(project.link || '') : ''}">
-        </div>
-
-        <div class="admin__form-group">
-          <label class="admin__form-label">Tags (comma-separated)</label>
-          <input class="admin__form-input" type="text" id="proj-tags" value="${isEdit ? escapeHTML((project.tags || []).join(', ')) : ''}">
         </div>
 
         <div class="admin__form-group">
@@ -317,6 +300,15 @@
           ${isEdit && project.image ? `<img class="admin__form-image-preview" src="${escapeHTML(project.image)}" alt="Preview" onerror="this.style.display='none'">` : ''}
         </div>
 
+        <div class="admin__form-group">
+          <label class="admin__form-label">Project Markdown File</label>
+          <div class="admin__image-drop" id="proj-md-drop">
+            <div class="admin__image-drop-text">Click or drop .md file here</div>
+            <input type="file" accept=".md,text/markdown" id="proj-md-input" style="display:none">
+          </div>
+          <div class="admin__form-file-name" id="proj-md-name">${isEdit && project.mdFile ? escapeHTML(project.mdFile) : 'No markdown selected'}</div>
+        </div>
+
         <div class="admin__form-actions">
           <button class="btn btn--primary" id="proj-save">${isEdit ? 'Update' : 'Add'} Project</button>
           <button class="btn btn--secondary" id="proj-cancel">Cancel</button>
@@ -328,6 +320,9 @@
         const imageDrop = document.getElementById('proj-image-drop');
         const imageInput = document.getElementById('proj-image-input');
         const imageName = document.getElementById('proj-image-name');
+        const mdDrop = document.getElementById('proj-md-drop');
+        const mdInput = document.getElementById('proj-md-input');
+        const mdName = document.getElementById('proj-md-name');
 
         imageDrop.addEventListener('click', () => imageInput.click());
         imageInput.addEventListener('change', (e) => {
@@ -335,6 +330,15 @@
                 imageName.textContent = e.target.files[0].name;
                 const key = index >= 0 ? `projects-${index}` : 'projects-new';
                 pendingImages[key] = { file: e.target.files[0], index: index, category: 'projects' };
+            }
+        });
+
+        mdDrop.addEventListener('click', () => mdInput.click());
+        mdInput.addEventListener('change', (e) => {
+            if (e.target.files[0]) {
+                mdName.textContent = e.target.files[0].name;
+                const key = index >= 0 ? `projects-md-${index}` : 'projects-md-new';
+                pendingMarkdowns[key] = { file: e.target.files[0], index: index, category: 'projects' };
             }
         });
 
@@ -349,7 +353,10 @@
             editingItem = null;
             editingType = null;
             editingIndex = -1;
-            delete pendingImages['projects-new'];
+            const imageKey = index >= 0 ? `projects-${index}` : 'projects-new';
+            const markdownKey = index >= 0 ? `projects-md-${index}` : 'projects-md-new';
+            delete pendingImages[imageKey];
+            delete pendingMarkdowns[markdownKey];
         });
     }
 
@@ -364,7 +371,6 @@
         editingIndex = -1;
 
         const techStr = document.getElementById('proj-tech').value.trim();
-        const tagsStr = document.getElementById('proj-tags').value.trim();
 
         const project = {
             id:
@@ -385,27 +391,18 @@
                       .filter(Boolean)
                 : [],
             shortDescription: document.getElementById('proj-short-desc').value.trim() || '',
-            longDescription: document.getElementById('proj-long-desc').value.trim() || '',
-            featuredQuote: document.getElementById('proj-quote').value.trim() || '',
-            architectureNotes: document.getElementById('proj-arch').value.trim() || '',
+
             link: document.getElementById('proj-link').value.trim() || '',
-            tags: tagsStr
-                ? tagsStr
-                      .split(',')
-                      .map((t) => t.trim())
-                      .filter(Boolean)
-                : [],
             flagship: document.getElementById('proj-flagship').checked,
             featuredOnHome: document.getElementById('proj-home').checked,
             image: index >= 0 && localProjects[index] ? localProjects[index].image : '',
         };
 
-        // Preserve additional fields from existing item
+        // Preserve markdown and other supported fields from existing item
         if (index >= 0 && localProjects[index]) {
             const existing = localProjects[index];
+            if (existing.mdFile) project.mdFile = existing.mdFile;
             if (existing.processBreakdown) project.processBreakdown = existing.processBreakdown;
-            if (existing.challenges) project.challenges = existing.challenges;
-            if (existing.technicalHighlights) project.technicalHighlights = existing.technicalHighlights;
         }
 
         if (index >= 0) {
@@ -413,6 +410,7 @@
         } else {
             localProjects.push(project);
             assignPendingImageToNewItem('projects', localProjects.length - 1);
+            assignPendingMarkdownToNewItem('projects', localProjects.length - 1);
         }
 
         renderProjectsList();
@@ -804,6 +802,17 @@
         }
     }
 
+    function assignPendingMarkdownToNewItem(category, newIndex) {
+        const pendingKey = `${category}-md-new`;
+        if (pendingMarkdowns[pendingKey]) {
+            pendingMarkdowns[`${category}-md-${newIndex}`] = {
+                ...pendingMarkdowns[pendingKey],
+                index: newIndex,
+            };
+            delete pendingMarkdowns[pendingKey];
+        }
+    }
+
     function deleteBlender(index) {
         const item = localBlender[index];
         if (!item) return;
@@ -881,8 +890,27 @@
                 }
             }
 
-            // Clear pending images
+            // Upload pending markdown files and update project mdFile paths
+            for (const [key, mdData] of Object.entries(pendingMarkdowns)) {
+                try {
+                    const { file, index, category } = mdData;
+                    const result = await window.GitHub.uploadMarkdownFile(category, file);
+                    const uploadedPath = result.content.path;
+                    const mdPath = `/${uploadedPath}`;
+
+                    if (category === 'projects' && index >= 0 && localProjects[index]) {
+                        localProjects[index].mdFile = mdPath;
+                        showToast(`Markdown uploaded for: ${localProjects[index].title}`, 'success');
+                    }
+                } catch (err) {
+                    showToast(`Markdown upload failed: ${err.message}`, 'error');
+                    console.error('Markdown upload error:', err);
+                }
+            }
+
+            // Clear pending uploads
             pendingImages = {};
+            pendingMarkdowns = {};
 
             // Generate and upload only modified data files
             if (hasProjectChanges) {

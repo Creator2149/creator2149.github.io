@@ -156,24 +156,6 @@
       </div>`;
         }
 
-        // Quote
-        if (project.featuredQuote) {
-            html += `<blockquote class="modal__quote">${escapeHTML(project.featuredQuote)}</blockquote>`;
-        }
-
-        // Long description
-        if (project.longDescription) {
-            html += `<p>${escapeHTML(project.longDescription)}</p>`;
-        }
-
-        // Architecture Notes
-        if (project.architectureNotes) {
-            html += '<div class="modal__section">';
-            html += '<div class="modal__section-title">ARCHITECTURE</div>';
-            html += `<p>${escapeHTML(project.architectureNotes)}</p>`;
-            html += '</div>';
-        }
-
         // Process Breakdown
         if (project.processBreakdown && project.processBreakdown.length) {
             html += '<div class="modal__section">';
@@ -185,43 +167,11 @@
             html += '</ol></div>';
         }
 
-        // Challenges
-        if (project.challenges && project.challenges.length) {
-            html += '<div class="modal__section">';
-            html += '<div class="modal__section-title">CHALLENGES</div>';
-            html += '<ul class="modal__list">';
-            project.challenges.forEach((c) => {
-                html += `<li>${escapeHTML(c)}</li>`;
-            });
-            html += '</ul></div>';
-        }
-
-        // Technical Highlights
-        if (project.technicalHighlights && project.technicalHighlights.length) {
-            html += '<div class="modal__section">';
-            html += '<div class="modal__section-title">HIGHLIGHTS</div>';
-            html += '<ul class="modal__list">';
-            project.technicalHighlights.forEach((h) => {
-                html += `<li>${escapeHTML(h)}</li>`;
-            });
-            html += '</ul></div>';
-        }
-
         // Tech stack
         if (project.tech && project.tech.length) {
             html += '<div class="modal__tech">';
             project.tech.forEach((t) => {
                 html += `<span class="modal__tech-tag">${escapeHTML(t)}</span>`;
-            });
-            html += '</div>';
-        }
-
-        // Tags
-        if (project.tags && project.tags.length) {
-            html += '<div style="display:flex;flex-wrap:wrap;gap:0.35rem;margin-top:1rem;align-items:center;">';
-            project.tags.forEach((t, i) => {
-                if (i > 0) html += '<span class="project-card__tag-separator">|</span>';
-                html += `<span class="project-card__tag">${escapeHTML(t)}</span>`;
             });
             html += '</div>';
         }

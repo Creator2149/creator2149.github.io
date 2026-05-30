@@ -689,52 +689,20 @@
         // Title
         content.appendChild(createElement('h2', { className: 'featured-project__title', textContent: project.title }));
 
-        // Quote
-        if (project.featuredQuote) {
-            content.appendChild(
-                createElement('blockquote', {
-                    className: 'featured-project__quote',
-                    textContent: project.featuredQuote,
-                }),
-            );
-        }
-
-        // Description
+        // Short description and prompt
         content.appendChild(
             createElement('p', {
                 className: 'featured-project__description',
-                textContent: project.longDescription || project.shortDescription,
+                textContent: project.shortDescription,
             }),
         );
 
-        // Architecture notes
-        if (project.architectureNotes) {
-            const archSection = createElement('div', { className: 'featured-project__architecture' });
-            archSection.appendChild(
-                createElement('div', { className: 'featured-project__architecture-title' }, ['ARCHITECTURE']),
-            );
-            archSection.appendChild(
-                createElement('p', {
-                    className: 'featured-project__architecture-text',
-                    textContent: project.architectureNotes,
-                }),
-            );
-            content.appendChild(archSection);
-        }
-
-        // Technical highlights
-        if (project.technicalHighlights && project.technicalHighlights.length) {
-            const hlSection = createElement('div', { className: 'featured-project__highlights' });
-            hlSection.appendChild(
-                createElement('div', { className: 'featured-project__highlights-title' }, ['HIGHLIGHTS']),
-            );
-            project.technicalHighlights.forEach((hl) => {
-                hlSection.appendChild(
-                    createElement('div', { className: 'featured-project__highlight-item', textContent: hl }),
-                );
-            });
-            content.appendChild(hlSection);
-        }
+        content.appendChild(
+            createElement('div', {
+                className: 'featured-project__cta-wrap',
+                innerHTML: `<a href="${getProjectUrl(project.id)}" class="featured-project__link">Read case study &rarr;</a>`,
+            }),
+        );
 
         // Tech stack
         if (project.tech && project.tech.length) {
@@ -743,15 +711,15 @@
             content.appendChild(techContainer);
         }
 
-        // Link
+        // External project link button
         if (project.link) {
             content.appendChild(
                 createElement('a', {
-                    className: 'featured-project__link',
+                    className: 'featured-project__link featured-project__link--secondary',
                     href: project.link,
                     target: '_blank',
                     rel: 'noopener noreferrer',
-                    innerHTML: 'View Project &rarr;',
+                    innerHTML: 'Open live project',
                 }),
             );
         }
@@ -759,10 +727,10 @@
         inner.appendChild(content);
         container.appendChild(inner);
 
-        // Make the card open a modal on click (for non-flagship, we open modals)
+        // Make the featured block navigate to the project page
         container.addEventListener('click', (e) => {
             if (e.target.closest('.featured-project__link')) return;
-            if (window.ModalSystem) window.ModalSystem.openProjectModal(project);
+            window.location.href = getProjectUrl(project.id);
         });
         container.style.cursor = 'pointer';
     }
@@ -786,6 +754,10 @@
         if (status === 'In Progress') return 'project-card__status--in-progress';
         if (status === 'Planned') return 'project-card__status--planned';
         return '';
+    }
+
+    function getProjectUrl(projectId) {
+        return `project.html?id=${encodeURIComponent(projectId)}`;
     }
 
     function createProjectCard(project, variant = 'standard') {
@@ -883,30 +855,33 @@
                 project.tech.slice(0, 5).forEach((t) => tech.appendChild(createTechTag(t)));
                 content.appendChild(tech);
             }
-            if (project.tags && project.tags.length) {
-                const tags = createElement('div', { className: 'project-card__tags' });
-                project.tags.forEach((t, i) => {
-                    if (i > 0)
-                        tags.appendChild(
-                            createElement('span', { className: 'project-card__tag-separator', textContent: '|' }),
-                        );
-                    tags.appendChild(createTag(t));
-                });
-                content.appendChild(tags);
-            }
             card.appendChild(content);
         }
 
-        // Click to open modal
-        card.addEventListener('click', () => {
-            if (window.ModalSystem) window.ModalSystem.openProjectModal(project);
+        // External link button if available
+        if (project.link) {
+            const button = createElement('a', {
+                className: 'project-card__button',
+                href: project.link,
+                target: '_blank',
+                rel: 'noopener noreferrer',
+                textContent: 'Open Project',
+            });
+            button.addEventListener('click', (event) => event.stopPropagation());
+            card.appendChild(button);
+        }
+
+        // Card click opens the project page for the markdown-rendered writeup
+        card.addEventListener('click', (e) => {
+            if (e.target.closest('a')) return;
+            window.location.href = getProjectUrl(project.id);
         });
         card.setAttribute('role', 'button');
         card.setAttribute('tabindex', '0');
         card.addEventListener('keydown', (e) => {
             if (e.key === 'Enter' || e.key === ' ') {
                 e.preventDefault();
-                if (window.ModalSystem) window.ModalSystem.openProjectModal(project);
+                window.location.href = getProjectUrl(project.id);
             }
         });
 
