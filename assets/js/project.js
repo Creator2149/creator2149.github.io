@@ -136,23 +136,10 @@ async function loadProjectPage() {
         </header>
 
         <div class="proj-page-body-wrap">
-            <div class="proj-page-layout">
-                <main class="proj-page-content">
-                    <article class="md-content" id="project-content">
-                        <div class="proj-page-loading">Loading…</div>
-                    </article>
-                </main>
-                <aside class="proj-page-sidebar">
-                    <div class="proj-sidebar-block">
-                        <div class="proj-sidebar-label">Details</div>
-                        <div class="proj-sidebar-meta">
-                            <div><strong>Year:</strong> ${escHtml(project.year || '')}</div>
-                            ${project.status ? `<div><strong>Status:</strong> ${escHtml(project.status)}</div>` : ''}
-                        </div>
-                    </div>
-                    ${project.tech && project.tech.length ? `<div class="proj-sidebar-block"><div class="proj-sidebar-label">Tech & Tools</div><div class="proj-sidebar-tags">${project.tech.map((t) => `<span class="project-card__tech-tag">${escHtml(t)}</span>`).join('')}</div></div>` : ''}
-                    ${project.link ? `<div class="proj-sidebar-block"><div class="proj-sidebar-label">Links</div><a class="proj-sidebar-link" href="${project.link}" target="_blank" rel="noopener noreferrer">Open project</a></div>` : ''}
-                </aside>
+            <div class="proj-page-content">
+                <article class="md-content" id="project-content">
+                    <div class="proj-page-loading">Loading…</div>
+                </article>
             </div>
         </div>
     `;
