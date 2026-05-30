@@ -125,22 +125,35 @@ async function loadProjectPage() {
     document.title = `${project.title} — Rishit Choudhary`;
 
     main.innerHTML = `
-        <section class="project-page__hero">
-            ${project.image ? `<div class="project-page__hero-image" style="background-image: url('${project.image}')"></div>` : ''}
-            <div class="project-page__hero-overlay"></div>
-            <div class="project-page__hero-inner">
-                <a class="project-page__back" href="projects.html">← Back to Projects</a>
-                <h1 class="project-page__title">${escHtml(project.title)}</h1>
-                <p class="project-page__subtitle">${escHtml(project.shortDescription || '')}</p>
-                ${project.link ? `<div class="project-page__actions"><a class="project-page__button" href="${project.link}" target="_blank" rel="noopener noreferrer">Open Project</a></div>` : ''}
+        <header class="proj-page-hero" style="background-image: url('${project.image || ''}')">
+            <div class="proj-page-hero-overlay"></div>
+            <div class="proj-page-hero-inner">
+                <a class="proj-page-back" href="projects.html">← Back to Projects</a>
+                <h1 class="proj-page-title">${escHtml(project.title)}</h1>
+                <p class="proj-page-short">${escHtml(project.shortDescription || '')}</p>
+                ${project.link ? `<div class="proj-page-link"><a class="project-page__button" href="${project.link}" target="_blank" rel="noopener noreferrer">Open Project</a></div>` : ''}
             </div>
-        </section>
-        <div class="project-page__body">
-            <section class="project-page__section">
-                <article class="md-content" id="project-content">
-                    <div class="project-page-loading">Loading…</div>
-                </article>
-            </section>
+        </header>
+
+        <div class="proj-page-body-wrap">
+            <div class="proj-page-layout">
+                <main class="proj-page-content">
+                    <article class="md-content" id="project-content">
+                        <div class="proj-page-loading">Loading…</div>
+                    </article>
+                </main>
+                <aside class="proj-page-sidebar">
+                    <div class="proj-sidebar-block">
+                        <div class="proj-sidebar-label">Details</div>
+                        <div class="proj-sidebar-meta">
+                            <div><strong>Year:</strong> ${escHtml(project.year || '')}</div>
+                            ${project.status ? `<div><strong>Status:</strong> ${escHtml(project.status)}</div>` : ''}
+                        </div>
+                    </div>
+                    ${project.tech && project.tech.length ? `<div class="proj-sidebar-block"><div class="proj-sidebar-label">Tech & Tools</div><div class="proj-sidebar-tags">${project.tech.map((t) => `<span class="project-card__tech-tag">${escHtml(t)}</span>`).join('')}</div></div>` : ''}
+                    ${project.link ? `<div class="proj-sidebar-block"><div class="proj-sidebar-label">Links</div><a class="proj-sidebar-link" href="${project.link}" target="_blank" rel="noopener noreferrer">Open project</a></div>` : ''}
+                </aside>
+            </div>
         </div>
     `;
 
