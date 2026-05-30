@@ -27,32 +27,6 @@
     gap: var(--space-lg);
 }
 
-/* Subtle ambient glows to echo Celestis aesthetic */
-.project-page__hero::before {
-    content: '';
-    position: absolute;
-    width: 520px;
-    height: 520px;
-    border-radius: 50%;
-    left: -6rem;
-    top: -8rem;
-    background: radial-gradient(circle, rgba(91, 143, 185, 0.14), transparent 60%);
-    filter: blur(60px);
-    pointer-events: none;
-}
-.project-page__hero::after {
-    content: '';
-    position: absolute;
-    width: 420px;
-    height: 420px;
-    border-radius: 50%;
-    right: -5rem;
-    bottom: -6rem;
-    background: radial-gradient(circle, rgba(201, 149, 107, 0.08), transparent 60%);
-    filter: blur(48px);
-    pointer-events: none;
-}
-
 .project-page__back {
     display: inline-flex;
     align-items: center;
@@ -121,18 +95,24 @@
     background-size: cover;
     background-position: center center;
     background-repeat: no-repeat;
-    /* Keep image crisp and vivid; blend with overlay for legibility */
+    /* Keep image crisp and vivid; overlay handles legibility */
     filter: none;
     opacity: 1;
-    background-blend-mode: multiply;
     transform: scale(1.02);
 }
 
 .project-page__hero-overlay {
     position: absolute;
     inset: 0;
-    /* gentler overlay so hero image reads clearly like Celestis */
-    background: linear-gradient(180deg, rgba(10, 14, 23, 0.18) 0%, rgba(10, 14, 23, 0.48) 60%);
+    /* Match Celestis: radial darkening + linear subtle vignetting for legibility */
+    background:
+        radial-gradient(
+            ellipse 80% 70% at 50% 45%,
+            rgba(5, 8, 15, 0.78) 0%,
+            rgba(5, 8, 15, 0.5) 55%,
+            rgba(5, 8, 15, 0.15) 100%
+        ),
+        linear-gradient(180deg, rgba(5, 8, 15, 0.35) 0%, transparent 20%, transparent 80%, rgba(5, 8, 15, 0.35) 100%);
     pointer-events: none;
 }
 
@@ -179,6 +159,19 @@
     color: var(--text-primary);
     font-family: 'Instrument Serif', Georgia, 'Times New Roman', serif;
     font-weight: 300;
+}
+
+.md-content h1 {
+    font-size: var(--h1-size);
+    line-height: var(--lh-heading);
+}
+.md-content h2 {
+    font-size: var(--h2-size);
+    line-height: var(--lh-heading);
+}
+.md-content h3 {
+    font-size: var(--h3-size);
+    line-height: var(--lh-heading);
 }
 
 .md-content p {
@@ -263,4 +256,10 @@
     .project-page__title {
         font-size: clamp(2.25rem, 8vw, 3.5rem);
     }
+}
+
+/* Page-specific override: hide the full-screen mobile nav on project pages
+   to prevent a blank secondary bar from appearing */
+.page--project .navbar__mobile-menu {
+    display: none !important;
 }
