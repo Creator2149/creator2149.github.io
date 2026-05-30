@@ -697,13 +697,6 @@
             }),
         );
 
-        content.appendChild(
-            createElement('div', {
-                className: 'featured-project__cta-wrap',
-                innerHTML: `<a href="${getProjectUrl(project.id)}" class="featured-project__link">Read case study &rarr;</a>`,
-            }),
-        );
-
         // Tech stack
         if (project.tech && project.tech.length) {
             const techContainer = createElement('div', { className: 'featured-project__tech' });

@@ -95,6 +95,7 @@
     background-size: cover;
     background-position: center;
     position: relative;
+    overflow: hidden;
     display: flex;
     align-items: flex-end;
     margin-bottom: 0;
@@ -110,19 +111,30 @@
         rgba(13, 11, 20, 0.97) 100%
     );
     z-index: 1;
-    transition: color 0.2s ease;
 }
+
+.proj-page-hero-inner {
+    position: relative;
+    z-index: 2;
+    width: min(100%, var(--content-max));
+    margin: 0 auto;
+    display: grid;
+    gap: var(--space-lg);
+    padding: clamp(2.5rem, 6vw, 5rem) clamp(2rem, 4vw, 4rem) 4rem;
+}
+
 .proj-page-back:hover {
     color: var(--text-primary);
 }
 
 .proj-page-title {
-    font-size: clamp(1.8rem, 5vw, 3.5rem);
+    font-size: clamp(2.4rem, 5vw, 4rem);
     font-weight: 400;
-    line-height: 1.15;
-    margin-bottom: 1rem;
-    max-width: 800px;
+    line-height: 1.08;
+    margin: 0;
+    max-width: 13ch;
     font-family: 'Instrument Serif', Georgia, 'Times New Roman', serif;
+    letter-spacing: -0.02em;
 }
 
 .proj-page-short {
