@@ -487,13 +487,7 @@ body::before {
             rgba(5, 8, 15, 0.5) 55%,
             rgba(5, 8, 15, 0.15) 100%
         ),
-        linear-gradient(
-            180deg,
-            rgba(5, 8, 15, 0.35) 0%,
-            transparent 20%,
-            transparent 80%,
-            rgba(5, 8, 15, 0.35) 100%
-        );
+        linear-gradient(180deg, rgba(5, 8, 15, 0.35) 0%, transparent 20%, transparent 80%, rgba(5, 8, 15, 0.35) 100%);
     pointer-events: none;
 }
 
@@ -1055,6 +1049,29 @@ body::before {
     border-radius: 999px;
     background: var(--accent-blue-dim);
     letter-spacing: 0.03em;
+}
+
+/* --- Project card action button --- */
+.project-card__button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.45rem 0.9rem;
+    margin: 0.75rem 1.5rem 1.25rem 1.5rem;
+    border-radius: 999px;
+    background: var(--accent-amber);
+    color: var(--bg-primary);
+    font-weight: 600;
+    font-size: 0.95rem;
+    text-decoration: none;
+    transition:
+        transform 0.18s ease,
+        box-shadow 0.18s ease;
+}
+
+.project-card__button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18);
 }
 
 .project-card__tags {

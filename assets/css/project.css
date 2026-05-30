@@ -80,7 +80,10 @@
     z-index: -1;
     background-size: cover;
     background-position: center;
-    filter: blur(2px) saturate(1.1) brightness(0.55);
+    background-repeat: no-repeat;
+    /* Use a subtle dim instead of heavy blur so hero images remain crisp */
+    filter: saturate(1.02) brightness(0.72);
+    transform: scale(1.02);
 }
 
 .project-page__hero-overlay {
