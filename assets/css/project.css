@@ -27,6 +27,32 @@
     gap: var(--space-lg);
 }
 
+/* Subtle ambient glows to echo Celestis aesthetic */
+.project-page__hero::before {
+    content: '';
+    position: absolute;
+    width: 520px;
+    height: 520px;
+    border-radius: 50%;
+    left: -6rem;
+    top: -8rem;
+    background: radial-gradient(circle, rgba(91, 143, 185, 0.14), transparent 60%);
+    filter: blur(60px);
+    pointer-events: none;
+}
+.project-page__hero::after {
+    content: '';
+    position: absolute;
+    width: 420px;
+    height: 420px;
+    border-radius: 50%;
+    right: -5rem;
+    bottom: -6rem;
+    background: radial-gradient(circle, rgba(201, 149, 107, 0.08), transparent 60%);
+    filter: blur(48px);
+    pointer-events: none;
+}
+
 .project-page__back {
     display: inline-flex;
     align-items: center;
@@ -41,6 +67,10 @@
     font-size: clamp(2.75rem, 5vw, 4.5rem);
     line-height: 1.02;
     max-width: 14ch;
+    font-family: 'Instrument Serif', Georgia, 'Times New Roman', serif;
+    font-weight: 300;
+    color: var(--text-primary);
+    letter-spacing: -0.02em;
 }
 
 .project-page__subtitle {
@@ -48,6 +78,16 @@
     color: var(--text-secondary);
     font-size: 1.05rem;
     line-height: var(--lh-relaxed);
+}
+
+.project-page__subtitle {
+    font-style: italic;
+    font-family:
+        'Inter',
+        system-ui,
+        -apple-system,
+        'Segoe UI',
+        sans-serif;
 }
 
 .project-page__actions {
@@ -79,17 +119,21 @@
     inset: 0;
     z-index: -1;
     background-size: cover;
-    background-position: center;
+    background-position: center center;
     background-repeat: no-repeat;
-    /* Use a subtle dim instead of heavy blur so hero images remain crisp */
-    filter: saturate(1.02) brightness(0.72);
+    /* Keep image crisp and vivid; blend with overlay for legibility */
+    filter: none;
+    opacity: 1;
+    background-blend-mode: multiply;
     transform: scale(1.02);
 }
 
 .project-page__hero-overlay {
     position: absolute;
     inset: 0;
-    background: linear-gradient(180deg, rgba(10, 14, 23, 0.55), rgba(10, 14, 23, 0.95) 65%);
+    /* gentler overlay so hero image reads clearly like Celestis */
+    background: linear-gradient(180deg, rgba(10, 14, 23, 0.18) 0%, rgba(10, 14, 23, 0.48) 60%);
+    pointer-events: none;
 }
 
 .project-page__body {
@@ -115,6 +159,13 @@
 .md-content {
     color: var(--text-primary);
     line-height: var(--lh-relaxed);
+    font-family:
+        'Inter',
+        system-ui,
+        -apple-system,
+        'Segoe UI',
+        sans-serif;
+    font-size: var(--body-size);
 }
 
 .md-content h1,
@@ -126,6 +177,8 @@
     margin-top: var(--space-3xl);
     margin-bottom: var(--space-lg);
     color: var(--text-primary);
+    font-family: 'Instrument Serif', Georgia, 'Times New Roman', serif;
+    font-weight: 300;
 }
 
 .md-content p {
