@@ -863,6 +863,9 @@ body::before {
     padding: 0.2em 0.6em;
     border-radius: 999px;
     border: 1px solid;
+    width: auto;
+    max-width: fit-content;
+    white-space: nowrap;
 }
 
 .featured-project__status--completed {

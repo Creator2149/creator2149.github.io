@@ -28,7 +28,7 @@
 
     // Markdown path mapping
     const MARKDOWN_PATHS = {
-        projects: 'assets/projects/md',
+        projects: 'assets/project-pages',
     };
 
     // Data file path mapping

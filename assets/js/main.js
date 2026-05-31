@@ -680,7 +680,7 @@
             status.appendChild(createElement('span', { className: 'featured-project__status-dot' }));
             status.appendChild(
                 createElement('span', {
-                    textContent: project.status + (project.statusDetails ? ' — ' + project.statusDetails : ''),
+                    textContent: project.status,
                 }),
             );
             content.appendChild(status);

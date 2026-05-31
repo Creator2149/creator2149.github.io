@@ -61,8 +61,10 @@
     line-height: 1;
 }
 
-.fa-solid .fa-fallback {
+.fa-fallback {
     display: none;
+    font-size: 0.9rem;
+    margin-left: 0.2rem;
 }
 
 .project-page__title,
@@ -116,6 +118,7 @@
 
 .project-page__button:hover {
     transform: translateY(-1px);
+    background: #d99a0f;
 }
 
 .proj-page-hero {

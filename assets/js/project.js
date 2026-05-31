@@ -103,6 +103,17 @@ function renderMarkdown(md) {
     return html + fnHtml;
 }
 
+function updateBackLinkFallbacks() {
+    document.querySelectorAll('.project-page__back, .proj-page-back').forEach((link) => {
+        const icon = link.querySelector('i.fa-solid');
+        const fallback = link.querySelector('.fa-fallback');
+        if (!icon || !fallback) return;
+
+        const fontFamily = window.getComputedStyle(icon).fontFamily || '';
+        fallback.style.display = /font awesome/i.test(fontFamily) ? 'none' : 'inline';
+    });
+}
+
 async function loadProjectPage() {
     const params = new URLSearchParams(window.location.search);
     const id = params.get('id');
@@ -115,7 +126,7 @@ async function loadProjectPage() {
         main.innerHTML = `
             <section class="project-page__hero">
                 <div class="project-page__hero-inner">
-                    <a class="project-page__back" href="projects.html"><i class="fa-solid fa-arrow-left" aria-hidden="true"><span class="fa-fallback">←</span></i> Back to Projects</a>
+                    <a class="project-page__back" href="projects.html"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i><span class="fa-fallback" aria-hidden="true">←</span> Back to Projects</a>
                     <h1 class="project-page__title">Project not found</h1>
                     <p class="project-page__subtitle">The requested project could not be located. Please choose another item from the projects list.</p>
                 </div>
@@ -126,6 +137,7 @@ async function loadProjectPage() {
                 </section>
             </div>
         `;
+        updateBackLinkFallbacks();
         return;
     }
 
@@ -135,10 +147,10 @@ async function loadProjectPage() {
         <header class="proj-page-hero" style="background-image: url('${project.image || ''}')">
             <div class="proj-page-hero-overlay"></div>
             <div class="proj-page-hero-inner">
-                <a class="proj-page-back" href="projects.html"><i class="fa-solid fa-arrow-left" aria-hidden="true"><span class="fa-fallback">←</span></i> Back to Projects</a>
+                <a class="proj-page-back" href="projects.html"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i><span class="fa-fallback" aria-hidden="true">←</span> Back to Projects</a>
                 <h1 class="proj-page-title">${escHtml(project.title)}</h1>
                 <p class="proj-page-short">${escHtml(project.shortDescription || '')}</p>
-                ${project.status ? `<div class="featured-project__status ${getStatusClass(project.status)}"><span class="featured-project__status-dot"></span><span>${escHtml(project.status)}${project.statusDetails ? ' — ' + escHtml(project.statusDetails) : ''}</span></div>` : ''}
+                ${project.status ? `<div class="featured-project__status ${getStatusClass(project.status)}"><span class="featured-project__status-dot"></span><span>${escHtml(project.status)}</span></div>` : ''}
                 ${project.link ? `<div class="proj-page-link"><a class="project-page__button" href="${project.link}" target="_blank" rel="noopener noreferrer">Open Project</a></div>` : ''}
             </div>
         </header>
@@ -151,6 +163,8 @@ async function loadProjectPage() {
             </div>
         </div>
     `;
+
+    updateBackLinkFallbacks();
 
     const contentEl = document.getElementById('project-content');
     if (!contentEl) return;
