@@ -196,23 +196,20 @@ const PROJECTS_DATA = [
   },
   {
     "id": "the-celestis-conclave",
-    "featuredOnHome": true,
     "title": "The Celestis Conclave",
-    "status": "In Progress",
     "year": "2026",
+    "status": "In Progress",
+    "statusDetails": "",
     "tech": [
       "Leadership",
       "STEM Education"
     ],
-    "image": "assets/images/projects/Celestis_Conclave.png",
     "shortDescription": "A student-led regional STEM learning and collaboration community.",
-    "longDescription": "The Celestis Conclave is a regional STEM initiative focused on advanced learning, interdisciplinary collaboration, and student-led exploration. I serve as the Mathematics Department Head and part of the core council, contributing to organizational planning and academic direction.",
-    "tags": [
-      "Leadership",
-      "STEM",
-      "Community"
-    ],
-    "link": "https://celestisconclave.github.io"
+    "link": "https://celestisconclave.github.io",
+    "flagship": false,
+    "featuredOnHome": true,
+    "image": "assets/images/projects/Celestis_Conclave.png",
+    "mdFile": "/assets/projects/md/celestis.md"
   },
   {
     "id": "nomad",
