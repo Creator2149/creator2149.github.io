@@ -65,7 +65,7 @@
     function formatDate(dateStr) {
         if (!dateStr) return '';
         const d = new Date(dateStr);
-        return d.toLocaleDateString('en-US', { year: 'numeric', month: 'short' });
+        return d.toLocaleDateString('en-US', { year: 'numeric' });
     }
 
     /* =========================================================
@@ -733,7 +733,7 @@
         if (!container || !window.PROJECTS_DATA) return;
 
         const flagship = PROJECTS_DATA.find((p) => p.flagship);
-        const curated = sortByYear(PROJECTS_DATA.filter((p) => p.featuredOnHome && !p.flagship));
+        const curated = PROJECTS_DATA.filter((p) => p.featuredOnHome && !p.flagship);
 
         container.innerHTML = '';
         curated.forEach((project) => {
@@ -885,7 +885,7 @@
         const container = $('.home-blender__grid');
         if (!container || !window.BLENDER_DATA) return;
 
-        const featured = [...BLENDER_DATA.filter((b) => b.featuredOnHome)].reverse();
+        const featured = BLENDER_DATA.filter((b) => b.featuredOnHome);
         container.innerHTML = '';
         featured.forEach((item) => {
             container.appendChild(createBlenderCard(item));
@@ -992,7 +992,7 @@
         const grid = $('.projects-grid');
         if (!grid) return;
 
-        const projects = sortByYear(PROJECTS_DATA);
+        const projects = PROJECTS_DATA;
         grid.innerHTML = '';
 
         projects.forEach((project) => {
@@ -1012,7 +1012,7 @@
         if (!grid) return;
 
         grid.innerHTML = '';
-        sortByYear(CERTIFICATES_DATA).forEach((cert) => {
+        CERTIFICATES_DATA.forEach((cert) => {
             grid.appendChild(createCertificateCard(cert));
         });
     }
@@ -1069,7 +1069,7 @@
         if (!container) return;
 
         container.innerHTML = '';
-        [...BLENDER_DATA].reverse().forEach((item, index) => {
+        BLENDER_DATA.forEach((item, index) => {
             container.appendChild(createLighthouseItem(item, index));
         });
     }

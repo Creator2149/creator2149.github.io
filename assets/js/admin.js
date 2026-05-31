@@ -200,6 +200,8 @@
         }
 
         localProjects.forEach((project, index) => {
+            const canMoveUp = index > 0;
+            const canMoveDown = index < localProjects.length - 1;
             const item = document.createElement('div');
             item.className = 'admin__list-item' + (project.flagship ? ' flagship' : '');
 
@@ -207,12 +209,14 @@
         <div class="admin__list-item-info">
           <div class="admin__list-item-title">${escapeHTML(project.title)}</div>
           <div class="admin__list-item-meta">
-            ${escapeHTML(project.year)} · ${escapeHTML(project.status || 'No status')}
+            Order ${index + 1} · ${escapeHTML(project.year)} · ${escapeHTML(project.status || 'No status')}
             ${project.flagship ? ' · FLAGSHIP' : ''}
             ${project.featuredOnHome ? ' · ON HOME' : ''}
           </div>
         </div>
         <div class="admin__list-item-actions">
+          <button class="btn btn--secondary btn--small" onclick="AdminApp.moveProject(${index}, -1)" ${canMoveUp ? '' : 'disabled'}>↑</button>
+          <button class="btn btn--secondary btn--small" onclick="AdminApp.moveProject(${index}, 1)" ${canMoveDown ? '' : 'disabled'}>↓</button>
           <button class="btn btn--secondary btn--small" onclick="AdminApp.editProject(${index})">Edit</button>
           <button class="btn btn--danger btn--small" onclick="AdminApp.deleteProject(${index})">Delete</button>
         </div>
@@ -455,6 +459,8 @@
         }
 
         localCertificates.forEach((cert, index) => {
+            const canMoveUp = index > 0;
+            const canMoveDown = index < localCertificates.length - 1;
             const item = document.createElement('div');
             item.className = 'admin__list-item';
 
@@ -462,11 +468,12 @@
         <div class="admin__list-item-info">
           <div class="admin__list-item-title">${escapeHTML(cert.title)}</div>
           <div class="admin__list-item-meta">
-            ${escapeHTML(String(cert.year))} · ${escapeHTML(cert.field || 'No field')}
-
+            Order ${index + 1} · ${escapeHTML(String(cert.year))} · ${escapeHTML(cert.field || 'No field')}
           </div>
         </div>
         <div class="admin__list-item-actions">
+          <button class="btn btn--secondary btn--small" onclick="AdminApp.moveCertificate(${index}, -1)" ${canMoveUp ? '' : 'disabled'}>↑</button>
+          <button class="btn btn--secondary btn--small" onclick="AdminApp.moveCertificate(${index}, 1)" ${canMoveDown ? '' : 'disabled'}>↓</button>
           <button class="btn btn--secondary btn--small" onclick="AdminApp.editCertificate(${index})">Edit</button>
           <button class="btn btn--danger btn--small" onclick="AdminApp.deleteCertificate(${index})">Delete</button>
         </div>
@@ -632,6 +639,8 @@
         }
 
         localBlender.forEach((item, index) => {
+            const canMoveUp = index > 0;
+            const canMoveDown = index < localBlender.length - 1;
             const el = document.createElement('div');
             el.className = 'admin__list-item';
 
@@ -639,11 +648,13 @@
         <div class="admin__list-item-info">
           <div class="admin__list-item-title">${escapeHTML(item.title)}</div>
           <div class="admin__list-item-meta">
-            ${escapeHTML(item.date || '')} · ${escapeHTML(item.renderEngine || 'No engine')}
+            Order ${index + 1} · ${escapeHTML(item.date || '')} · ${escapeHTML(item.renderEngine || 'No engine')}
             ${item.featuredOnHome ? ' · ON HOME' : ''}
           </div>
         </div>
         <div class="admin__list-item-actions">
+          <button class="btn btn--secondary btn--small" onclick="AdminApp.moveBlender(${index}, -1)" ${canMoveUp ? '' : 'disabled'}>↑</button>
+          <button class="btn btn--secondary btn--small" onclick="AdminApp.moveBlender(${index}, 1)" ${canMoveDown ? '' : 'disabled'}>↓</button>
           <button class="btn btn--secondary btn--small" onclick="AdminApp.editBlender(${index})">Edit</button>
           <button class="btn btn--danger btn--small" onclick="AdminApp.deleteBlender(${index})">Delete</button>
         </div>
@@ -824,6 +835,32 @@
         showToast(`Deleted: ${item.title}`, 'info');
     }
 
+    function moveArrayItem(array, index, direction) {
+        const target = index + direction;
+        if (target < 0 || target >= array.length) return false;
+        const [item] = array.splice(index, 1);
+        array.splice(target, 0, item);
+        return true;
+    }
+
+    function moveProject(index, direction) {
+        if (!moveArrayItem(localProjects, index, direction)) return;
+        hasProjectChanges = true;
+        renderProjectsList();
+    }
+
+    function moveCertificate(index, direction) {
+        if (!moveArrayItem(localCertificates, index, direction)) return;
+        hasCertificateChanges = true;
+        renderCertificatesList();
+    }
+
+    function moveBlender(index, direction) {
+        if (!moveArrayItem(localBlender, index, direction)) return;
+        hasBlenderChanges = true;
+        renderBlenderList();
+    }
+
     function editBlender(index) {
         showBlenderForm(localBlender[index], index);
         scrollToForm('.admin-blender-form');
@@ -996,10 +1033,13 @@
     window.AdminApp = {
         editProject,
         deleteProject,
+        moveProject,
         editCertificate,
         deleteCertificate,
+        moveCertificate,
         editBlender,
         deleteBlender,
+        moveBlender,
         showToast,
     };
 
