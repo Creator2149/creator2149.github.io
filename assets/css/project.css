@@ -39,20 +39,30 @@
     text-transform: uppercase;
     letter-spacing: 0.16em;
     text-decoration: none;
+    padding: 0.42rem 0.75rem;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.05);
     transition:
         color 0.2s ease,
-        transform 0.2s ease;
+        transform 0.2s ease,
+        background 0.2s ease;
 }
 
 .project-page__back:hover,
 .proj-page-back:hover {
-    color: #ffffff;
+    color: var(--accent-amber);
+    background: rgba(255, 255, 255, 0.16);
     transform: translateX(-2px);
 }
 
 .project-page__back i,
 .proj-page-back i {
     font-size: 0.9rem;
+    line-height: 1;
+}
+
+.fa-solid .fa-fallback {
+    display: none;
 }
 
 .project-page__title,
@@ -312,6 +322,14 @@
 .md-content ol {
     padding-left: 1.5rem;
     margin-bottom: var(--space-3xl);
+}
+
+.md-content ul {
+    list-style: disc inside;
+}
+
+.md-content ol {
+    list-style: decimal inside;
 }
 
 .md-content li {

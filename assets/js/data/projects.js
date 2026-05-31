@@ -10,7 +10,7 @@ const PROJECTS_DATA = [
         image: 'assets/images/projects/Nullary.png',
         shortDescription: 'A mathematical research project exploring an axiomatic treatment of division by zero.',
         link: '',
-        mdFile: 'assets/projects/md/nullary.md',
+        mdFile: 'assets/project-pages/nullary.md',
     },
     {
         id: 'jr-water-ambassadors',
@@ -84,7 +84,7 @@ const PROJECTS_DATA = [
     },
     {
         id: 'nomad',
-        title: 'NOMAD \u00e2\u20ac\u201d Neural Observation and Model Analysis of Digits',
+        title: 'NOMAD - Neural Observation and Model Analysis of Digits',
         year: '2026',
         status: 'Planned',
         tech: ['Python', 'Nengo', 'MNIST', 'NumPy', 'Matplotlib'],

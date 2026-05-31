@@ -5,6 +5,13 @@ function escHtml(str) {
         .replace(/>/g, '&gt;');
 }
 
+function getStatusClass(status) {
+    if (status === 'Completed') return 'featured-project__status--completed';
+    if (status === 'In Progress') return 'featured-project__status--in-progress';
+    if (status === 'Planned') return 'featured-project__status--planned';
+    return '';
+}
+
 function renderMarkdown(md) {
     if (!md) return '';
 
@@ -108,7 +115,7 @@ async function loadProjectPage() {
         main.innerHTML = `
             <section class="project-page__hero">
                 <div class="project-page__hero-inner">
-                    <a class="project-page__back" href="projects.html"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Back to Projects</a>
+                    <a class="project-page__back" href="projects.html"><i class="fa-solid fa-arrow-left" aria-hidden="true"><span class="fa-fallback">←</span></i> Back to Projects</a>
                     <h1 class="project-page__title">Project not found</h1>
                     <p class="project-page__subtitle">The requested project could not be located. Please choose another item from the projects list.</p>
                 </div>
@@ -128,9 +135,10 @@ async function loadProjectPage() {
         <header class="proj-page-hero" style="background-image: url('${project.image || ''}')">
             <div class="proj-page-hero-overlay"></div>
             <div class="proj-page-hero-inner">
-                <a class="proj-page-back" href="projects.html"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Back to Projects</a>
+                <a class="proj-page-back" href="projects.html"><i class="fa-solid fa-arrow-left" aria-hidden="true"><span class="fa-fallback">←</span></i> Back to Projects</a>
                 <h1 class="proj-page-title">${escHtml(project.title)}</h1>
                 <p class="proj-page-short">${escHtml(project.shortDescription || '')}</p>
+                ${project.status ? `<div class="featured-project__status ${getStatusClass(project.status)}"><span class="featured-project__status-dot"></span><span>${escHtml(project.status)}${project.statusDetails ? ' — ' + escHtml(project.statusDetails) : ''}</span></div>` : ''}
                 ${project.link ? `<div class="proj-page-link"><a class="project-page__button" href="${project.link}" target="_blank" rel="noopener noreferrer">Open Project</a></div>` : ''}
             </div>
         </header>
