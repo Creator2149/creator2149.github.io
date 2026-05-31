@@ -108,7 +108,7 @@ async function loadProjectPage() {
         main.innerHTML = `
             <section class="project-page__hero">
                 <div class="project-page__hero-inner">
-                    <a class="project-page__back" href="projects.html">← Back to Projects</a>
+                    <a class="project-page__back" href="projects.html"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Back to Projects</a>
                     <h1 class="project-page__title">Project not found</h1>
                     <p class="project-page__subtitle">The requested project could not be located. Please choose another item from the projects list.</p>
                 </div>
@@ -128,7 +128,7 @@ async function loadProjectPage() {
         <header class="proj-page-hero" style="background-image: url('${project.image || ''}')">
             <div class="proj-page-hero-overlay"></div>
             <div class="proj-page-hero-inner">
-                <a class="proj-page-back" href="projects.html">← Back to Projects</a>
+                <a class="proj-page-back" href="projects.html"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Back to Projects</a>
                 <h1 class="proj-page-title">${escHtml(project.title)}</h1>
                 <p class="proj-page-short">${escHtml(project.shortDescription || '')}</p>
                 ${project.link ? `<div class="proj-page-link"><a class="project-page__button" href="${project.link}" target="_blank" rel="noopener noreferrer">Open Project</a></div>` : ''}
