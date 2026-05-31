@@ -209,7 +209,6 @@ const PROJECTS_DATA = [
     "flagship": false,
     "featuredOnHome": true,
     "image": "assets/images/projects/Celestis_Conclave.png",
-    "mdFile": "/assets/projects/md/celestis.md"
   },
   {
     "id": "nomad",
