@@ -1,48 +1,61 @@
 const BLENDER_DATA = [
   {
-    "id": "the-donut",
-    "featuredOnHome": true,
-    "title": "The Donut",
-    "date": "2026-02",
-    "image": "assets/images/blender/The_Donut.png",
-    "description": "A foundational Blender study exploring procedural shading, lighting, and physically based rendering through the iconic donut workflow. The project focused less on the object itself and more on understanding the rendering pipeline — materials, displacement, compositing, and scene composition.",
+    "id": "drone",
+    "title": "Drone",
+    "date": "2026-06",
     "renderEngine": "EEVEE",
+    "description": "A drone created to test my sci-fi hard modelling skills after watching a tutorial. The aim of this project was to apply my skills outside the scope of the tutorial.",
     "techniques": [
-      "Procedural Shading",
-      "Subdivision Modeling",
-      "Lighting Setup",
-      "Compositor Nodes"
-    ]
-  },
-  {
-    "id": "desk-scene",
+      "Hard-surface modelling",
+      "Booleans",
+      "Lighting",
+      "Material management"
+    ],
     "featuredOnHome": true,
-    "title": "Desk Scene",
-    "date": "2026-02",
-    "image": "assets/images/blender/Desk_Scene.png",
-    "description": "A stylized desk environment study focused on composition, material variation, and believable object placement. The project explored how lighting and clutter distribution affect the perceived realism and atmosphere of interior scenes.",
-    "renderEngine": "EEVEE",
-    "techniques": [
-      "Hard Surface Modeling",
-      "PBR Materials",
-      "Scene Composition",
-      "Global Illumination"
-    ]
+    "image": ""
   },
   {
     "id": "industrial-corner",
-    "featuredOnHome": true,
     "title": "Industrial Corner",
     "date": "2026-02",
-    "image": "assets/images/blender/Industrial_Corner.png",
-    "description": "An industrial environment render emphasizing atmospheric lighting, surface wear, and environmental storytelling. The scene experiments with rough concrete textures, metallic reflections, and constrained lighting to create visual depth and mood.",
     "renderEngine": "EEVEE",
+    "description": "An industrial environment created to try learn the basics of hard-surface modelling and try environment lighting.",
     "techniques": [
-      "Industrial Environment Modeling",
-      "Texture Layering",
-      "Volumetric Lighting",
-      "Surface Wear Detailing"
-    ]
+      "Hard-surface modelling",
+      "Indoor lighting",
+      "Asset management",
+      "Scene framing"
+    ],
+    "featuredOnHome": true,
+    "image": "assets/images/blender/Industrial_Corner.png"
+  },
+  {
+    "id": "desk-scene",
+    "title": "Desk Scene",
+    "date": "2026-02",
+    "renderEngine": "EEVEE",
+    "description": "My first independent model, created to see the application of some skills to a simple desk setup.",
+    "techniques": [
+      "Lighting",
+      "Scene framing",
+      "Modifiers"
+    ],
+    "featuredOnHome": true,
+    "image": "assets/images/blender/Desk_Scene.png"
+  },
+  {
+    "id": "the-donut",
+    "title": "The Donut",
+    "date": "2026-02",
+    "renderEngine": "EEVEE",
+    "description": "My first Blender project, creating by watching the classic donut tutorial from the BlenderGuru YouTube channel.",
+    "techniques": [
+      "Blender basics",
+      "UV unwrapping",
+      "Lighting"
+    ],
+    "featuredOnHome": true,
+    "image": "/assets/images/blender/final-render.png"
   }
 ];
 
