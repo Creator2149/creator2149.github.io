@@ -12,7 +12,7 @@ const BLENDER_DATA = [
       "Material management"
     ],
     "featuredOnHome": true,
-    "image": ""
+    "image": "/assets/images/blender/final-render.png"
   },
   {
     "id": "industrial-corner",
@@ -55,7 +55,7 @@ const BLENDER_DATA = [
       "Lighting"
     ],
     "featuredOnHome": true,
-    "image": "/assets/images/blender/final-render.png"
+    "image": "/assets/images/blender/the-donut.png"
   }
 ];
 
