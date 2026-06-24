@@ -56,6 +56,20 @@ const BLENDER_DATA = [
     ],
     "featuredOnHome": true,
     "image": "/assets/images/blender/the-donut.png"
+  },
+  {
+    "id": "sci-fi-robot",
+    "title": "Sci-Fi Robot",
+    "date": "2026-06",
+    "renderEngine": "EEVEE",
+    "description": "A sci-fi worker robot created by following along with a YouTube tutorial.",
+    "techniques": [
+      "Procedural materials",
+      "Mechanical rigging",
+      "Multiple lights"
+    ],
+    "featuredOnHome": true,
+    "image": "/assets/images/blender/final-render.png"
   }
 ];
 
