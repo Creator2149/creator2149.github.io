@@ -1,5 +1,19 @@
 const BLENDER_DATA = [
   {
+    "id": "hammer",
+    "title": "Hammer",
+    "date": "2026-07",
+    "renderEngine": "EEVEE",
+    "description": "A hammer I modelled independently using procedural materials.",
+    "techniques": [
+      "Hard surface modelling",
+      "Procedural materials",
+      "Scene setup"
+    ],
+    "featuredOnHome": true,
+    "image": ""
+  },
+  {
     "id": "sci-fi-robot",
     "title": "Sci-Fi Robot",
     "date": "2026-06",
@@ -69,7 +83,7 @@ const BLENDER_DATA = [
       "Lighting"
     ],
     "featuredOnHome": true,
-    "image": "/assets/images/blender/the-donut.png"
+    "image": "/assets/images/blender/final-render.png"
   }
 ];
 
