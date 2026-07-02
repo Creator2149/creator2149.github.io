@@ -11,7 +11,7 @@ const BLENDER_DATA = [
       "Scene setup"
     ],
     "featuredOnHome": true,
-    "image": ""
+    "image": "/assets/images/blender/final-render.png"
   },
   {
     "id": "sci-fi-robot",
@@ -83,7 +83,7 @@ const BLENDER_DATA = [
       "Lighting"
     ],
     "featuredOnHome": true,
-    "image": "/assets/images/blender/final-render.png"
+    "image": "/assets/images/blender/the-donut.png"
   }
 ];
 
