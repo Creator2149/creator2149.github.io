@@ -11,7 +11,7 @@ const BLENDER_DATA = [
       "Scene setup"
     ],
     "featuredOnHome": true,
-    "image": "/assets/images/blender/final-render.png"
+    "image": "/assets/images/blender/hammer.png"
   },
   {
     "id": "sci-fi-robot",
