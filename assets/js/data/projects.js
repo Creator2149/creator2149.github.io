@@ -32,7 +32,7 @@ const PROJECTS_DATA = [
     "link": "writecabin.com",
     "flagship": false,
     "featuredOnHome": true,
-    "image": ""
+    "image": "/assets/images/projects/cabin.png"
   },
   {
     "id": "socra",
@@ -192,7 +192,7 @@ const PROJECTS_DATA = [
     "link": "https://github.com/rishitc17/DiseaseSpreadSimulation",
     "flagship": false,
     "featuredOnHome": false,
-    "image": "/assets/images/projects/cabin.png"
+    "image": "/assets/images/projects/diseasespreadsimulation.png"
   }
 ];
 
