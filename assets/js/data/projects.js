@@ -17,21 +17,6 @@ const PROJECTS_DATA = [
     "mdFile": "assets/project-pages/nullary.md"
   },
   {
-    "id": "jr-water-ambassadors",
-    "featuredOnHome": true,
-    "title": "Jr. Water Ambassadors",
-    "status": "Completed",
-    "year": "2026",
-    "tech": [
-      "HTML",
-      "CSS",
-      "JavaScript"
-    ],
-    "image": "assets/images/projects/Water_Ambassadors.png",
-    "shortDescription": "A showcase platform documenting the school's Water Ambassadors initiative and outreach efforts.",
-    "link": "https://waterambassadors.github.io"
-  },
-  {
     "id": "school-menu-voting-system",
     "featuredOnHome": true,
     "title": "School Menu Voting System",
@@ -46,6 +31,54 @@ const PROJECTS_DATA = [
     "image": "assets/images/projects/School_Menu_Voting_System.png",
     "shortDescription": "A voting platform enabling students to collaboratively decide the weekly school menu.",
     "link": "https://dpsimenu.in"
+  },
+  {
+    "id": "socra",
+    "title": "Socra",
+    "year": "2026",
+    "status": "In Progress",
+    "tech": [
+      "Business Strategy",
+      "NLP",
+      "Prompt Engineering"
+    ],
+    "shortDescription": "A research project exploring Socratic questioning as a safeguard against passive AI dependence.",
+    "link": "socra.in",
+    "flagship": false,
+    "featuredOnHome": true,
+    "image": "/assets/images/projects/socra.png"
+  },
+  {
+    "id": "rawcrypt",
+    "title": "RawCrypt",
+    "year": "2026",
+    "status": "Completed",
+    "tech": [
+      "Python",
+      "FastAPI",
+      "Cryptography"
+    ],
+    "shortDescription": "An educational platform designed to teach cryptography through intuitive mathematical explanations.",
+    "link": "rawcrypt.onrender.com",
+    "flagship": false,
+    "featuredOnHome": true,
+    "image": "/assets/images/projects/home.png"
+  },
+  {
+    "id": "the-celestis-conclave",
+    "title": "The Celestis Conclave",
+    "year": "2026",
+    "status": "In Progress",
+    "tech": [
+      "Leadership",
+      "STEM Education"
+    ],
+    "shortDescription": "A student-led regional STEM learning and collaboration community.",
+    "link": "https://celestisconclave.github.io",
+    "flagship": false,
+    "featuredOnHome": true,
+    "image": "assets/images/projects/Celestis_Conclave.png",
+    "mdFile": "/assets/project-pages/celestis.md"
   },
   {
     "id": "mealflow",
@@ -64,20 +97,20 @@ const PROJECTS_DATA = [
     "link": "https://github.com/rishitc17/MealFlow"
   },
   {
-    "id": "the-celestis-conclave",
-    "title": "The Celestis Conclave",
+    "id": "jr-water-ambassadors",
+    "title": "Jr. Water Ambassadors",
     "year": "2026",
-    "status": "In Progress",
+    "status": "Completed",
     "tech": [
-      "Leadership",
-      "STEM Education"
+      "HTML",
+      "CSS",
+      "JavaScript"
     ],
-    "shortDescription": "A student-led regional STEM learning and collaboration community.",
-    "link": "https://celestisconclave.github.io",
+    "shortDescription": "A showcase platform documenting the school's Water Ambassadors initiative and outreach efforts.",
+    "link": "https://waterambassadors.github.io",
     "flagship": false,
-    "featuredOnHome": true,
-    "image": "assets/images/projects/Celestis_Conclave.png",
-    "mdFile": "/assets/project-pages/celestis.md"
+    "featuredOnHome": false,
+    "image": "assets/images/projects/Water_Ambassadors.png"
   },
   {
     "id": "raksha",
@@ -97,22 +130,6 @@ const PROJECTS_DATA = [
     "image": "assets/images/projects/Raksha.jpeg"
   },
   {
-    "id": "socra",
-    "title": "Socra",
-    "year": "2026",
-    "status": "In Progress",
-    "tech": [
-      "Business Strategy",
-      "NLP",
-      "Prompt Engineering"
-    ],
-    "shortDescription": "A research project exploring Socratic questioning as a safeguard against passive AI dependence.",
-    "link": "socra.in",
-    "flagship": false,
-    "featuredOnHome": true,
-    "image": "/assets/images/projects/socra.png"
-  },
-  {
     "id": "echoes-of-etheryn",
     "title": "Echoes of Etheryn",
     "year": "2025",
@@ -126,38 +143,6 @@ const PROJECTS_DATA = [
     "flagship": false,
     "featuredOnHome": false,
     "image": "assets/images/projects/Echoes_of_Etheryn.png"
-  },
-  {
-    "id": "disease-spread-simulation",
-    "title": "Disease Spread Simulation",
-    "year": "2025",
-    "status": "Completed",
-    "tech": [
-      "Python",
-      "Pygame",
-      "Simulation"
-    ],
-    "shortDescription": "A simulation visualizing epidemiological spread dynamics using Pygame.",
-    "link": "https://github.com/rishitc17/DiseaseSpreadSimulation",
-    "flagship": false,
-    "featuredOnHome": false,
-    "image": "/assets/images/projects/diseasespreadsimulation.png"
-  },
-  {
-    "id": "rawcrypt",
-    "title": "RawCrypt",
-    "year": "2026",
-    "status": "Completed",
-    "tech": [
-      "Python",
-      "FastAPI",
-      "Cryptography"
-    ],
-    "shortDescription": "An educational platform designed to teach cryptography through intuitive mathematical explanations.",
-    "link": "rawcrypt.onrender.com",
-    "flagship": false,
-    "featuredOnHome": false,
-    "image": "/assets/images/projects/home.png"
   },
   {
     "id": "cybersecurity-for-elderly",
@@ -174,6 +159,22 @@ const PROJECTS_DATA = [
     "flagship": false,
     "featuredOnHome": false,
     "image": "/assets/images/projects/cybersurakshaabhiyan.png"
+  },
+  {
+    "id": "disease-spread-simulation",
+    "title": "Disease Spread Simulation",
+    "year": "2025",
+    "status": "Completed",
+    "tech": [
+      "Python",
+      "Pygame",
+      "Simulation"
+    ],
+    "shortDescription": "A simulation visualizing epidemiological spread dynamics using Pygame.",
+    "link": "https://github.com/rishitc17/DiseaseSpreadSimulation",
+    "flagship": false,
+    "featuredOnHome": false,
+    "image": "/assets/images/projects/diseasespreadsimulation.png"
   }
 ];
 
