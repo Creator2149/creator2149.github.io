@@ -17,20 +17,22 @@ const PROJECTS_DATA = [
     "mdFile": "assets/project-pages/nullary.md"
   },
   {
-    "id": "school-menu-voting-system",
-    "featuredOnHome": true,
-    "title": "School Menu Voting System",
-    "status": "Completed",
+    "id": "cabin",
+    "title": "Cabin",
     "year": "2026",
+    "status": "Planned",
     "tech": [
       "HTML",
       "CSS",
       "JavaScript",
-      "Supabase"
+      "Tauri",
+      "Rust"
     ],
-    "image": "assets/images/projects/School_Menu_Voting_System.png",
-    "shortDescription": "A voting platform enabling students to collaboratively decide the weekly school menu.",
-    "link": "https://dpsimenu.in"
+    "shortDescription": "Writing software that grows with the writer. Built on the principle of progressive complexity.",
+    "link": "writecabin.com",
+    "flagship": false,
+    "featuredOnHome": true,
+    "image": ""
   },
   {
     "id": "socra",
@@ -65,20 +67,20 @@ const PROJECTS_DATA = [
     "image": "/assets/images/projects/home.png"
   },
   {
-    "id": "the-celestis-conclave",
-    "title": "The Celestis Conclave",
-    "year": "2026",
-    "status": "In Progress",
-    "tech": [
-      "Leadership",
-      "STEM Education"
-    ],
-    "shortDescription": "A student-led regional STEM learning and collaboration community.",
-    "link": "https://celestisconclave.github.io",
-    "flagship": false,
+    "id": "school-menu-voting-system",
     "featuredOnHome": true,
-    "image": "assets/images/projects/Celestis_Conclave.png",
-    "mdFile": "/assets/project-pages/celestis.md"
+    "title": "School Menu Voting System",
+    "status": "Completed",
+    "year": "2026",
+    "tech": [
+      "HTML",
+      "CSS",
+      "JavaScript",
+      "Supabase"
+    ],
+    "image": "assets/images/projects/School_Menu_Voting_System.png",
+    "shortDescription": "A voting platform enabling students to collaboratively decide the weekly school menu.",
+    "link": "https://dpsimenu.in"
   },
   {
     "id": "mealflow",
@@ -95,6 +97,22 @@ const PROJECTS_DATA = [
     "image": "assets/images/projects/MealFlow.png",
     "shortDescription": "An AI-powered meal planning platform designed for Indian households.",
     "link": "https://github.com/rishitc17/MealFlow"
+  },
+  {
+    "id": "the-celestis-conclave",
+    "title": "The Celestis Conclave",
+    "year": "2026",
+    "status": "In Progress",
+    "tech": [
+      "Leadership",
+      "STEM Education"
+    ],
+    "shortDescription": "A student-led regional STEM learning and collaboration community.",
+    "link": "https://celestisconclave.github.io",
+    "flagship": false,
+    "featuredOnHome": true,
+    "image": "assets/images/projects/Celestis_Conclave.png",
+    "mdFile": "/assets/project-pages/celestis.md"
   },
   {
     "id": "jr-water-ambassadors",
@@ -174,7 +192,7 @@ const PROJECTS_DATA = [
     "link": "https://github.com/rishitc17/DiseaseSpreadSimulation",
     "flagship": false,
     "featuredOnHome": false,
-    "image": "/assets/images/projects/diseasespreadsimulation.png"
+    "image": "/assets/images/projects/cabin.png"
   }
 ];
 
