@@ -100,35 +100,17 @@ const PROJECTS_DATA = [
     "id": "socra",
     "title": "Socra",
     "year": "2026",
-    "status": "Planned",
+    "status": "In Progress",
     "tech": [
       "Business Strategy",
       "NLP",
       "Prompt Engineering"
     ],
     "shortDescription": "A research project exploring Socratic questioning as a safeguard against passive AI dependence.",
-    "link": "",
+    "link": "socra.in",
     "flagship": false,
-    "featuredOnHome": false,
-    "image": ""
-  },
-  {
-    "id": "nomad",
-    "title": "NOMAD — Neural Observation and Model Analysis of Digits",
-    "year": "2026",
-    "status": "Planned",
-    "tech": [
-      "Python",
-      "Nengo",
-      "MNIST",
-      "NumPy",
-      "Matplotlib"
-    ],
-    "shortDescription": "A neuromorphic computing benchmark exploring spiking neural networks for digit classification.",
-    "link": "",
-    "flagship": false,
-    "featuredOnHome": false,
-    "image": ""
+    "featuredOnHome": true,
+    "image": "/assets/images/projects/socra.png"
   },
   {
     "id": "echoes-of-etheryn",
@@ -165,23 +147,23 @@ const PROJECTS_DATA = [
     "id": "rawcrypt",
     "title": "RawCrypt",
     "year": "2026",
-    "status": "In Progress",
+    "status": "Completed",
     "tech": [
       "Python",
       "FastAPI",
       "Cryptography"
     ],
     "shortDescription": "An educational platform designed to teach cryptography through intuitive mathematical explanations.",
-    "link": "",
+    "link": "rawcrypt.onrender.com",
     "flagship": false,
     "featuredOnHome": false,
-    "image": ""
+    "image": "/assets/images/projects/home.png"
   },
   {
     "id": "cybersecurity-for-elderly",
     "title": "Cybersecurity for Support Staff",
     "year": "2026",
-    "status": "In Progress",
+    "status": "Completed",
     "tech": [
       "Education",
       "Public Speaking",
